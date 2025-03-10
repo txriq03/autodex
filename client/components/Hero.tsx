@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const Hero = () => {
   return (
-    <div className='max-width mt-24 mb-10 rounded-xl bg-gradient-to-r from-slate-900 to-slate-600 p-10 relative'>
+    <div className='max-width mt-24 mb-10 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 p-10 relative'>
         <h1 className='text-[4rem] max-w-[700px] leading-[75px] text-white font-bold mb-4'>
             List Your Ride. Keep Your Privacy.
         </h1>
