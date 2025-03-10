@@ -6,7 +6,7 @@ const Navbar = () => {
     <div className=" bg-slate-800 py-3">
       <div className="max-width flex justify-between">
 
-        <div className="text-lg text-white">Trusty</div>
+        <div className="text-2xl text-white font-semibold">AutoDex</div>
         <div>
           <Button variant="secondary">Connect Wallet</Button>
         </div>
