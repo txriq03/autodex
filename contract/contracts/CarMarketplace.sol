@@ -25,7 +25,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     event CarListedForSale(uint256 tokenId, uint256 price);
     event CarSold(uint256 tokenId, address newOwner, uint256 price);
 
-    constructor() ERC721("Trusty", "TRUSTY") Ownable(msg.sender) {}
+    constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
 
     // Function to mint a new car token
     function mintCar(
