@@ -3,10 +3,12 @@ import { Button } from './ui/button'
 import Image from 'next/image'
 import { requestAccount } from '@/lib/contractServices'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext} from 'react'
+import { ContractContext } from './providers/ContractProvider'
 
 const Hero = () => {
-  const [account, setAccount] = useState<any>(null);
+  // const [account, setAccount] = useState<any>(null);
+  const { account, setAccount }= useContext(ContractContext);
 
   const { data, refetch, isPending, isError, error } = useQuery({
     queryKey: ['connectWallet'],

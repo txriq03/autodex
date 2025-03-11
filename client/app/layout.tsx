@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
+import ContractProvider from "@/components/providers/ContractProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,12 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased bg-slate-50`}
       >
-        <TanstackProvider>
-          <Navbar />
-          {children}
-        </TanstackProvider>
+        <ContractProvider>
+          <TanstackProvider>
+            <Navbar />
+            {children}
+          </TanstackProvider>
+        </ContractProvider>
       </body>
     </html>
   );
