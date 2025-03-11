@@ -13,10 +13,11 @@ const Hero = () => {
             Powered by blockchain, secured by your wallet - no accounts, no hassle.
         </p>
         <Image src="/hero.png" alt="Hero" width={1712} height={948} className='absolute w-[600px] top-[50%] translate-y-[-50%] right-[5%]'/>
-        <div className='flex gap-2 my-5'>
+        {/* <div className='flex gap-2 my-5'>
             <Button className='w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 '>Buy</Button>
             <Button className='w-[100px] py-[25px] text-xl bg-transparent text-white' variant="outline">Sell</Button>
-        </div>
+        </div> */}
+        <Button className='bg-slate-50 text-slate-900 mt-5 text-lg py-[22px] hover:bg-slate-200'>Connect Wallet</Button>
     </div>
   )
 }
