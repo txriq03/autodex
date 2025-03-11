@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const ConnectWallet = async () => {
+export const connectWallet = async () => {
   if (window.ethereum) {
     const provider = new ethers.BrowserProvider(window.ethereum);
 

@@ -1,8 +1,11 @@
-import React from 'react'
-import { Button } from './ui/button';
-import Image from 'next/image';
-
+'use client'
+import { Button } from './ui/button'
+import Image from 'next/image'
+import { connectWallet } from '@/lib/utils'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 const Hero = () => {
+
   return (
     <div className='max-width mt-12 xl:mt-24 mb-10 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 p-10 relative overflow-hidden'>
         <h1 className='text-[3rem] md:text-[4rem] max-w-[700px] leading-[75px] text-white font-bold mb-4'>
