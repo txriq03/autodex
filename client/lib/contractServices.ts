@@ -28,5 +28,12 @@ export const requestAccount = async () => {
         }
         return null;
     }
+}
 
+export const getProvider = async () => {
+    if (typeof window !== "undefined" && window.ethereum) {
+        return new ethers.BrowserProvider(window.ethereum);
+      } else {
+        throw new Error("No Ethereum provider found");
+      }
 }
