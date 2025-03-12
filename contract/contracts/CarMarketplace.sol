@@ -13,6 +13,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string model;
         uint256 year;
         string vin; // Unique Vehicle Identification Number
+        uint256 mileage;
         bool forSale;
         uint256 price;
     }
@@ -34,6 +35,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string memory model,
         uint256 year,
         string memory vin,
+        uint256 mileage,
         string memory tokenURI
     ) public onlyOwner {
         require(bytes(vin).length > 0, "VIN must be provided");
@@ -47,7 +49,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         }
 
         uint256 tokenId = nextTokenId;
-        cars[tokenId] = Car(make, model, year, vin, false, 0);
+        cars[tokenId] = Car(make, model, year, vin, mileage, false, 0);
         carOwners[tokenId] = payable(to);
         vinToId[vin] = tokenId;
         _mint(to, tokenId);
