@@ -1,13 +1,29 @@
 "use client"
 import { createContext, ReactNode,  useEffect,  useState } from "react"
+import { initialise } from "@/lib/web3/contractServices";
 
 export const ContractContext = createContext<any>(null);
 
 const ContractProvider = ({children}: {children: ReactNode}) => {
     const [account, setAccount] = useState(null);
+    const [signer, setSigner] = useState<any>(null);
+    const [contract, setContract] = useState<any>(null);
+    const [provider, setProvider] = useState<any>(null);
 
-    // Check if wallet is already connected on initial page load
     useEffect(() => {
+
+      // Get smart contract variables
+      const init = async () => {
+        const result = await initialise();
+        if (result) {
+          setProvider(result.provider);
+          setSigner(result.signer);
+          setContract(result.contract);
+        }
+      }
+      init();
+
+      // Check if wallet is already connected on initial page load
       const checkIfWalletIsConnected = async () => {
         if (typeof window !== "undefined" && window.ethereum) {
           const accounts = await window.ethereum.request({ method: "eth_accounts" });
@@ -20,7 +36,7 @@ const ContractProvider = ({children}: {children: ReactNode}) => {
     }, []);
     
   return (
-    <ContractContext.Provider value={{ account, setAccount }}> 
+    <ContractContext.Provider value={{ account, setAccount, provider, signer, contract }}> 
         {children}
     </ContractContext.Provider>
   )

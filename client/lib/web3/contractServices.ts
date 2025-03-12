@@ -8,16 +8,18 @@ const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 const CONTRACT_ABI = abi.abi
 
 // Initialise provider, signer and contract
-const initialise = async () => {
+export const initialise = async () => {
     if (typeof window.ethereum !== "undefined") {
         provider = new BrowserProvider(window.ethereum);
         signer = await provider.getSigner();
         contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        return { provider, signer, contract }
     } else {
         console.error("Please install MetaMask.");
+        return null;
     }
 }
-initialise();
+// initialise();
 
 // Get a single account
 export const requestAccount = async () => {
