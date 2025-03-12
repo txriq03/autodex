@@ -39,8 +39,8 @@ const Hero = () => {
   }
 
   return (
-    <div className='max-width mt-12 2xl:mt-24 mb-10 rounded-xl bg-gradient-to-r from-slate-900 to-slate-700 p-10 relative overflow-hidden'>
-        <h1 className='text-[3rem] md:text-[4rem] max-w-[700px] leading-[75px] text-white font-bold mb-4'>
+    <div className='mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-800 mb-10 min-[1440px]:bg-gradient-to-r from-slate-900 to-slate-700 p-10 relative overflow-hidden'>
+        <h1 className='text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-white font-bold mb-4'>
             List Your Ride. Keep Your Privacy.
         </h1>
         <p className='text-[1.2rem] md:text-[1.5rem] text-white opacity-70 max-w-[700px] font-light'>
