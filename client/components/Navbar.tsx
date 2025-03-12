@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { ContractContext } from "./providers/ContractProvider";
 import { ethers } from "ethers";
+import Link from "next/link";
 
 const Navbar = () => {
   const {account, setAccount, provider} = useContext(ContractContext);
@@ -21,8 +22,10 @@ const Navbar = () => {
   return (
     <div className=" bg-slate-800 py-3">
       <div className="min-[1440px]:max-w-[1440px] mx-5 min-[1450px]:mx-auto flex justify-between">
-
-        <div className="text-2xl text-white font-semibold">AutoDex</div>
+        
+        <Link href="/">
+          <div className="text-2xl text-white font-semibold">AutoDex</div>
+        </Link>
 
         {account ? (
           <div className="text-2xl text-white ">

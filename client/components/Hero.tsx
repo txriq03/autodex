@@ -5,6 +5,7 @@ import { requestAccount } from '@/lib/web3/contractServices'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState, useContext} from 'react'
 import { ContractContext } from './providers/ContractProvider'
+import Link from 'next/link'
 
 const Hero = () => {
   // const [account, setAccount] = useState<any>(null);
@@ -55,7 +56,9 @@ const Hero = () => {
           <>
           <div className='flex gap-2 my-5'>
             <Button className='w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 '>Buy</Button>
-            <Button className='w-[100px] py-[25px] text-xl bg-transparent text-white' variant="outline">Sell</Button>
+            <Link href="/sell">
+              <Button className='w-[100px] py-[25px] text-xl bg-transparent text-white' variant="outline">Sell</Button>
+            </Link>
           </div>
           <div className=' mt-5'>
             <p className='inline text-slate-400'>Account: </p> <p className='inline text-teal-400'>{account}</p>

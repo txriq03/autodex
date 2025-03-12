@@ -15,6 +15,7 @@ export const initialise = async () => {
         contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
         return { provider, signer, contract }
     } else {
+        alert("Please install MetaMask!");
         console.error("Please install MetaMask.");
         return null;
     }
