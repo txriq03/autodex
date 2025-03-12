@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { ContractContext } from "./providers/ContractProvider";
 import { ethers } from "ethers";
-import { getProvider } from "@/lib/contractServices";
+import { getProvider } from "@/lib/web3/contractServices";
 
 const Navbar = () => {
   const {account, setAccount} = useContext(ContractContext);
@@ -28,7 +28,7 @@ const Navbar = () => {
 
         {account ? (
           <div className="text-2xl text-white ">
-            <p className="inline font-bold text-teal-400">{balance}</p>  <p className="inline">ETH</p>
+            <p className="inline font-bold text-teal-400">{Number(balance).toFixed(2)}</p>  <p className="inline">ETH</p>
           </div>
         ) : (
           <div>

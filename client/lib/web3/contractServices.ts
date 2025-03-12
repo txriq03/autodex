@@ -1,4 +1,4 @@
-import { ethers, BrowserProvider } from "ethers"
+import { ethers, BrowserProvider, Contract } from "ethers"
 import abi from './CarMarketplace.json'
 
 let provider: BrowserProvider;
@@ -12,6 +12,7 @@ const initialise = async () => {
     if (typeof window.ethereum !== "undefined") {
         provider = new BrowserProvider(window.ethereum);
         signer = await provider.getSigner();
+        contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
     } else {
         console.error("Please install MetaMask.");
     }
