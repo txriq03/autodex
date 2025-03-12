@@ -24,41 +24,80 @@ import {
 } from "./ui/form";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+const pinataGateway = "https://aqua-nearby-earwig-269.mypinata.cloud";
 
 const carSchema = z.object({
   make: z.string().nonempty({ message: "Make is required." }),
   model: z.string().nonempty({ message: "Model is required." }),
   year: z
-    .number({ invalid_type_error: "Year must be a number." })
-    .int()
-    .min(1886, { message: "Year must be 1886 or later." })
-    .max(new Date().getFullYear(), {
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => !isNaN(val), { message: "Year must be a number." })
+    .refine((val) => val >= 1886, { message: "Year must be 1886 or later." })
+    .refine((val) => val <= new Date().getFullYear(), {
       message: "Year cannot be in the future.",
     }),
   vin: z.string().length(17, { message: "Vin must be exactly 17 characters" }),
-  mileage: z.number().nonnegative({ message: "Mileage must be 0 or more" }),
+  mileage: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .refine((val) => !isNaN(val), { message: "Mileage must be a number." })
+    .refine((val) => val >= 0, { message: "Mileage must be 0 or more." }),
   image: z
     .any()
-    .refine((file) => file?.size <= MAX_FILE_SIZE, { message: 'File size cannot exceed 5MB'})
-    .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type), { message: 'Only .jpg, .jpeg, .png and .webp file formats are supported'})
+    .refine((files) => files[0]?.size <= MAX_FILE_SIZE, {
+        message: "File size cannot exceed 5MB"
+    })
+    .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files[0]?.type), {
+        message: "Only .jpg, .jpeg, .png and .webp file formats are supported"
+    })
 });
 
 type CarFormData = z.infer<typeof carSchema>;
 
 const VehicleForm = () => {
-  const form = useForm<z.infer<typeof carSchema>>({
+  const form = useForm<CarFormData>({
     resolver: zodResolver(carSchema),
     defaultValues: {
       make: "",
       model: "",
       vin: "",
-      image: ""
+      image: "",
     },
   });
+  const uploadToIPFS = async (file: File) => {
+    const formData = new FormData();
+    formData.append("network", "public");
+    formData.append("file", file);
 
-  const onSubmit = (values: z.infer<typeof carSchema>) => {
-    console.log(values);
+    const options: any = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    options.body = formData;
+
+    fetch("https://uploads.pinata.cloud/v3/files", options)
+      .then((response) => response.json())
+      .then((response) => console.log(response))
+      .catch((err) => console.error(err));
+  };
+
+  const onSubmit = async (data: CarFormData) => {
+    try {
+      const imageUrl = await uploadToIPFS(data.image[0]);
+    } catch (error) {
+      console.error("Error uploading image to IPFS:", error);
+    }
   };
 
   return (
@@ -116,42 +155,12 @@ const VehicleForm = () => {
               inputType="file"
               formControl={form.control}
             />
-            
           </CardContent>
           <CardFooter>
             <Button type="submit">Submit</Button>
           </CardFooter>
         </form>
       </Form>
-
-      {/* <form autoComplete='on'>
-                <div className='grid w-full items-center gap-4'>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='brand'>Brand</Label>
-                        <Input id="brand" placeholder='Toyota' />
-                    </div>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='make'>Make</Label>
-                        <Input id="make" placeholder='Supra' />
-                    </div>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='year'>Year</Label>
-                        <Input id="year" placeholder='1998' />
-                    </div>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='vin'>Vehicle Identification Number </Label>
-                        <Input id="vin" placeholder='1 123 456 789 0 ABC' />
-                    </div>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='mileage'>Mileage (in miles)</Label>
-                        <Input id="mileage" placeholder='20,000' />
-                    </div>
-                    <div className='flex flex-col space-y-1.5'>
-                        <Label htmlFor='price'>Price (in ETH) </Label>
-                        <Input id="price" placeholder='0.002' />
-                    </div>
-                </div>
-            </form> */}
     </Card>
   );
 };
@@ -165,14 +174,14 @@ interface VehicleFormFieldProps {
   formControl: Control<z.infer<typeof carSchema>, any>;
 }
 
-const VehicleFormField: React.FC<VehicleFormFieldProps> = ({
+const VehicleFormField = ({
   name,
   label,
   placeholder,
   description,
   inputType,
   formControl,
-}) => {
+}: VehicleFormFieldProps) => {
   return (
     <FormField
       control={formControl}
@@ -185,6 +194,7 @@ const VehicleFormField: React.FC<VehicleFormFieldProps> = ({
               placeholder={placeholder}
               {...field}
               type={inputType || "text"}
+              accept={inputType === 'file' ? 'image/*' : ''}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
