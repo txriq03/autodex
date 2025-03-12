@@ -1,8 +1,11 @@
 import { ethers, BrowserProvider } from "ethers"
+import abi from './CarMarketplace.json'
 
 let provider: BrowserProvider;
 let signer;
 let contract;
+const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const CONTRACT_ABI = abi.abi
 
 // Initialise provider, signer and contract
 const initialise = async () => {

@@ -57,7 +57,9 @@ const Hero = () => {
             <Button className='w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 '>Buy</Button>
             <Button className='w-[100px] py-[25px] text-xl bg-transparent text-white' variant="outline">Sell</Button>
           </div>
-          <p className='text-teal-400 mt-5'>User Address: {account}</p>
+          <div className=' mt-5'>
+            <p className='inline text-slate-400'>Account: </p> <p className='inline text-teal-400'>{account}</p>
+          </div>
           </>
         ) : (
           <Button className='bg-slate-50 text-slate-900 mt-5 text-lg py-[22px] hover:bg-slate-200' onClick={handleConnect}>{isPending ? 'Connecting...' : 'Connect Wallet'}</Button>
