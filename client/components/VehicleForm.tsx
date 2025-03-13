@@ -80,7 +80,7 @@ const VehicleForm = () => {
       price: 0
     },
   });
-  const uploadToIPFS = async (file: File) => {
+  const uploadImageToIPFS = async (file: File) => {
     const formData = new FormData();
     console.log("File is", file);
     console.log("Type:", typeof file);
@@ -89,7 +89,7 @@ const VehicleForm = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/ipfs", {
+      const res = await fetch("/api/imageurl", {
         method: "POST",
         body: formData,
       });
@@ -99,17 +99,48 @@ const VehicleForm = () => {
       }
 
       const data = await res.json();
-      console.log("IPFS upload response:", data);
+      console.log("Image IPFS upload response:", data);
 
       return data; // ✅ return the IPFS URL here
     } catch (err) {
-      console.error("IPFS upload error:", err);
+      console.error("Image IPFS upload error:", err);
       throw err; // rethrow so it can be caught in the outer try/catch
     }
   };
 
+  const uploadToIPFS = async (car: CarFormData, imageUrl: string | void) => {
+    try {
+      const response = await fetch('/api/ipfs', {
+        method: 'POST',
+        body: JSON.stringify({
+          "name": car.make + " " + car.model,
+          "description": "",
+          "image": imageUrl,
+          "owner": signer.getAddress(),
+          "attributes": [
+            { "trait": "Make", "value": car.make},
+            { "trait": "Model", "value": car.model},
+            { "trait": "Year", "value": car.year},
+            { "trait": "VIN", "value": car.vin},
+            { "trait": "Registration Number", "value": "ABC1234"},
+            { "trait": "Transmission", "value": "Manual"},
+            { "trait": "Fuel Type", "value": "Electric"},
+  
+          ]
+        })
+      })
+      const data: any = await response.json();
+      console.log("IPFS URL:", data.url);
+      return data;
+    } catch (error) {
+      console.error("IPFS upload error:", error);
+    }
+
+  }
+
   const onSubmit = async (data: CarFormData) => {
     let imageUrl: string | void = "";
+    let tokenURI: string | void = "";
     if (!contract) {
       console.error("Error: User not logged into wallet.");
       alert("Please unlock your wallet.");
@@ -117,14 +148,20 @@ const VehicleForm = () => {
     }
     try {
       try {
-        imageUrl = await uploadToIPFS(data.image[0]);
+        imageUrl = await uploadImageToIPFS(data.image[0]);
       } catch (imageError) {
         console.error("Error uploading image to IPFS:", imageError);
         alert("Error uploading image to IPFS.");
       }
 
       try {
-        console.log("ImageURL before mintcar:", imageUrl);
+        console.log("ImageURL before IPFS upload:", imageUrl);
+        tokenURI = await uploadToIPFS(data, imageUrl);
+      } catch (err) {
+        console.error("Error uploading metadata to IPFS:", err);
+      }
+
+      try {
         const tx = await contract.mintCar(
           signer.getAddress(),
           data.make,
@@ -133,7 +170,7 @@ const VehicleForm = () => {
           data.vin,
           data.mileage,
           data.price,
-          imageUrl
+          tokenURI
         );
 
         await tx.wait();
