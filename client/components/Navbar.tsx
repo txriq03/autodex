@@ -4,24 +4,21 @@ import { Button } from "./ui/button";
 import { ContractContext } from "./providers/ContractProvider";
 import { ethers } from "ethers";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 const Navbar = () => {
   const { account, setAccount, provider } = useContext(ContractContext);
-  const [balance, setBalance] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!account || !provider) return;
-      try {
-        const rawBalance = await provider.getBalance(account);
-        const formatted = ethers.formatEther(rawBalance);
-        setBalance(formatted);
-      } catch (err) {
-        console.error("Failed to fetch balance:", err);
-      }
-    };
-    fetchBalance();
-  }, [account, provider]);
+  const { data: balance } = useQuery({
+    queryKey: ['ethBalance', account],
+    queryFn: async () => {
+      if (!account || !provider) return null;
+      const raw = await provider.getBalance(account);
+      return ethers.formatEther(raw);
+    },
+    enabled: !!account && !!provider,
+    refetchInterval: 10000
+  })
 
   return (
     <div className=" bg-slate-800 py-3">
