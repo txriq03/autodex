@@ -109,17 +109,19 @@ const VehicleForm = () => {
   };
 
   const uploadToIPFS = async (car: CarFormData, imageUrl: string | void) => {
+    const make = car.make.charAt(0).toUpperCase() + car.make.slice(1)
+    const model = car.model.charAt(0).toUpperCase() + car.model.slice(1)
     try {
       const response = await fetch('/api/ipfs', {
         method: 'POST',
         body: JSON.stringify({
-          "name": car.make + " " + car.model,
+          "name": make + " " + model,
           "description": "",
           "image": imageUrl,
           "owner": signer.getAddress(),
           "attributes": [
-            { "trait": "Make", "value": car.make},
-            { "trait": "Model", "value": car.model},
+            { "trait": "Make", "value": make},
+            { "trait": "Model", "value": model},
             { "trait": "Year", "value": car.year},
             { "trait": "VIN", "value": car.vin},
             { "trait": "Registration Number", "value": "ABC1234"},
