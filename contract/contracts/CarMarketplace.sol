@@ -18,7 +18,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 price;
     }
 
-    mapping(uint256 => Car) private cars;  // tokenID mapped to Car struct
+    mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
     mapping(uint256 => address payable) private carOwners; // tokenId linked to owner's address
     mapping(string => uint256 id) private vinToId; // Used to find VIN number from tokenID
 
@@ -39,11 +39,12 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string memory tokenURI
     ) public onlyOwner {
         require(bytes(vin).length > 0, "VIN must be provided");
-        
+
         // Check if the VIN already exists, while getting the correct nextTokenId
         for (uint256 i = 0; i < nextTokenId; i++) {
             require(
-                keccak256(abi.encodePacked(cars[i].vin)) != keccak256(abi.encodePacked(vin)),
+                keccak256(abi.encodePacked(cars[i].vin)) !=
+                    keccak256(abi.encodePacked(vin)),
                 "VIN already exists"
             );
         }
@@ -56,12 +57,14 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         _setTokenURI(tokenId, tokenURI);
         nextTokenId++;
         emit CarMinted(tokenId, to, vin);
-
     }
 
     // Function puts the car up for sale
     function listCarForSale(uint256 tokenId, uint256 price) public {
-        require(ownerOf(tokenId) == msg.sender, "Only the owner of the vehicle can list it for sale.");
+        require(
+            ownerOf(tokenId) == msg.sender,
+            "Only the owner of the vehicle can list it for sale."
+        );
         require(price > 0, "Price must be greater than zero.");
 
         cars[tokenId].forSale = true;
@@ -70,7 +73,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     }
 
     function buyCar(uint256 tokenId) public payable {
-        require(cars[tokenId].forSale, "Car is not for sale");   
+        require(cars[tokenId].forSale, "Car is not for sale");
         require(msg.value >= cars[tokenId].price, "Insufficient ETH sent.");
 
         address payable seller = carOwners[tokenId];
@@ -98,9 +101,12 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         return cars[tokenId];
     }
 
-
-
-
-
-    
+    // Function to fetch all cars
+    function getAllCars() public view returns (Car[] memory) {
+        Car[] memory all = new Car[](nextTokenId);
+        for (uint256 i = 0; i < nextTokenId; i++) {
+            all[i] = cars[i];
+        }
+        return all;
+    }
 }
