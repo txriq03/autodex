@@ -51,14 +51,14 @@ const carSchema = z.object({
     .refine((val) => val >= 0, { message: "Mileage must be 0 or more." }),
   image: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
-        message: "Please upload an image",
+      message: "Please upload an image",
     })
     .refine((files) => files[0]?.size <= MAX_FILE_SIZE, {
-        message: "File size cannot exceed 5MB"
+      message: "File size cannot exceed 5MB",
     })
     .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files[0]?.type), {
-        message: "Only .jpg, .jpeg, .png and .webp file formats are supported"
-    })
+      message: "Only .jpg, .jpeg, .png and .webp file formats are supported",
+    }),
 });
 
 type CarFormData = z.infer<typeof carSchema>;
@@ -70,21 +70,20 @@ const VehicleForm = () => {
       make: "",
       model: "",
       vin: "",
-      image: new DataTransfer().files
-      
+      image: new DataTransfer().files,
     },
   });
   const uploadToIPFS = async (file: File) => {
     const formData = new FormData();
-    console.log("File is", file)
+    console.log("File is", file);
     console.log("Type:", typeof file);
     console.log("Instanceof File:", file instanceof File);
     formData.append("network", "public");
     formData.append("file", file);
 
     fetch("/api/ipfs", {
-        method: "POST",
-        body: formData
+      method: "POST",
+      body: formData,
     })
       .then((response) => response.json())
       .then((response) => console.log(response))
@@ -185,23 +184,23 @@ const VehicleFormField = ({
     <FormField
       control={formControl}
       name={name}
-      render={({ field }) => (
+      render={({ field }: any) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            {inputType === 'file' ? (
+            {inputType === "file" ? (
                 <Input
-                    type='file'
-                    accept='image/*'
-                    onChange={(e) => (field.onChange(e.target.files))}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => field.onChange(e.target.files)}
                     ref={field.ref}
                     name={field.name}
                 />
             ) : (
                 <Input
-                 type={inputType || "text"}
-                 placeholder={placeholder}
-                 {...field}
+                  type={inputType || "text"}
+                  placeholder={placeholder}
+                  {...field}
                 />
             )}
           </FormControl>
