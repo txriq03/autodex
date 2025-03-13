@@ -12,8 +12,8 @@ const geistSans = Geist({
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"]
-})
+  subsets: ["latin"],
+});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -32,15 +32,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} font-sans antialiased bg-slate-50`}
-      >
-        <ContractProvider>
-          <TanstackProvider>
+      <body className={`${inter.variable} font-sans antialiased bg-slate-50`}>
+        <TanstackProvider>
+          <ContractProvider>
             <Navbar />
             {children}
-          </TanstackProvider>
-        </ContractProvider>
+          </ContractProvider>
+        </TanstackProvider>
       </body>
     </html>
   );

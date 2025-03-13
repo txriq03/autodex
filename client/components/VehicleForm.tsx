@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Card,
   CardContent,
@@ -22,6 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { ContractContext } from "./providers/ContractProvider";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -30,7 +31,6 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/png",
   "image/webp",
 ];
-const pinataGateway = "https://aqua-nearby-earwig-269.mypinata.cloud";
 
 const carSchema = z.object({
   make: z.string().nonempty({ message: "Make is required." }),
@@ -67,6 +67,7 @@ const carSchema = z.object({
 type CarFormData = z.infer<typeof carSchema>;
 
 const VehicleForm = () => {
+  const { contract, signer } = useContext(ContractContext);
   const form = useForm<CarFormData>({
     resolver: zodResolver(carSchema),
     defaultValues: {
@@ -96,10 +97,38 @@ const VehicleForm = () => {
   };
 
   const onSubmit = async (data: CarFormData) => {
+    let imageUrl = "";
     try {
-      const imageUrl = await uploadToIPFS(data.image[0]);
+      try {
+        const imageUrl = await uploadToIPFS(data.image[0]);
+
+      } catch (imageError) {
+        console.error("Error uploading image to IPFS:", imageError);
+        alert('Error uploading image to IPFS.');
+      }
+
+      try {
+        const tx = await contract.mintCar(
+          signer.getAddress(),
+          data.make,
+          data.model,
+          data.year,
+          data.vin,
+          data.mileage,
+          imageUrl
+        )
+        
+        await tx.wait();
+        console.log("Car minted successfully!");
+        alert("Car minted successfully!");
+
+      } catch (mintError) {
+        console.error("Error minting vehicle:", mintError);
+        alert('Minting failed. Please check your wallet and try again.');
+      }
     } catch (error) {
-      console.error("Error uploading image to IPFS:", error);
+      console.error("Unexpected error:", error);
+      alert("Something went wrong.")
     }
   };
 

@@ -14,7 +14,6 @@ const Hero = () => {
   const { data, refetch, isPending, isError, error } = useQuery({
     queryKey: ['connectWallet'],
     queryFn: requestAccount,
-    enabled: false,
   })
   console.log(data);
 
