@@ -98,6 +98,11 @@ const VehicleForm = () => {
 
   const onSubmit = async (data: CarFormData) => {
     let imageUrl = "";
+    if (!contract) {
+      console.error("Error: User not logged into wallet.")
+      alert("Please unlock your wallet.")
+      return null;
+    }
     try {
       try {
         const imageUrl = await uploadToIPFS(data.image[0]);
