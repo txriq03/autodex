@@ -25,7 +25,7 @@ export const initialise = async () => {
 // Get a single account
 export const requestAccount = async () => {
     try {
-        const accounts = await provider.send("eth_requestAccounts", []);
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         return accounts[0];            
     } catch (error) {
         if (error instanceof Error) {
