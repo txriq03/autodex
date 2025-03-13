@@ -73,7 +73,7 @@ const VehicleForm = () => {
       make: "",
       model: "",
       vin: "",
-      image: new DataTransfer().files,
+      image: undefined,
       year: new Date().getFullYear(),
       mileage: 0
     },
