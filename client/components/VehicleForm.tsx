@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "./ui/form";
 import { ContractContext } from "./providers/ContractProvider";
+import { ethers } from "ethers";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -35,23 +36,22 @@ const ACCEPTED_IMAGE_TYPES = [
 const carSchema = z.object({
   make: z.string().nonempty({ message: "Make is required." }),
   model: z.string().nonempty({ message: "Model is required." }),
-  year: z
-    .coerce
-    .number({ invalid_type_error: 'Year must be a number.'})
+  year: z.coerce
+    .number({ invalid_type_error: "Year must be a number." })
     .int()
-    .min(1886, { message: 'Year must be 1886 or later.'})
+    .min(1886, { message: "Year must be 1886 or later." })
     .max(new Date().getFullYear(), {
-        message: 'Year cannot be in the future'
+      message: "Year cannot be in the future",
     }),
-  vin: z
-    .string()
-    .regex(/^[A-HJ-NPR-Z0-9]{17}$/, {
-        message: 'VIN must be 17 capitalised characters (no I, O, or Q)'
-    }),
-  mileage: z
-    .coerce
+  vin: z.string().regex(/^[A-HJ-NPR-Z0-9]{17}$/, {
+    message: "VIN must be 17 capitalised characters (no I, O, or Q)",
+  }),
+  mileage: z.coerce
     .number({ invalid_type_error: "Mileage must be a number." })
     .nonnegative({ message: "Mileage must be 0 or more" }),
+  price: z.coerce
+    .number({ invalid_type_error: "Price must be a number." })
+    .positive({ message: "Price must be greater than 0" }),
   image: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
       message: "Please upload an image",
@@ -76,7 +76,8 @@ const VehicleForm = () => {
       vin: "",
       image: undefined,
       year: new Date().getFullYear(),
-      mileage: 0
+      mileage: 0,
+      price: 0
     },
   });
   const uploadToIPFS = async (file: File) => {
@@ -92,16 +93,15 @@ const VehicleForm = () => {
         method: "POST",
         body: formData,
       });
-  
+
       if (!res.ok) {
         throw new Error("Failed to upload to IPFS");
       }
-  
+
       const data = await res.json();
       console.log("IPFS upload response:", data);
-  
+
       return data; // ✅ return the IPFS URL here
-  
     } catch (err) {
       console.error("IPFS upload error:", err);
       throw err; // rethrow so it can be caught in the outer try/catch
@@ -111,21 +111,20 @@ const VehicleForm = () => {
   const onSubmit = async (data: CarFormData) => {
     let imageUrl: string | void = "";
     if (!contract) {
-      console.error("Error: User not logged into wallet.")
-      alert("Please unlock your wallet.")
+      console.error("Error: User not logged into wallet.");
+      alert("Please unlock your wallet.");
       return null;
     }
     try {
       try {
         imageUrl = await uploadToIPFS(data.image[0]);
-
       } catch (imageError) {
         console.error("Error uploading image to IPFS:", imageError);
-        alert('Error uploading image to IPFS.');
+        alert("Error uploading image to IPFS.");
       }
 
       try {
-        console.log("ImageURL before mintcar:", imageUrl)
+        console.log("ImageURL before mintcar:", imageUrl);
         const tx = await contract.mintCar(
           signer.getAddress(),
           data.make,
@@ -133,20 +132,20 @@ const VehicleForm = () => {
           data.year,
           data.vin,
           data.mileage,
+          data.price,
           imageUrl
-        )
-        
+        );
+
         await tx.wait();
         console.log("Car minted successfully!");
         alert("Car minted successfully!");
-
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
-        alert('Minting failed. Please check your wallet and try again.');
+        alert("Minting failed. Please check your wallet and try again.");
       }
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("Something went wrong.")
+      alert("Something went wrong.");
     }
   };
 
@@ -199,12 +198,20 @@ const VehicleForm = () => {
               formControl={form.control}
             />
             <VehicleFormField
+              name="price"
+              label="Price (in ETH)"
+              placeholder="0.00"
+              inputType="number"
+              formControl={form.control}
+            />
+            <VehicleFormField
               name="image"
               label="Image"
               placeholder=""
               inputType="file"
               formControl={form.control}
             />
+            
           </CardContent>
           <CardFooter>
             <Button type="submit">Submit</Button>
@@ -241,19 +248,19 @@ const VehicleFormField = ({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {inputType === "file" ? (
-                <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => field.onChange(e.target.files)}
-                    ref={field.ref}
-                    name={field.name}
-                />
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => field.onChange(e.target.files)}
+                ref={field.ref}
+                name={field.name}
+              />
             ) : (
-                <Input
-                  type={inputType || "text"}
-                  placeholder={placeholder}
-                  {...field}
-                />
+              <Input
+                type={inputType || "text"}
+                placeholder={placeholder}
+                {...field}
+              />
             )}
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
