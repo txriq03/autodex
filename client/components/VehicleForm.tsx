@@ -189,12 +189,21 @@ const VehicleFormField = ({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
-              {...(inputType !== "file" && { placeholder })}
-              {...field}
-              type={inputType || "text"}
-              accept={inputType === 'file' ? 'image/*' : ''}
-            />
+            {inputType === 'file' ? (
+                <Input
+                    type='file'
+                    accept='image/*'
+                    onChange={(e) => (field.onChange(e.target.files))}
+                    ref={field.ref}
+                    name={field.name}
+                />
+            ) : (
+                <Input
+                 type={inputType || "text"}
+                 placeholder={placeholder}
+                 {...field}
+                />
+            )}
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
