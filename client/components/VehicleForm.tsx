@@ -50,7 +50,9 @@ const carSchema = z.object({
     .refine((val) => !isNaN(val), { message: "Mileage must be a number." })
     .refine((val) => val >= 0, { message: "Mileage must be 0 or more." }),
   image: z
-    .any()
+    .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
+        message: "Please upload an image",
+    })
     .refine((files) => files[0]?.size <= MAX_FILE_SIZE, {
         message: "File size cannot exceed 5MB"
     })
@@ -68,25 +70,22 @@ const VehicleForm = () => {
       make: "",
       model: "",
       vin: "",
-      image: "",
+      image: new DataTransfer().files
+      
     },
   });
   const uploadToIPFS = async (file: File) => {
     const formData = new FormData();
+    console.log("File is", file)
+    console.log("Type:", typeof file);
+    console.log("Instanceof File:", file instanceof File);
     formData.append("network", "public");
     formData.append("file", file);
 
-    const options: any = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_PINATA_JWT}`,
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    options.body = formData;
-
-    fetch("https://uploads.pinata.cloud/v3/files", options)
+    fetch("/api/ipfs", {
+        method: "POST",
+        body: formData
+    })
       .then((response) => response.json())
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
@@ -191,7 +190,7 @@ const VehicleFormField = ({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
-              placeholder={placeholder}
+              {...(inputType !== "file" && { placeholder })}
               {...field}
               type={inputType || "text"}
               accept={inputType === 'file' ? 'image/*' : ''}
