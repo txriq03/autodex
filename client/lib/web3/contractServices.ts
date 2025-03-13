@@ -21,6 +21,10 @@ export const initialise = async () => {
     }
 }
 // initialise();
+export const fetchCurrentAccount = async () => {
+    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    return accounts.length > 0 ? accounts[0] : null;
+  };
 
 // Get a single account
 export const requestAccount = async () => {
