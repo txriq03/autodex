@@ -17,7 +17,7 @@ const config: HardhatUserConfig = {
   networks: {
     sepolia: {
       url: ALCHEMY_URL,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : []
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     }
   }
 };

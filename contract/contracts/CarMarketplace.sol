@@ -16,6 +16,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 mileage;
         bool forSale;
         uint256 price;
+        string tokenURI;
     }
 
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
@@ -50,7 +51,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         }
 
         uint256 tokenId = nextTokenId;
-        cars[tokenId] = Car(make, model, year, vin, mileage, false, 0);
+        cars[tokenId] = Car(make, model, year, vin, mileage, false, 0, tokenURI);
         carOwners[tokenId] = payable(to);
         vinToId[vin] = tokenId;
         _mint(to, tokenId);
