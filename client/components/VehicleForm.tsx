@@ -87,17 +87,29 @@ const VehicleForm = () => {
     formData.append("network", "public");
     formData.append("file", file);
 
-    fetch("/api/ipfs", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
+    try {
+      const res = await fetch("/api/ipfs", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!res.ok) {
+        throw new Error("Failed to upload to IPFS");
+      }
+  
+      const data = await res.json();
+      console.log("IPFS upload response:", data);
+  
+      return data; // ✅ return the IPFS URL here
+  
+    } catch (err) {
+      console.error("IPFS upload error:", err);
+      throw err; // rethrow so it can be caught in the outer try/catch
+    }
   };
 
   const onSubmit = async (data: CarFormData) => {
-    let imageUrl = "";
+    let imageUrl: string | void = "";
     if (!contract) {
       console.error("Error: User not logged into wallet.")
       alert("Please unlock your wallet.")
@@ -105,7 +117,7 @@ const VehicleForm = () => {
     }
     try {
       try {
-        const imageUrl = await uploadToIPFS(data.image[0]);
+        imageUrl = await uploadToIPFS(data.image[0]);
 
       } catch (imageError) {
         console.error("Error uploading image to IPFS:", imageError);
@@ -113,6 +125,7 @@ const VehicleForm = () => {
       }
 
       try {
+        console.log("ImageURL before mintcar:", imageUrl)
         const tx = await contract.mintCar(
           signer.getAddress(),
           data.make,

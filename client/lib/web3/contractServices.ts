@@ -1,18 +1,21 @@
 import { ethers, BrowserProvider, Contract } from "ethers"
 import abi from './CarMarketplace.json'
 
-let provider: BrowserProvider;
+let provider: any;
 let signer;
 let contract;
-const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const CONTRACT_ADDRESS = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0'
 const CONTRACT_ABI = abi.abi
 
 // Initialise provider, signer and contract
 export const initialise = async () => {
     if (typeof window.ethereum !== "undefined") {
-        provider = new BrowserProvider(window.ethereum);
+        // provider = new BrowserProvider(window.ethereum);
+        provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
         signer = await provider.getSigner();
         contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        const network  = await provider.getNetwork()
+        console.log('Network:', network)
         return { provider, signer, contract }
     } else {
         alert("Please install MetaMask!");
@@ -41,10 +44,22 @@ export const requestAccount = async () => {
     }
 }
 
-export const getProvider = async () => {
-    if (typeof window !== "undefined" && window.ethereum) {
-        return new ethers.BrowserProvider(window.ethereum);
-      } else {
-        throw new Error("No Ethereum provider found");
-      }
-}
+
+export const fetchAllCars = async (contract: Contract) => {
+    if (!contract) return []
+    const rawCars = await contract.getAllCars();
+
+    // Convert each car to a plain JSON-serializable object
+    const cars = rawCars.map((car: any) => ({
+      make: car.make,
+      model: car.model,
+      year: Number(car.year),
+      vin: car.vin,
+      mileage: Number(car.mileage),
+      forSale: car.forSale,
+      price: Number(car.price), // or BigNumber toString() if needed
+      image: car.tokenURI 
+    }));
+  
+    return cars;
+  };
