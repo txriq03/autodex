@@ -36,19 +36,22 @@ const carSchema = z.object({
   make: z.string().nonempty({ message: "Make is required." }),
   model: z.string().nonempty({ message: "Model is required." }),
   year: z
-    .string()
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => !isNaN(val), { message: "Year must be a number." })
-    .refine((val) => val >= 1886, { message: "Year must be 1886 or later." })
-    .refine((val) => val <= new Date().getFullYear(), {
-      message: "Year cannot be in the future.",
+    .coerce
+    .number({ invalid_type_error: 'Year must be a number.'})
+    .int()
+    .min(1886, { message: 'Year must be 1886 or later.'})
+    .max(new Date().getFullYear(), {
+        message: 'Year cannot be in the future'
     }),
-  vin: z.string().length(17, { message: "Vin must be exactly 17 characters" }),
-  mileage: z
+  vin: z
     .string()
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => !isNaN(val), { message: "Mileage must be a number." })
-    .refine((val) => val >= 0, { message: "Mileage must be 0 or more." }),
+    .regex(/^[A-HJ-NPR-Z0-9]{17}$/, {
+        message: 'VIN must be 17 capitalised characters (no I, O, or Q)'
+    }),
+  mileage: z
+    .coerce
+    .number({ invalid_type_error: "Mileage must be a number." })
+    .nonnegative({ message: "Mileage must be 0 or more" }),
   image: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
       message: "Please upload an image",
@@ -71,6 +74,8 @@ const VehicleForm = () => {
       model: "",
       vin: "",
       image: new DataTransfer().files,
+      year: new Date().getFullYear(),
+      mileage: 0
     },
   });
   const uploadToIPFS = async (file: File) => {
