@@ -26,9 +26,11 @@ import { ContractContext } from "./providers/ContractProvider";
 import { uploadToIPFS, uploadImageToIPFS} from "@/lib/web3/ipfs";
 import { CarFormData, carSchema } from "@/lib/validation";
 import { LoaderCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const { contract, signer } = useContext(ContractContext);
   const form = useForm<CarFormData>({
     resolver: zodResolver(carSchema),
@@ -81,6 +83,7 @@ const VehicleForm = () => {
         console.log("Car minted successfully!");
         alert("Car minted successfully!");
         form.reset();
+        router.push('/');
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
         alert("Minting failed. Please check your wallet and try again.");
