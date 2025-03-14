@@ -51,14 +51,10 @@ export const fetchAllCars = async (contract: Contract) => {
 
     // Convert each car to a plain JSON-serializable object
     const cars = rawCars.map((car: any) => ({
-      make: car.make,
-      model: car.model,
-      year: Number(car.year),
-      vin: car.vin,
-      mileage: Number(car.mileage),
-      forSale: car.forSale,
-      price: Number(car.price), // or BigNumber toString() if needed
-      tokenURI: car.tokenURI 
+        tokenId: car.tokenId,
+        owner: car.owner,
+        tokenURI: car.tokenURI,
+        price: Number(car.price)
     }));
   
     return cars;

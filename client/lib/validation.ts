@@ -1,0 +1,42 @@
+import { z } from "zod";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+export const carSchema = z.object({
+  make: z.string().nonempty({ message: "Make is required." }),
+  model: z.string().nonempty({ message: "Model is required." }),
+  year: z.coerce
+    .number({ invalid_type_error: "Year must be a number." })
+    .int()
+    .min(1886, { message: "Year must be 1886 or later." })
+    .max(new Date().getFullYear(), {
+      message: "Year cannot be in the future",
+    }),
+  vin: z.string().regex(/^[A-HJ-NPR-Z0-9]{17}$/, {
+    message: "VIN must be 17 capitalised characters (no I, O, or Q)",
+  }),
+  mileage: z.coerce
+    .number({ invalid_type_error: "Mileage must be a number." })
+    .nonnegative({ message: "Mileage must be 0 or more" }),
+  price: z.coerce
+    .number({ invalid_type_error: "Price must be a number." })
+    .positive({ message: "Price must be greater than 0" }),
+  image: z
+    .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
+      message: "Please upload an image",
+    })
+    .refine((files) => files[0]?.size <= MAX_FILE_SIZE, {
+      message: "File size cannot exceed 5MB",
+    })
+    .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files[0]?.type), {
+      message: "Only .jpg, .jpeg, .png and .webp file formats are supported",
+    }),
+});
+
+export type CarFormData = z.infer<typeof carSchema>;

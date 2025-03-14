@@ -24,47 +24,8 @@ import {
 } from "./ui/form";
 import { ContractContext } from "./providers/ContractProvider";
 import { ethers } from "ethers";
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-const carSchema = z.object({
-  make: z.string().nonempty({ message: "Make is required." }),
-  model: z.string().nonempty({ message: "Model is required." }),
-  year: z.coerce
-    .number({ invalid_type_error: "Year must be a number." })
-    .int()
-    .min(1886, { message: "Year must be 1886 or later." })
-    .max(new Date().getFullYear(), {
-      message: "Year cannot be in the future",
-    }),
-  vin: z.string().regex(/^[A-HJ-NPR-Z0-9]{17}$/, {
-    message: "VIN must be 17 capitalised characters (no I, O, or Q)",
-  }),
-  mileage: z.coerce
-    .number({ invalid_type_error: "Mileage must be a number." })
-    .nonnegative({ message: "Mileage must be 0 or more" }),
-  price: z.coerce
-    .number({ invalid_type_error: "Price must be a number." })
-    .positive({ message: "Price must be greater than 0" }),
-  image: z
-    .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
-      message: "Please upload an image",
-    })
-    .refine((files) => files[0]?.size <= MAX_FILE_SIZE, {
-      message: "File size cannot exceed 5MB",
-    })
-    .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files[0]?.type), {
-      message: "Only .jpg, .jpeg, .png and .webp file formats are supported",
-    }),
-});
-
-type CarFormData = z.infer<typeof carSchema>;
+import { uploadToIPFS } from "@/lib/web3/ipfs";
+import { CarFormData, carSchema } from "@/lib/validation";
 
 const VehicleForm = () => {
   const { contract, signer } = useContext(ContractContext);
@@ -108,37 +69,7 @@ const VehicleForm = () => {
     }
   };
 
-  const uploadToIPFS = async (car: CarFormData, imageUrl: string | void) => {
-    const make = car.make.charAt(0).toUpperCase() + car.make.slice(1)
-    const model = car.model.charAt(0).toUpperCase() + car.model.slice(1)
-    try {
-      const response = await fetch('/api/ipfs', {
-        method: 'POST',
-        body: JSON.stringify({
-          "name": make + " " + model,
-          "description": "",
-          "image": imageUrl,
-          "owner": signer.getAddress(),
-          "attributes": [
-            { "trait": "Make", "value": make},
-            { "trait": "Model", "value": model},
-            { "trait": "Year", "value": car.year},
-            { "trait": "VIN", "value": car.vin},
-            { "trait": "Registration Number", "value": "ABC1234"},
-            { "trait": "Transmission", "value": "Manual"},
-            { "trait": "Fuel Type", "value": "Electric"},
   
-          ]
-        })
-      })
-      const data: any = await response.json();
-      console.log("IPFS URL:", data.url);
-      return data;
-    } catch (error) {
-      console.error("IPFS upload error:", error);
-    }
-
-  }
 
   const onSubmit = async (data: CarFormData) => {
     let imageUrl: string | void = "";
@@ -158,7 +89,7 @@ const VehicleForm = () => {
 
       try {
         console.log("ImageURL before IPFS upload:", imageUrl);
-        tokenURI = await uploadToIPFS(data, imageUrl);
+        tokenURI = await uploadToIPFS(data, imageUrl, signer.getAddress());
       } catch (err) {
         console.error("Error uploading metadata to IPFS:", err);
       }
@@ -166,11 +97,7 @@ const VehicleForm = () => {
       try {
         const tx = await contract.mintCar(
           signer.getAddress(),
-          data.make,
-          data.model,
-          data.year,
           data.vin,
-          data.mileage,
           data.price,
           tokenURI
         );
