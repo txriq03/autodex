@@ -58,7 +58,7 @@ export const fetchAllCars = async (contract: Contract) => {
       mileage: Number(car.mileage),
       forSale: car.forSale,
       price: Number(car.price), // or BigNumber toString() if needed
-      image: car.tokenURI 
+      tokenURI: car.tokenURI 
     }));
   
     return cars;
