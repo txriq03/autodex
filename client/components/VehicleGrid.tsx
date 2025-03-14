@@ -26,11 +26,12 @@ type CarWithMetadata = {
 };
 
 const VehicleGrid = () => {
-  const [carsWithMetadata, setCarsWithMetadata] = useState<CarWithMetadata[]>(
-    []
-  );
-  const { data: cars, isPending, error } = useAllCars();
-  console.log("Cars:", cars);
+
+  const { data: carsWithMetadata, isPending, error } = useCarsWithMetadata();
+
+  if (!isPending) {
+    console.log("Cars:", carsWithMetadata);
+  }
 
   const getAttributeValue = (
     attributes: { trait: string; value: string | number }[],
@@ -39,26 +40,6 @@ const VehicleGrid = () => {
     return attributes.find(attr => attr.trait.toLowerCase() === traitName.toLowerCase())?.value;
   };
 
-  useEffect(() => {
-    if (!cars || cars.length === 0) return;
-    const fetchMetadata = async () => {
-      const results = await Promise.all(
-        cars.map(async (car: any) => {
-          try {
-            const res = await fetch(car.tokenURI); // tokenURI
-            const metadata = await res.json();
-            return { car, metadata };
-          } catch (err) {
-            console.error("Failed to fetch tokenURI:", car.tokenURI, err);
-            return { car, metadata: null };
-          }
-        })
-      );
-      setCarsWithMetadata(results);
-    };
-
-    fetchMetadata();
-  }, [cars]);
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Error fetching cars: {error.message}</p>;
@@ -153,5 +134,31 @@ export const useAllCars = () => {
     enabled: !!contract, // only fetch once contract is ready
   });
 };
+
+export const useCarsWithMetadata = () => {
+  const { data: cars, ...rest } = useAllCars();
+
+  return useQuery<CarWithMetadata[]>({
+    queryKey: ['carsWithMetadata', cars],
+    enabled: !!cars,
+    queryFn: async () => {
+      if (!cars) return [];
+
+      const results = await Promise.all(
+        cars.map(async (car: Car) => {
+          try {
+            const res = await fetch(car.tokenURI);
+            const metadata = await res.json();
+            return { car, metadata };
+          } catch (err) {
+            console.error("Failed to fetch tokenURI:", car.tokenURI, err);
+            return { car, metadata: null };
+          }
+        })
+      )
+      return results;
+    }
+  })
+}
 
 export default VehicleGrid;
