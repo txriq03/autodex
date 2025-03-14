@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Card,
   CardContent,
@@ -23,11 +23,12 @@ import {
   FormMessage,
 } from "./ui/form";
 import { ContractContext } from "./providers/ContractProvider";
-import { ethers } from "ethers";
 import { uploadToIPFS, uploadImageToIPFS} from "@/lib/web3/ipfs";
 import { CarFormData, carSchema } from "@/lib/validation";
+import { LoaderCircle } from 'lucide-react'
 
 const VehicleForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { contract, signer } = useContext(ContractContext);
   const form = useForm<CarFormData>({
     resolver: zodResolver(carSchema),
@@ -43,6 +44,7 @@ const VehicleForm = () => {
   });
 
   const onSubmit = async (data: CarFormData) => {
+    
     let imageUrl: string | void = "";
     let tokenURI: string | void = "";
     if (!contract) {
@@ -50,6 +52,8 @@ const VehicleForm = () => {
       alert("Please unlock your wallet.");
       return null;
     }
+
+    setIsLoading(true);
     try {
       try {
         imageUrl = await uploadImageToIPFS(data.image[0]);
@@ -76,6 +80,7 @@ const VehicleForm = () => {
         await tx.wait();
         console.log("Car minted successfully!");
         alert("Car minted successfully!");
+        form.reset();
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
         alert("Minting failed. Please check your wallet and try again.");
@@ -84,6 +89,7 @@ const VehicleForm = () => {
       console.error("Unexpected error:", error);
       alert("Something went wrong.");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -151,7 +157,11 @@ const VehicleForm = () => {
             
           </CardContent>
           <CardFooter>
-            <Button type="submit">Submit</Button>
+            {isLoading ? (
+              <Button disabled ><LoaderCircle className="animate-spin"/>Loading...</Button>
+            ) : (
+              <Button type="submit">Submit</Button>
+            )}
           </CardFooter>
         </form>
       </Form>
