@@ -21,7 +21,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
 
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
     mapping(uint256 => address payable) private carOwners; // tokenId linked to owner's address
-    mapping(string => uint256 id) private vinToId; // Used to find VIN number from tokenID
+    mapping(string => uint256) private vinToId; 
 
     event CarMinted(uint256 tokenId, address owner, string vin);
     event CarListedForSale(uint256 tokenId, uint256 price);
@@ -110,5 +110,11 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
             all[i] = cars[i];
         }
         return all;
+    }
+
+    function getTokenIdByVIN(string memory vin) public view returns (uint256) {
+        uint256 tokenId = vinToId[vin];
+        require(bytes(cars[tokenId].vin).length > 0, "VIN not found");
+        return tokenId;
     }
 }
