@@ -25,6 +25,13 @@ type CarWithMetadata = {
   metadata: CarMetadata | null;
 };
 
+const getAttributeValue = (
+  attributes: { trait: string; value: string | number }[],
+  traitName: string
+): string | number | undefined => {
+  return attributes.find(attr => attr.trait.toLowerCase() === traitName.toLowerCase())?.value;
+};
+
 const VehicleGrid = () => {
 
   const { data: carsWithMetadata, isPending, error } = useCarsWithMetadata();
@@ -33,23 +40,26 @@ const VehicleGrid = () => {
     console.log("Cars:", carsWithMetadata);
   }
 
-  const getAttributeValue = (
-    attributes: { trait: string; value: string | number }[],
-    traitName: string
-  ): string | number | undefined => {
-    return attributes.find(attr => attr.trait.toLowerCase() === traitName.toLowerCase())?.value;
-  };
 
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Error fetching cars: {error.message}</p>;
 
   return (
-    <>
-    <h1 className="text-[1.4rem] mt-4">Vehicles Minted</h1>
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-      {carsWithMetadata.map(({ car, metadata }, idx) => (
-        <div key={idx} className="p-4 border rounded shadow">
+    <div className="my-4">
+      <h1 className="text-[1.4rem]">Vehicles Minted</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
+        {carsWithMetadata.map(({ car, metadata }, idx) => (
+          <VehicleCard key={idx} car={car} metadata={metadata} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const VehicleCard = ({ car, metadata}: any) => {
+  return (
+    <div className="p-4 border rounded shadow">
           {metadata ? (
             <>
               <img
@@ -76,52 +86,8 @@ const VehicleGrid = () => {
             <p>Failed to load metadata.</p>
           )}
         </div>
-      ))}
-    </div>
-    </>
-  );
-};
 
-const VehicleCard = ({ car, index }: any) => {
-  return (
-    <div className="border p-4 rounded-xl shadow">
-      <Image
-        src={car.image}
-        alt={car.model}
-        height={400}
-        width={400}
-        className="w-full h-48 object-cover rounded-md mb-2"
-      />
-      <h2 className="text-xl font-bold">
-        {car.make.charAt(0).toUpperCase() + car.make.slice(1)}{" "}
-        {car.model.charAt(0).toUpperCase() + car.model.slice(1)}
-      </h2>
-      <p>
-        <strong>Year:</strong> {car.year}
-      </p>
-      <p>
-        <strong>Mileage:</strong> {car.mileage} km
-      </p>
-      <p>
-        <strong>VIN:</strong> {car.vin}
-      </p>
-      <div>
-        <strong>Status:</strong>{" "}
-        <p
-          className={`inline ${
-            car.forSale ? "text-teal-500" : "text-rose-500"
-          }`}
-        >
-          {car.forSale ? "Available" : "Sold"}
-        </p>
-      </div>
-      <div className="flex justify-between mt-4 items-end">
-        <Button>Purchase</Button>
-        <div className="text-[1.5rem] font-bold">
-          {car.price} <p className="text-slate-400 inline">ETH</p>
-        </div>
-      </div>
-    </div>
+
   );
 };
 
