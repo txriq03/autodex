@@ -4,25 +4,17 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ContractProvider from "@/components/providers/ContractProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "AutoDex",
-  description: "Decentralised platform for listing and discovering your rides.",
+  description: "Decentralised platform for listing and discovering your next ride.",
 };
 
 export default function RootLayout({
@@ -36,7 +28,10 @@ export default function RootLayout({
         <TanstackProvider>
           <ContractProvider>
             <Navbar />
-            {children}
+            <main>
+              {children}
+            </main>
+            <Toaster />
           </ContractProvider>
         </TanstackProvider>
       </body>

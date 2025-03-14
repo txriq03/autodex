@@ -27,6 +27,7 @@ import { uploadToIPFS, uploadImageToIPFS} from "@/lib/web3/ipfs";
 import { CarFormData, carSchema } from "@/lib/validation";
 import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { toast } from "sonner";
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -81,12 +82,13 @@ const VehicleForm = () => {
 
         await tx.wait();
         console.log("Car minted successfully!");
-        alert("Car minted successfully!");
         form.reset();
-        router.push('/');
+        router.push('/?success=true');
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
-        alert("Minting failed. Please check your wallet and try again.");
+        toast.error("Minting failed.", {
+          description: "Please check your wallet and try again",
+        })
       }
     } catch (error) {
       console.error("Unexpected error:", error);
