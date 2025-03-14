@@ -34,7 +34,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         require(bytes(vin).length > 0, "VIN must be provided");
 
         // Check if the VIN already exists, while getting the correct nextTokenId
-        require(vinToId[vin] == 0 && nextTokenId != 0, "VIN already used");
+        require(vinToId[vin] == 0, "VIN already used");
 
         uint256 tokenId = nextTokenId;
 
@@ -69,7 +69,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     function buyCar(uint256 tokenId) public payable {
         Car storage car = cars[tokenId];
         address payable seller = car.owner;
-        
+
         require(cars[tokenId].price > 0, "Car is not for sale");
         require(msg.value >= cars[tokenId].price, "Insufficient ETH sent.");
         require(seller != msg.sender, "You cannot buy your own car.");
