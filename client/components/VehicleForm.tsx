@@ -86,9 +86,16 @@ const VehicleForm = () => {
         router.push('/?success=true');
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
+
+        // Toast
         toast.error("Minting failed.", {
+          classNames: {
+            toast: 'bg-rose-500',
+            description: 'text-slate-500',
+          },
           description: "Please check your wallet and try again",
         })
+
       }
     } catch (error) {
       console.error("Unexpected error:", error);
