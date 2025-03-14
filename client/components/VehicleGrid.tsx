@@ -86,26 +86,6 @@ const VehicleGrid = () => {
               <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
               <div><strong>Status: </strong> <p className={`inline ${car.price === 0 ? 'text-rose-500' : 'text-teal-500'}`}>{car.price === 0 ? 'Sold' : 'Available'}</p></div>
 
-              {/* ✅ Use original car fields */}
-              {/* <div className="mt-2 text-sm">
-              {metadata.attributes.map((attr, index) => (
-                <>
-                  <p>
-                    <strong>Mileage:</strong> {attr.find(v => v.trait.toLowerCase() === 'make')?.value} km
-                  </p>
-                  <p>
-                    <strong>VIN:</strong> {car.vin}
-                  </p>
-                  <p>
-                    <strong>Year:</strong> {car.year}
-                  </p>
-                  <div>
-                    <strong>Status:</strong> <p className={`inline ${car.forSale ? 'text-teal-500' : 'text-rose-500'}`}>{car.forSale ? "Available" : "Sold"}</p>
-                  </div>
-                </>
-                
-              ))}
-              </div> */}
               <div className="flex justify-between items-end mt-4 ">
                 <Button>Purchase</Button> 
                 <div className="text-[1.4rem] font-bold">{car.price} <p className="inline text-slate-400">ETH</p></div>

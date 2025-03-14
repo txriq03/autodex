@@ -32,4 +32,32 @@ export const uploadToIPFS = async (car: CarFormData, imageUrl: string | void, si
 
   }
 
+  export const uploadImageToIPFS = async (file: File) => {
+    const formData = new FormData();
+    console.log("File is", file);
+    console.log("Type:", typeof file);
+    console.log("Instanceof File:", file instanceof File);
+    formData.append("network", "public");
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/imageurl", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload to IPFS");
+      }
+
+      const data = await res.json();
+      console.log("Image IPFS upload response:", data);
+
+      return data; // ✅ return the IPFS URL here
+    } catch (err) {
+      console.error("Image IPFS upload error:", err);
+      throw err; // rethrow so it can be caught in the outer try/catch
+    }
+  };
+
   
