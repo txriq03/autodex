@@ -89,7 +89,9 @@ const VehicleCard = ({ car, metadata}: any) => {
                 alt={metadata.name}
                 className="w-full h-48 object-cover rounded"
               />
-              <h2 className="font-bold text-lg mt-2">{metadata.name}</h2>
+              <div className=" text-lg mt-2">
+                <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
+              </div>
               <p className="text-sm text-gray-600">
                 {metadata.description || "No description"}
               </p>
@@ -100,7 +102,7 @@ const VehicleCard = ({ car, metadata}: any) => {
               <div><strong>Status: </strong> <p className={`inline ${car.price === 0 ? 'text-rose-500' : 'text-teal-500'}`}>{car.price === 0 ? 'Sold' : 'Available'}</p></div>
 
               <div className="flex justify-between items-end mt-4 ">
-                <Button>Purchase</Button> 
+                <Button disabled={car.price === 0} className={`${car.price === 0 ? 'bg-rose-100 text-rose-500' : 'bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100'} `}>{car.price === 0 ? 'Sold' : 'Available'}</Button> 
                 <div className="text-[1.4rem] font-bold">{car.price} <p className="inline text-slate-400">ETH</p></div>
               </div>
             </>
