@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
+import { formatEther } from "ethers";
 
 type CarMetadata = {
   name: string;
@@ -102,7 +103,7 @@ const VehicleCard = ({ car, metadata}: any) => {
 
               <div className="flex justify-between items-end mt-4 ">
                 <Button disabled={car.price === 0} className={`${car.price === 0 ? 'bg-rose-100 text-rose-500' : 'bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100'} `}>{car.price === 0 ? 'Sold' : 'Available'}</Button> 
-                <div className="text-[1.4rem] font-bold">{car.price} <p className="inline text-slate-400">ETH</p></div>
+                <div className="text-[1.4rem] font-bold">{formatEther(car.price.toString())} <p className="inline text-slate-400">ETH</p></div>
               </div>
             </>
           ) : (

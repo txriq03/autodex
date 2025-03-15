@@ -28,6 +28,7 @@ import { CarFormData, carSchema } from "@/lib/validation";
 import { LoaderCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from "sonner";
+import { parseEther } from "ethers";
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +77,7 @@ const VehicleForm = () => {
         const tx = await contract.mintCar(
           signer.getAddress(),
           data.vin,
-          data.price,
+          parseEther(data.price.toString()),
           tokenURI
         );
 
