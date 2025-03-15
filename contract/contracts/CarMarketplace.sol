@@ -14,13 +14,21 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 price; 
         address payable owner;
     }
+    struct ServiceRecord {
+        uint256 date;
+        string description;
+        string garageName;
+        uint256 mileage;
+    }
 
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
     mapping(string => uint256) private vinToId; 
+    mapping(uint256 => ServiceRecord[]) private serviceLogs;
 
     event CarMinted(uint256 tokenId, address owner, string vin);
     event CarListedForSale(uint256 tokenId, uint256 price);
     event CarSold(uint256 tokenId, address newOwner, uint256 price);
+    event ServiceRecordAdded(uint256 indexed tokenId, string description);
 
     constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
 
@@ -110,4 +118,33 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     //     require(bytes(cars[tokenId].vin).length > 0, "VIN not found");
     //     return tokenId;
     // }
+
+    // Add a service record (MOT-style)
+    function addServiceRecord(
+        uint256 tokenId,
+        string memory description,
+        string memory garageName,
+        uint256 mileage
+    ) public {
+        require(ownerOf(tokenId) != address(0), "Token does not exist");
+        require(
+            ownerOf(tokenId) == msg.sender || msg.sender == owner(),
+            "Only car owner or contract owner can add service record"
+        );
+
+        serviceLogs[tokenId].push(ServiceRecord({
+            date: block.timestamp,
+            description: description,
+            garageName: garageName,
+            mileage: mileage
+        }));
+
+        emit ServiceRecordAdded(tokenId, description);
+    }
+
+     // Get service history
+    function getServiceHistory(uint256 tokenId) public view returns (ServiceRecord[] memory) {
+        require(_ownerOf(tokenId) != address(0), "Car does not exist");
+        return serviceLogs[tokenId];
+    }
 }
