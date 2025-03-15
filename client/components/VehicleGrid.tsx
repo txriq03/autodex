@@ -103,12 +103,12 @@ const VehicleCard = ({ car, metadata}: any) => {
               <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
 
               <div className="flex justify-between items-end mt-4 ">
-                {car.price === 0 ? (
+                {car.price === "0" ? (
                   <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
                 ) : (
                   <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price, contract, signer)}>Available</Button>
                 )}
-                <div className="text-[1.4rem] font-bold">{formatEther(car.price.toString())} <p className="inline text-slate-400">ETH</p></div>
+                <div className="text-[1.4rem] font-bold">{formatEther(car.price)} <p className="inline text-slate-400">ETH</p></div>
               </div>
             </>
           ) : (
