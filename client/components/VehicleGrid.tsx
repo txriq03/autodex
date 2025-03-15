@@ -102,7 +102,11 @@ const VehicleCard = ({ car, metadata}: any) => {
               <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
 
               <div className="flex justify-between items-end mt-4 ">
-                <Button disabled={car.price === 0} className={`${car.price === 0 ? 'bg-rose-100 text-rose-500' : 'bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100'} `}>{car.price === 0 ? 'Sold' : 'Available'}</Button> 
+                {car.price === 0 ? (
+                  <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100">Available</Button>
+                ) : (
+                  <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
+                )}
                 <div className="text-[1.4rem] font-bold">{formatEther(car.price.toString())} <p className="inline text-slate-400">ETH</p></div>
               </div>
             </>

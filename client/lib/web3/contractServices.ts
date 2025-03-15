@@ -1,5 +1,6 @@
 import { ethers, BrowserProvider, Contract } from "ethers"
 import abi from './CarMarketplace.json'
+import { toast } from "sonner";
 
 let provider: any;
 let signer;
@@ -44,7 +45,6 @@ export const requestAccount = async () => {
     }
 }
 
-
 export const fetchAllCars = async (contract: Contract) => {
     if (!contract) return []
     const rawCars = await contract.getAllCars();
@@ -59,3 +59,32 @@ export const fetchAllCars = async (contract: Contract) => {
   
     return cars;
   };
+
+export const purchaseCar = async (tokenId: number, priceInWei: string | BigInt, contract: any, signer: any) => {
+  try {
+    const tx = await contract.connect(signer).buyCar(tokenId, {
+      value: priceInWei // price in wei (BigNumber or string)
+    });
+
+    toast("Processing transaction...", { description: "Please confirm in wallet." });
+
+    await tx.wait();
+    toast.success("Success!", {
+      description: "You've successfully purchased the vehicle.",
+    });
+
+    // Optionally refetch or update UI
+  } catch (error) {
+    console.error("Purchase failed:", error);
+    
+    if (error instanceof Error) {
+        toast.error("Failed to purchase car", {
+          description: error.message || "Transaction was rejected or failed.",
+        });
+    } else {
+        toast.error("Failed to purchase car", {
+            description: "Transaction was rejected or failed.",
+        });
+    }
+  }
+};
