@@ -67,6 +67,11 @@ const VehicleGrid = () => {
       <p className="inline">Error: </p> <p className="inline">{error.message}</p>
     </div>
   );
+  if (carsWithMetadata == undefined || carsWithMetadata.length < 1) return (
+    <div className="bg-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
+      <p>No cars have been minted.</p>
+    </div>
+  );
 
   return (
     <div className="my-4">
