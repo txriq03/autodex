@@ -48,7 +48,7 @@ const Hero = () => {
             Powered by blockchain, secured by your wallet - no accounts, no hassle.
         </p>
         <Image src="/hero.png" alt="Hero" width={1712} height={948} className='absolute w-[600px] top-[50%] translate-y-[-50%] right-[5%] hidden min-[1440px]:block'/>
-        <Image src="/front.png" alt="Hero" width={2048} height={1360} className='absolute w-[600px] top-[50%] translate-y-[-50%] hidden lg:block right-[-270px] xl:right-[-5%]  min-[1440px]:hidden'/>
+        <Image src="/sideview.png" alt="Hero" width={2000} height={642} className='absolute h-[300px] w-auto top-[50%] translate-y-[-50%] hidden lg:block left-[80%] xl:left-[70%]  min-[1440px]:hidden'/>
 
         {/* Show connect button if no account found, otherwise show buy and sell buttons */}
         {account ? (
