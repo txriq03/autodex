@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { ContractContext } from "./providers/ContractProvider";
-import { fetchAllCars } from "@/lib/web3/contractServices";
+import { fetchAllCars, purchaseCar } from "@/lib/web3/contractServices";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { Button } from "./ui/button";
@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
-import { formatEther } from "ethers";
+import { Contract, formatEther } from "ethers";
 
 type CarMetadata = {
   name: string;
@@ -81,6 +81,7 @@ const VehicleGrid = () => {
 };
 
 const VehicleCard = ({ car, metadata}: any) => {
+  const { contract, signer } = useContext(ContractContext);
   return (
     <div className="p-4 border rounded shadow">
           {metadata ? (
@@ -103,9 +104,9 @@ const VehicleCard = ({ car, metadata}: any) => {
 
               <div className="flex justify-between items-end mt-4 ">
                 {car.price === 0 ? (
-                  <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100">Available</Button>
-                ) : (
                   <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
+                ) : (
+                  <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price, contract, signer)}>Available</Button>
                 )}
                 <div className="text-[1.4rem] font-bold">{formatEther(car.price.toString())} <p className="inline text-slate-400">ETH</p></div>
               </div>

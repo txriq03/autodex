@@ -1,4 +1,4 @@
-import { ethers, BrowserProvider, Contract } from "ethers"
+import { ethers, BrowserProvider, Contract, parseUnits } from "ethers"
 import abi from './CarMarketplace.json'
 import { toast } from "sonner";
 
@@ -54,13 +54,14 @@ export const fetchAllCars = async (contract: Contract) => {
         tokenId: Number(car.tokenId),
         owner: car.owner,
         tokenURI: car.tokenURI,
-        price: Number(car.price)
+        price: car.price.toString()
     }));
   
     return cars;
   };
 
-export const purchaseCar = async (tokenId: number, priceInWei: string | BigInt, contract: any, signer: any) => {
+export const purchaseCar = async (tokenId: number, price: string, contract: any, signer: any) => {
+    const priceInWei = parseUnits(price, 'wei');
   try {
     const tx = await contract.connect(signer).buyCar(tokenId, {
       value: priceInWei // price in wei (BigNumber or string)
