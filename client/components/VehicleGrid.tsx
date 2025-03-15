@@ -5,6 +5,9 @@ import { fetchAllCars } from "@/lib/web3/contractServices";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type CarMetadata = {
   name: string;
@@ -33,14 +36,23 @@ const getAttributeValue = (
 };
 
 const VehicleGrid = () => {
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success");
   const { data: carsWithMetadata, isPending, error } = useCarsWithMetadata();
 
   if (!isPending) {
     console.log("Cars:", carsWithMetadata);
   }
 
-
+  useEffect(() => {
+    if (success) {
+      toast.success("Success!", {
+        description: "You have successfully minted your vehicle."
+      })
+      router.replace(window.location.pathname); // Cleans up the URL to remove ?success=true
+    }
+  }, [success])
 
   if (isPending) return <p>Loading...</p>;
   if (error) return <p>Error fetching cars: {error.message}</p>;
