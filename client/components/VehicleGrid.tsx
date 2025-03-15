@@ -61,7 +61,11 @@ const VehicleGrid = () => {
       <LoaderCircle className="animate-spin inline"/> <p className="inline">Loading...</p>
     </div>
   );
-  if (error) return <p>Error fetching cars: {error.message}</p>;
+  if (error) return (
+    <div className="bg-rose-200 text-rose-500 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
+      <p className="inline">Error: </p> <p className="inline">{error.message}</p>
+    </div>
+  );
 
   return (
     <div className="my-4">
