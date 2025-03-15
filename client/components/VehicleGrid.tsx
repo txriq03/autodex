@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 type CarMetadata = {
   name: string;
@@ -45,6 +46,7 @@ const VehicleGrid = () => {
     console.log("Cars:", carsWithMetadata);
   }
 
+  // Load toast if submission is successful
   useEffect(() => {
     if (success) {
       toast.success("Success!", {
@@ -54,7 +56,11 @@ const VehicleGrid = () => {
     }
   }, [success])
 
-  if (isPending) return <p>Loading...</p>;
+  if (isPending) return (
+    <div className="bg-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
+      <LoaderCircle className="animate-spin inline"/> <p className="inline">Loading...</p>
+    </div>
+  );
   if (error) return <p>Error fetching cars: {error.message}</p>;
 
   return (
