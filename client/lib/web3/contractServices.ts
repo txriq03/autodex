@@ -52,7 +52,6 @@ export const fetchAllCars = async (contract: Contract) => {
     // Convert each car to a plain JSON-serializable object
     const cars = rawCars.map((car: any) => ({
         tokenId: Number(car.tokenId),
-        owner: car.owner,
         tokenURI: car.tokenURI,
         price: car.price.toString()
     }));
@@ -61,6 +60,8 @@ export const fetchAllCars = async (contract: Contract) => {
   };
 
 export const purchaseCar = async (tokenId: number, price: string, contract: any, signer: any) => {
+  const buyerAddress = await signer.getAddress();
+  console.log("Buyer address:", buyerAddress);
     const priceInWei = parseUnits(price, 'wei');
   try {
     const tx = await contract.connect(signer).buyCar(tokenId, {

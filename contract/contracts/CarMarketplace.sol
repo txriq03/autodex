@@ -12,7 +12,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 tokenId;
         string tokenURI;
         uint256 price; 
-        address payable owner;
     }
     struct ServiceRecord {
         uint256 date;
@@ -53,7 +52,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         cars[tokenId] = Car({
             tokenId: tokenId,
             tokenURI: tokenURI,
-            owner: payable(to),
             price: price
         });
 
@@ -75,22 +73,24 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     }
 
     function buyCar(uint256 tokenId) public payable {
-        Car storage car = cars[tokenId];
-        address payable seller = car.owner;
+        address seller = ownerOf(tokenId);
 
         require(cars[tokenId].price > 0, "Car is not for sale");
         require(msg.value >= cars[tokenId].price, "Insufficient ETH sent.");
         require(seller != msg.sender, "You cannot buy your own car.");
 
+        console.log("msg.sender:", msg.sender);
+        console.log("ownerOf(tokenId):", ownerOf(tokenId));
+        console.log("price sent:", msg.value);
+        console.log("price expected:", cars[tokenId].price);
 
         // Transfer ownership
         _transfer(seller, msg.sender, tokenId);
 
         // Transfer funds to seller
-        seller.transfer(msg.value);
+        payable(seller).transfer(msg.value);
 
         // Update ownership details and reset values
-        car.owner = payable(msg.sender);
         cars[tokenId].price = 0;
 
         emit CarSold(tokenId, msg.sender, msg.value);

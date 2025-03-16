@@ -33,7 +33,7 @@ import { parseEther } from "ethers";
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { contract, signer } = useContext(ContractContext);
+  const { contract, provider } = useContext(ContractContext);
   const form = useForm<CarFormData>({
     resolver: zodResolver(carSchema),
     defaultValues: {
@@ -51,6 +51,9 @@ const VehicleForm = () => {
     
     let imageUrl: string | void = "";
     let tokenURI: string | void = "";
+    const signer = await provider.getSigner();
+    const userAddress = await signer.getAddress();
+    
     if (!contract) {
       console.error("Error: User not logged into wallet.");
       alert("Please unlock your wallet.");
@@ -67,15 +70,16 @@ const VehicleForm = () => {
       }
 
       try {
+
         console.log("ImageURL before IPFS upload:", imageUrl);
-        tokenURI = await uploadToIPFS(data, imageUrl, signer.getAddress());
+        tokenURI = await uploadToIPFS(data, imageUrl, userAddress);
       } catch (err) {
         console.error("Error uploading metadata to IPFS:", err);
       }
 
       try {
         const tx = await contract.mintCar(
-          signer.getAddress(),
+          userAddress,
           data.vin,
           parseEther(data.price.toString()),
           tokenURI

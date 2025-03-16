@@ -8,30 +8,33 @@ import { ContractContext } from './providers/ContractProvider'
 import Link from 'next/link'
 
 const Hero = () => {
-  // const [account, setAccount] = useState<any>(null);
-  const { account, setAccount }= useContext(ContractContext);
+  const { account, setAccount, provider }= useContext(ContractContext);
 
-  const { data, refetch, isPending, isError, error } = useQuery({
-    queryKey: ['connectWallet'],
-    queryFn: requestAccount,
-  })
-  console.log(data);
+  // const { data, refetch, isPending, isError, error } = useQuery({
+  //   queryKey: ['connectWallet'],
+  //   queryFn: requestAccount,
+    
+  // })
+  // console.log(data);  
 
-  // Set wallet address
+  const { data: signer, isPending, refetch, error } = useWalletSigner();
+
+  if (!isPending) {
+    console.log("Signer:", signer);
+  }
+
+  
+  
   useEffect(() => {
-    setAccount(data);
-    
-    const handleAccountChanged = (newAccounts: any) => 
-      setAccount(newAccounts.length > 0 ? newAccounts[0] : null);
-      
-    if (window.ethereum){
-      window.ethereum.on("accountsChanged", handleAccountChanged);
-    }
-    return () => {
-      window.ethereum?.removeListener("accountsChanged", handleAccountChanged)
-    
-    }
-  }, [data])
+    const fetchAddress = async () => {
+      if (signer) {
+        const address = await signer.getAddress();
+        console.log("Connected wallet address:", address);
+      }
+    };
+  
+    fetchAddress();
+  }, [signer]);
 
 
   const handleConnect = () => {
@@ -70,5 +73,46 @@ const Hero = () => {
     </div>
   )
 }
+
+export const useWalletSigner = () => {
+  const { provider, account, setAccount } = useContext(ContractContext);
+  const query = useQuery({
+    queryKey: ["walletSigner"],
+    queryFn: async () => {
+      if (typeof window === "undefined" || !window.ethereum) {
+        throw new Error("MetaMask not available");
+      }
+
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+      setAccount(address);
+      // Optional: trigger MetaMask if not connected
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+
+      
+
+      return signer;
+    },
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  // 🔄 Auto-refetch signer when account changes
+  useEffect(() => {
+    const handler = () => {
+      query.refetch(); // 🔁 Refresh signer on account change
+    };
+
+    if (window.ethereum) {
+      window.ethereum.on("accountsChanged", handler);
+    }
+
+    return () => {
+      window.ethereum?.removeListener("accountsChanged", handler);
+    };
+  }, [query]);
+
+  return query;
+};
 
 export default Hero;
