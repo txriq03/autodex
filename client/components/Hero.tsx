@@ -1,11 +1,12 @@
 'use client'
 import { Button } from './ui/button'
 import Image from 'next/image'
-import { requestAccount } from '@/lib/web3/contractServices'
-import { useQuery } from '@tanstack/react-query'
+import { initialise, requestAccount } from '@/lib/web3/contractServices'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useEffect, useState, useContext} from 'react'
 import { ContractContext } from './providers/ContractProvider'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 const Hero = () => {
   const { account, setAccount, provider }= useContext(ContractContext);
@@ -65,7 +66,7 @@ const Hero = () => {
           </div>
           </>
         ) : (
-          <Button className='bg-slate-50 text-slate-900 mt-5 text-lg py-[22px] hover:bg-slate-200' onClick={handleConnect}>{isPending ? 'Connecting...' : 'Connect Wallet'}</Button>
+          <ConnectWalletButton />
         )}
 
     </div>
@@ -112,5 +113,64 @@ export const useWalletSigner = () => {
 
   return query;
 };
+
+const ConnectWalletButton = () => {
+  const {
+    account,
+    setAccount,
+    setProvider,
+    setSigner,
+    setContract,
+  } = useContext(ContractContext);
+
+  const connectWallet = async () => {
+    if (typeof window.ethereum === "undefined") {
+      throw new Error("MetaMask not detected");
+    }
+
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    const connectedAccount = accounts[0];
+
+    const result = await initialise();
+    if (!result) throw new Error("Failed to initialise web3");
+
+    return {
+      account: connectedAccount,
+      provider: result.provider,
+      signer: result.signer,
+      contract: result.contract,
+    };
+  };
+
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: connectWallet,
+    onSuccess: ({ account, provider, signer, contract }) => {
+      setAccount(account);
+      setProvider(provider);
+      setSigner(signer);
+      setContract(contract);
+    },
+    onError: (error: any) => {
+      if (error.code === -32002) {
+        toast.error("Failed to connect wallet", {
+          description: "A connect request has already been sent. Check your wallet."
+        })
+      } else {
+        toast.error("Failed to connect wallet", {
+          description: error.message
+        })
+      }
+    }
+  });
+
+  return (
+    <div>
+      <Button onClick={() => mutate()} disabled={isPending}>
+        {isPending ? "Connecting..." : account ? `Connected: ${account}` : "Connect Wallet"}
+      </Button>
+    </div>
+  );
+}
+
 
 export default Hero;

@@ -23,22 +23,23 @@ const ContractProvider = ({children}: {children: ReactNode}) => {
       }
       init();
 
-      if (typeof window.ethereum !== "undefined") {
-        window.ethereum.on("accountsChanged", async (accounts: string[]) => {
-          if (accounts.length > 0) {
-            const newProvider = new ethers.BrowserProvider(window.ethereum);
-            const newSigner = await newProvider.getSigner();
-            const address = await newSigner.getAddress();
-            setProvider(newProvider);
-            setSigner(newSigner);
-            setAccount(address);
+      window.ethereum.on("accountsChanged", async (accounts: string[]) => {
+        if (accounts.length > 0) {
+          const result = await initialise();
+          if (result) {
+            setProvider(result.provider);
+            setSigner(result.signer);
+            setContract(result.contract);
+            setAccount(accounts[0])
           } else {
             setProvider(null);
             setSigner(null);
             setAccount(null);
+            setContract(null);
           }
-        })
-      }
+        }
+      })
+      
       
       // Check if wallet is already connected on initial page load
       const checkIfWalletIsConnected = async () => {

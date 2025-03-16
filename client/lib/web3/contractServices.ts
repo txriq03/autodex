@@ -2,19 +2,16 @@ import { ethers, BrowserProvider, Contract, parseUnits } from "ethers"
 import abi from './CarMarketplace.json'
 import { toast } from "sonner";
 
-let provider: any;
-let signer;
-let contract;
-const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+const CONTRACT_ADDRESS = '0x016026655C36F05E60df6c984FeE48685B0c3701'
 const CONTRACT_ABI = abi.abi
 
 // Initialise provider, signer and contract
 export const initialise = async () => {
     if (typeof window.ethereum !== "undefined") {
         // provider = new BrowserProvider(window.ethereum);
-        provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
-        signer = await provider.getSigner();
-        contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+        const provider = new BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
         const network  = await provider.getNetwork()
         console.log('Network:', network)
         return { provider, signer, contract }
@@ -59,9 +56,18 @@ export const fetchAllCars = async (contract: Contract) => {
     return cars;
   };
 
-export const purchaseCar = async (tokenId: number, price: string, contract: any, signer: any) => {
+export const purchaseCar = async (tokenId: number, price: string) => {
+  let contract: any = '';
+  let signer: any = ''
+
+  const results = await initialise();
+  if (results) {
+    contract = results.contract;
+    signer = results.signer;
+  }
+
+  console.log("Signer in purchase function:", signer);
   const buyerAddress = await signer.getAddress();
-  console.log("Buyer address:", buyerAddress);
     const priceInWei = parseUnits(price, 'wei');
   try {
     const tx = await contract.connect(signer).buyCar(tokenId, {

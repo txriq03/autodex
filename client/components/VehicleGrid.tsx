@@ -112,7 +112,7 @@ const VehicleCard = ({ car, metadata}: any) => {
                   {car.price === "0" ? (
                     <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
                   ) : (
-                    <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price, contract, signer)}>Available</Button>
+                    <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price)}>Available</Button>
                   )}
                   <div className="text-[1.4rem] font-bold">{formatEther(car.price)} <p className="inline text-slate-400">ETH</p></div>
                 </div>
