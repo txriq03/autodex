@@ -88,32 +88,34 @@ const VehicleGrid = () => {
 const VehicleCard = ({ car, metadata}: any) => {
   const { contract, signer } = useContext(ContractContext);
   return (
-    <div className="p-4 border rounded shadow">
+    <div className=" border rounded shadow">
           {metadata ? (
             <>
               <img
                 src={metadata.image}
                 alt={metadata.name}
-                className="w-full h-48 object-cover rounded"
+                className="w-full h-48 object-cover rounded-t-md "
               />
-              <div className=" text-lg mt-2">
-                <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
-              </div>
-              <p className="text-sm text-gray-600">
-                {metadata.description || "No description"}
-              </p>
+              <div className="p-4">
+                <div className=" text-lg">
+                  <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
+                </div>
+                <p className="text-sm text-gray-600">
+                  {metadata.description || "No description"}
+                </p>
 
-              <p><strong>Year: </strong> {getAttributeValue(metadata.attributes, "year")}</p>
-              <p><strong>Fuel: </strong> {getAttributeValue(metadata.attributes, "fuel type")}</p>
-              <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
+                <p><strong>Year: </strong> {getAttributeValue(metadata.attributes, "year")}</p>
+                <p><strong>Fuel: </strong> {getAttributeValue(metadata.attributes, "fuel type")}</p>
+                <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
 
-              <div className="flex justify-between items-end mt-4 ">
-                {car.price === "0" ? (
-                  <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
-                ) : (
-                  <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price, contract, signer)}>Available</Button>
-                )}
-                <div className="text-[1.4rem] font-bold">{formatEther(car.price)} <p className="inline text-slate-400">ETH</p></div>
+                <div className="flex justify-between items-end mt-4 ">
+                  {car.price === "0" ? (
+                    <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
+                  ) : (
+                    <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price, contract, signer)}>Available</Button>
+                  )}
+                  <div className="text-[1.4rem] font-bold">{formatEther(car.price)} <p className="inline text-slate-400">ETH</p></div>
+                </div>
               </div>
             </>
           ) : (

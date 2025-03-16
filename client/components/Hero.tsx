@@ -23,8 +23,6 @@ const Hero = () => {
     console.log("Signer:", signer);
   }
 
-  
-  
   useEffect(() => {
     const fetchAddress = async () => {
       if (signer) {
