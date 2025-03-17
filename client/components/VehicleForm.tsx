@@ -51,14 +51,16 @@ const VehicleForm = () => {
     
     let imageUrl: string | void = "";
     let tokenURI: string | void = "";
-    const signer = await provider.getSigner();
-    const userAddress = await signer.getAddress();
     
-    if (!contract) {
+    if (!contract || !provider ) {
       console.error("Error: User not logged into wallet.");
-      alert("Please unlock your wallet.");
+      toast.warning("Please  unlock your wallet")
       return null;
     }
+    const signer = await provider.getSigner();
+    const userAddress = await signer.getAddress();
+
+    
 
     setIsLoading(true);
     try {
