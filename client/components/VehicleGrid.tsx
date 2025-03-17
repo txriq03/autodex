@@ -14,7 +14,7 @@ import { Contract, formatEther } from "ethers";
 type CarMetadata = {
   name: string;
   description: string;
-  image: string; // this is the real car image now
+  image: string; 
   attributes: { trait: string; value: string | number }[];
 };
 
@@ -22,7 +22,7 @@ type Car = {
   tokenId: number;
   owner: string;
   price: number;
-  tokenURI: string; // This is the tokenURI
+  tokenURI: string;
 };
 
 type CarWithMetadata = {
@@ -37,11 +37,12 @@ const getAttributeValue = (
   return attributes.find(attr => attr.trait.toLowerCase() === traitName.toLowerCase())?.value;
 };
 
-const VehicleGrid = () => {
+const VehicleGrid = ({filterOwned = false}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
-  const { data: carsWithMetadata, isPending, error } = useCarsWithMetadata();
+  const { account } = useContext(ContractContext);
+  const { data: carsWithMetadata, isPending, error } = useCarsWithMetadata(filterOwned, account);
 
   if (!isPending) {
     console.log("Cars:", carsWithMetadata);
@@ -75,7 +76,7 @@ const VehicleGrid = () => {
 
   return (
     <div className="my-4">
-      <h1 className="text-[1.4rem]">Vehicles Minted</h1>
+      <h1 className="text-[1.4rem]">{filterOwned ? 'Owned Vehicles' : 'All Vehicles'}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-4">
         {carsWithMetadata.map(({ car, metadata }, idx) => (
           <VehicleCard key={idx} car={car} metadata={metadata} />
@@ -87,7 +88,7 @@ const VehicleGrid = () => {
 
 const VehicleCard = ({ car, metadata}: any) => {
   return (
-    <div className=" p-4 border rounded shadow">
+    <div className=" p-4 border-2 rounded-xl bg-slate-50">
           {metadata ? (
             <>
               <img
@@ -138,17 +139,23 @@ export const useAllCars = () => {
   });
 };
 
-export const useCarsWithMetadata = () => {
+export const useCarsWithMetadata = (filterOwned = false, account: any = null) => {
+  const { contract } = useContext(ContractContext)
   const { data: cars, ...rest } = useAllCars();
 
   return useQuery<CarWithMetadata[]>({
-    queryKey: ['carsWithMetadata', cars],
-    enabled: !!cars,
+    queryKey: ['carsWithMetadata', cars, filterOwned, account],
+    enabled: !!cars && !!contract,
     queryFn: async () => {
       if (!cars) return [];
 
       const results = await Promise.all(
         cars.map(async (car: Car) => {
+          if (filterOwned && account) {
+            const owner = await contract.ownerOf(car.tokenId);
+            if (owner.toLowerCase() !== account?.toLowerCase()) return null;
+          }
+
           try {
             const res = await fetch(car.tokenURI);
             const metadata = await res.json();
@@ -158,10 +165,11 @@ export const useCarsWithMetadata = () => {
             return { car, metadata: null };
           }
         })
-      )
-      return results;
+      );
+
+      return results.filter(Boolean); // Remove null entries if filtering
     }
-  })
+  });
 }
 
 export default VehicleGrid;

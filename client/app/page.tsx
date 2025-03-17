@@ -7,7 +7,8 @@ export default function Home() {
       <Hero />
       <div className="min-[1440px]:max-w-[1440px] mx-5 min-[1450px]:mx-auto">
         <Search />
-        <VehicleGrid />
+        <VehicleGrid filterOwned={true}/>
+        <VehicleGrid filterOwned={false}/>
       </div>
     </div>
   );
