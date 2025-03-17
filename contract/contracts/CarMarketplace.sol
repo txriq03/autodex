@@ -23,10 +23,13 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
     mapping(string => uint256) private vinToId; 
     mapping(uint256 => ServiceRecord[]) private serviceLogs;
+    mapping(address => bool) public isServiceProvider;
 
     event CarMinted(uint256 tokenId, address owner, string vin);
     event CarListedForSale(uint256 tokenId, uint256 price);
     event CarSold(uint256 tokenId, address newOwner, uint256 price);
+    event ServiceProviderAdded(address indexed provider);
+    event ServiceProviderRemoved(address indexed provider); 
     event ServiceRecordAdded(uint256 indexed tokenId, string description);
 
     constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
@@ -119,6 +122,21 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     //     return tokenId;
     // }
 
+    function addServiceProvider(address provider) public onlyOwner {
+        require(!isServiceProvider[provider], "Already authorized");
+        isServiceProvider[provider] = true;
+        emit ServiceProviderAdded(provider);
+    }
+
+    function removeServiceProvider(address provider) public onlyOwner {
+        require(isServiceProvider[provider], "Not authorized");
+        isServiceProvider[provider] = false;
+        emit ServiceProviderRemoved(provider);
+    }
+
+    function getIsServiceProvider(address provider) public view returns (bool) {
+        return isServiceProvider[provider];
+    }   
     // Add a service record (MOT-style)
     function addServiceRecord(
         uint256 tokenId,
@@ -127,10 +145,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 mileage
     ) public {
         require(ownerOf(tokenId) != address(0), "Token does not exist");
-        require(
-            ownerOf(tokenId) == msg.sender || msg.sender == owner(),
-            "Only car owner or contract owner can add service record"
-        );
+        require(isServiceProvider[msg.sender], "Not authorized to add service record");
 
         serviceLogs[tokenId].push(ServiceRecord({
             date: block.timestamp,
