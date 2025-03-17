@@ -1,4 +1,5 @@
 import { Hero, Search } from "@/components/";
+import VehicleContent from "@/components/VehicleContent";
 import VehicleGrid from "@/components/VehicleGrid";
 
 export default function Home() {
@@ -6,9 +7,8 @@ export default function Home() {
     <div className=" ">
       <Hero />
       <div className="min-[1440px]:max-w-[1440px] mx-5 min-[1450px]:mx-auto">
-        <Search />
-        <VehicleGrid filterOwned={true}/>
-        <VehicleGrid filterOwned={false}/>
+        <h1 className="text-[2rem]">Marketplace</h1>
+        <VehicleContent />
       </div>
     </div>
   );

@@ -76,7 +76,6 @@ const VehicleGrid = ({filterOwned = false}) => {
 
   return (
     <div className="my-4">
-      <h1 className="text-[1.4rem]">{filterOwned ? 'Owned Vehicles' : 'All Vehicles'}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-4">
         {carsWithMetadata.map(({ car, metadata }, idx) => (
           <VehicleCard key={idx} car={car} metadata={metadata} />
