@@ -1,7 +1,7 @@
 import React from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, Hammer} from "lucide-react";
 import Link from "next/link";
 
 const VehicleCardMenu = () => {
@@ -21,6 +21,12 @@ const VehicleCardMenu = () => {
           <Link href="#">
             Service logs
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled className="text-sm text-slate-500 rounded px-2 py-1.5 ">
+            Info <Hammer />
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled className="text-sm text-slate-500 rounded px-2 py-1.5 ">
+            Report <Hammer />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
