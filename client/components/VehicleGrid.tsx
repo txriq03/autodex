@@ -8,8 +8,11 @@ import { Button } from "./ui/button";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Calendar, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
+import { Calendar, Ellipsis, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
 import { Contract, formatEther } from "ethers";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
+import VehicleCardMenu from "./VehicleCardMenu";
 
 type CarMetadata = {
   name: string;
@@ -95,10 +98,16 @@ const VehicleCard = ({ car, metadata}: any) => {
                 alt={metadata.name}
                 className="w-full h-48 object-cover rounded "
               />
-              <div className="mt-2">
-                <div className=" text-lg">
-                  <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
+              <div className="mt-1">
+
+                <div className="flex justify-between items-center">
+                  <div className=" text-lg">
+                    <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
+                  </div>
+
+                  <VehicleCardMenu />
                 </div>
+
                 <p className="text-sm text-gray-600">
                   {metadata.description || "No description"}
                 </p>
