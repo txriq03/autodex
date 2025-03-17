@@ -76,7 +76,7 @@ const VehicleGrid = () => {
   return (
     <div className="my-4">
       <h1 className="text-[1.4rem]">Vehicles Minted</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-4">
         {carsWithMetadata.map(({ car, metadata }, idx) => (
           <VehicleCard key={idx} car={car} metadata={metadata} />
         ))}
@@ -86,17 +86,16 @@ const VehicleGrid = () => {
 };
 
 const VehicleCard = ({ car, metadata}: any) => {
-  const { contract, signer } = useContext(ContractContext);
   return (
-    <div className=" border rounded shadow">
+    <div className=" p-4 border rounded shadow">
           {metadata ? (
             <>
               <img
                 src={metadata.image}
                 alt={metadata.name}
-                className="w-full h-48 object-cover rounded-t-md "
+                className="w-full h-48 object-cover rounded "
               />
-              <div className="p-4">
+              <div className="mt-2">
                 <div className=" text-lg">
                   <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
                 </div>
@@ -112,7 +111,7 @@ const VehicleCard = ({ car, metadata}: any) => {
                   {car.price === "0" ? (
                     <Button disabled className="bg-rose-100 text-rose-500">Sold</Button>
                   ) : (
-                    <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price)}>Available</Button>
+                    <Button className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100" onClick={() => purchaseCar(car.tokenId, car.price)}>Buy Car</Button>
                   )}
                   <div className="text-[1.4rem] font-bold">{formatEther(car.price)} <p className="inline text-slate-400">ETH</p></div>
                 </div>

@@ -5,6 +5,7 @@ import { ContractContext } from "./providers/ContractProvider";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import ConnectWalletButton from "./ConnectWalletButton";
 
 const Navbar = () => {
   const { account, setAccount, provider } = useContext(ContractContext);
@@ -35,9 +36,7 @@ const Navbar = () => {
             <p className="inline">ETH</p>
           </div>
         ) : (
-          <div>
-            <Button variant="secondary">Connect Wallet</Button>
-          </div>
+          <ConnectWalletButton />
         )}
       </div>
     </div>
