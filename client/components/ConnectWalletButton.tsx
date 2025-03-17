@@ -80,7 +80,7 @@ const ConnectWalletButton = ({className}: {className?: string}) => {
   
     return (
       <div>
-        <Button className={`bg-slate-100 text-slate-800 hover:bg-slate-200 text-lg font-normal ${className}`} onClick={() => mutate()} disabled={isPending}>
+        <Button className={`bg-slate-100 text-slate-800 hover:bg-slate-200  font-normal ${className}`} onClick={() => mutate()} disabled={isPending}>
           {isPending ? "Connecting..." : account ? `Connected: ${account}` : "Connect Wallet"}
         </Button>
       </div>

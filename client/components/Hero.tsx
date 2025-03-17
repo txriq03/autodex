@@ -67,7 +67,7 @@ const Hero = () => {
           </div>
           </>
         ) : (
-          <ConnectWalletButton className='py-6 mt-4' />
+          <ConnectWalletButton className='py-6 mt-4 text-lg' />
         )}
 
     </div>

@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
+import { Calendar, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
 import { Contract, formatEther } from "ethers";
 
 type CarMetadata = {
@@ -103,9 +103,11 @@ const VehicleCard = ({ car, metadata}: any) => {
                   {metadata.description || "No description"}
                 </p>
 
-                <p><strong>Year: </strong> {getAttributeValue(metadata.attributes, "year")}</p>
-                <p><strong>Fuel: </strong> {getAttributeValue(metadata.attributes, "fuel type")}</p>
-                <p><strong>Transmission: </strong> {getAttributeValue(metadata.attributes, "transmission")}</p>
+                <div className="mt-2 flex flex-col gap-1">
+                  <div className="flex gap-2 items-center"> <Calendar size={22} className="text-slate-500"/> <p>{getAttributeValue(metadata.attributes, "year")}</p></div>
+                  <div className="flex gap-2"> <Fuel className="text-slate-500"/> <p>{getAttributeValue(metadata.attributes, "fuel type")}</p></div>
+                  <div className="flex gap-2"> <SlidersHorizontal className="text-slate-500"/> <p>{getAttributeValue(metadata.attributes, "transmission")}</p></div>
+                </div>
 
                 <div className="flex justify-between items-end mt-4 ">
                   {car.price === "0" ? (
