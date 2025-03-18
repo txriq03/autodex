@@ -97,21 +97,6 @@ export const useWalletSigner = () => {
     retry: false,
   });
 
-  // 🔄 Auto-refetch signer when account changes
-  useEffect(() => {
-    const handler = () => {
-      query.refetch(); // 🔁 Refresh signer on account change
-    };
-
-    if (window.ethereum) {
-      window.ethereum.on("accountsChanged", handler);
-    }
-
-    return () => {
-      window.ethereum?.removeListener("accountsChanged", handler);
-    };
-  }, [query]);
-
   return query;
 };
 

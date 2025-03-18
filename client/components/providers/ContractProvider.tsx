@@ -14,6 +14,29 @@ const ContractProvider = ({children}: {children: ReactNode}) => {
     const [provider, setProvider] = useState<any>(null);
 
   useEffect(() => {
+    const reconnectWallet = async () => {
+      try {
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+
+        if (accounts.length > 0) {
+          const account = accounts[0];
+
+          const result = await initialise();
+          if (result) {
+            setAccount(account);
+            setProvider(result.provider);
+            setSigner(result.signer);
+            setContract(result.contract);
+          }
+        }
+      } catch (error) {
+        console.error("Wallet auto-connect failed:", error);
+        toast.error("Wallet auto-connect failed", {
+          description: error instanceof Error ? error.message : String(error)
+        })
+      }
+    }
+    reconnectWallet();
     const handleAccountsChanged = async (accounts: string[]) => {
       if (accounts.length > 0) {
         const result = await initialise();
