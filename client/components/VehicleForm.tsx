@@ -272,7 +272,6 @@ interface ComboBoxFieldProps {
 }
 
 const ComboBoxField = ({formControl, name, label, options, type, disabled = false}: ComboBoxFieldProps) => {
-
   return (
     <FormField
       control={formControl}

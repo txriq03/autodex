@@ -105,7 +105,7 @@ const VehicleCard = ({ car, metadata}: any) => {
                     <h2 className="inline text-slate-500">{getAttributeValue(metadata.attributes, "make")} </h2> <h2 className="inline">{getAttributeValue(metadata.attributes, "model")}</h2>
                   </div>
 
-                  <VehicleCardMenu />
+                  <VehicleCardMenu vin={metadata.attributes[3].value} />
                 </div>
 
                 <p className="text-sm text-gray-600">

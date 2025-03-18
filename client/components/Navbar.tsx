@@ -31,7 +31,7 @@ const Navbar = () => {
         {account ? (
           <div className="text-2xl text-white ">
             <p className="inline font-bold text-teal-400">
-              {Number(balance).toFixed(2)}
+              {Number(balance).toFixed(4)}
             </p>{" "}
             <p className="inline">ETH</p>
           </div>

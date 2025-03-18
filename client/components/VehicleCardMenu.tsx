@@ -1,10 +1,11 @@
+"use client"
 import React from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Ellipsis, Hammer} from "lucide-react";
 import Link from "next/link";
 
-const VehicleCardMenu = () => {
+const VehicleCardMenu = ({vin}: {vin: string}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -18,7 +19,7 @@ const VehicleCardMenu = () => {
         className="w-fit rounded-md shadow-md bg-white border p-1"
       >
         <DropdownMenuItem className="text-sm hover:bg-slate-100 rounded px-2 py-1.5 cursor-pointer">
-          <Link href="">
+          <Link href={`/logs/${vin}`}>
             Service logs
           </Link>
         </DropdownMenuItem>
