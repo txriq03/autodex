@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import TanstackProvider from "@/components/providers/TanstackProvider";
 import ContractProvider from "@/components/providers/ContractProvider";
 import { Toaster } from "@/components/ui/sonner";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,13 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased bg-slate-50`}>
+      <body className={`${inter.variable} font-sans antialiased bg-slate-50 min-h-screen flex flex-col`}>
         <TanstackProvider>
           <ContractProvider>
             <Navbar />
-            <main>
+            <main className="flex-1">
               {children}
             </main>
+            <Footer />
             <Toaster richColors/>
           </ContractProvider>
         </TanstackProvider>
