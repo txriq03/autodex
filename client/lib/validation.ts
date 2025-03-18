@@ -46,3 +46,8 @@ export const logSchema = z.object({
   description: z.string().min(5, "Please enter a description"),
 });
 export type LogFormData = z.infer<typeof logSchema>;
+
+
+export const addServiceProviderSchema = z.object({
+  address: z.string().length(42, "Must be a valid Ethereum address"),
+});

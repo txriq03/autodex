@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Pen } from "lucide-react";
+import { LoaderCircle, Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -105,7 +105,7 @@ const AddLogDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button" className="mt-3">
+        <Button type="button">
           <Pen />
           Add log
         </Button>
@@ -170,7 +170,11 @@ const AddLogDialog = () => {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Submit</Button>
+              {mutation.isPending ? (
+                <Button type="submit" disabled> <LoaderCircle className="animate-spin"/>Submitting</Button>
+              ) : (
+                <Button type="submit">Submit</Button>
+              )}
             </DialogFooter>
           </form>
         </Form>

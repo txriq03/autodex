@@ -116,11 +116,11 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         return all;
     }
 
-    // function getTokenIdByVIN(string memory vin) public view returns (uint256) {
-    //     uint256 tokenId = vinToId[vin];
-    //     require(bytes(cars[tokenId].vin).length > 0, "VIN not found");
-    //     return tokenId;
-    // }
+    function getTokenIdByVIN(string memory vin) public view returns (uint256) {
+        uint256 tokenId = vinToId[vin];
+        require(_ownerOf(tokenId) != address(0), "VIN not found");
+        return tokenId;
+    }
 
     function addServiceProvider(address provider) public onlyOwner {
         require(!isServiceProvider[provider], "Already authorized");
