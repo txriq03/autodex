@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardContent,
@@ -23,12 +23,27 @@ import {
   FormMessage,
 } from "./ui/form";
 import { ContractContext } from "./providers/ContractProvider";
-import { uploadToIPFS, uploadImageToIPFS} from "@/lib/web3/ipfs";
+import { uploadToIPFS, uploadImageToIPFS } from "@/lib/web3/ipfs";
 import { CarFormData, carSchema } from "@/lib/validation";
-import { LoaderCircle } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Check, ChevronsUpDown, LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { parseEther } from "ethers";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "./ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "./ui/command";
+import { cn } from "@/lib/utils";
+import carList from '@/data/car-list.json';
+import { ScrollArea } from "./ui/scroll-area";
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,24 +58,33 @@ const VehicleForm = () => {
       image: undefined,
       year: new Date().getFullYear(),
       mileage: 0,
-      price: 0
+      price: 0,
     },
   });
 
+  const selectedMake = form.watch("make");
+
+  const makes = useMemo(() => carList.map((c) => c.brand), []);
+  const models = useMemo(() => {
+    const found = carList.find((entry) => entry.brand === selectedMake);
+    return found?.models || [];
+  }, [selectedMake]);
+
+  useEffect(() => {
+    form.setValue("model", "");
+  }, [selectedMake]);
+
   const onSubmit = async (data: CarFormData) => {
-    
     let imageUrl: string | void = "";
     let tokenURI: string | void = "";
-    
-    if (!contract || !provider ) {
+
+    if (!contract || !provider) {
       console.error("Error: User not logged into wallet.");
-      toast.warning("Please  unlock your wallet")
+      toast.warning("Please  unlock your wallet");
       return null;
     }
     const signer = await provider.getSigner();
     const userAddress = await signer.getAddress();
-
-    
 
     setIsLoading(true);
     try {
@@ -72,7 +96,6 @@ const VehicleForm = () => {
       }
 
       try {
-
         console.log("ImageURL before IPFS upload:", imageUrl);
         tokenURI = await uploadToIPFS(data, imageUrl, userAddress);
       } catch (err) {
@@ -90,19 +113,18 @@ const VehicleForm = () => {
         await tx.wait();
         console.log("Car minted successfully!");
         form.reset();
-        router.push('/?success=true');
+        router.push("/?success=true");
       } catch (mintError) {
         console.error("Error minting vehicle:", mintError);
 
         // Toast
         toast.error("Minting failed.", {
           classNames: {
-            toast: 'bg-rose-500',
-            description: 'text-slate-500',
+            toast: "bg-rose-500",
+            description: "text-slate-500",
           },
           description: "Please check your wallet and try again",
-        })
-
+        });
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -122,19 +144,20 @@ const VehicleForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="grid w-full items-center gap-4">
-            <VehicleFormField
+            <ComboBoxField
+              formControl={form.control}
               name="make"
               label="Make"
-              placeholder="Toyota"
-              inputType="text"
-              formControl={form.control}
+              type="make"
+              options={makes}
             />
-            <VehicleFormField
+            <ComboBoxField
+              formControl ={form.control}
               name="model"
               label="Model"
-              placeholder="Supra"
-              inputType="text"
-              formControl={form.control}
+              type="model"
+              options={models}
+              disabled={!selectedMake}
             />
             <VehicleFormField
               name="year"
@@ -173,11 +196,13 @@ const VehicleForm = () => {
               inputType="file"
               formControl={form.control}
             />
-            
           </CardContent>
           <CardFooter>
             {isLoading ? (
-              <Button disabled ><LoaderCircle className="animate-spin"/>Loading...</Button>
+              <Button disabled>
+                <LoaderCircle className="animate-spin" />
+                Loading...
+              </Button>
             ) : (
               <Button type="submit">Submit</Button>
             )}
@@ -230,6 +255,77 @@ const VehicleFormField = ({
             )}
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+interface ComboBoxFieldProps {
+  formControl: Control<z.infer<typeof carSchema>, any>;
+  name: FieldPath<z.infer<typeof carSchema>>;
+  label: string;
+  options: string[];
+  type: "make" | "model";
+  disabled?:boolean;
+}
+
+const ComboBoxField = ({formControl, name, label, options, type, disabled = false}: ComboBoxFieldProps) => {
+
+  return (
+    <FormField
+      control={formControl}
+      name={name}
+      render={({ field }: any) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <Popover>
+            <PopoverTrigger asChild>
+              <FormControl>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  disabled={disabled}
+                  className={cn(
+                    "w-full justify-between",
+                    !field.value && "text-muted-foreground"
+                  )}
+                >
+                  {field.value || `Select ${type}`}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                </Button>
+              </FormControl>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0">
+              <Command>
+                <CommandInput placeholder={`Search ${type}...`} />
+                <CommandEmpty>No {type} found.</CommandEmpty>
+
+                <ScrollArea type='scroll' className="max-h-48 overflow-y-auto">
+                <CommandGroup className="">
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option}
+                      value={option}
+                      onSelect={() => {
+                        field.onChange(option);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          option === field.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {option}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                </ScrollArea>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <FormMessage />
         </FormItem>
       )}

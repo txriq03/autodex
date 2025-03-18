@@ -18,7 +18,7 @@ const VehicleCardMenu = () => {
         className="w-fit rounded-md shadow-md bg-white border p-1"
       >
         <DropdownMenuItem className="text-sm hover:bg-slate-100 rounded px-2 py-1.5 cursor-pointer">
-          <Link href="#">
+          <Link href="">
             Service logs
           </Link>
         </DropdownMenuItem>
