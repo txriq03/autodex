@@ -6,6 +6,7 @@ const ServiceLogs = () => {
     <div className='min-[980px]:max-w-[980px] m-5 min-[980px]:mx-auto'>
       <ServiceLogTable />
     </div>
+    
   )
 }
 

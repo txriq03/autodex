@@ -38,5 +38,11 @@ export const carSchema = z.object({
       message: "Only .jpg, .jpeg, .png and .webp file formats are supported",
     }),
 });
-
 export type CarFormData = z.infer<typeof carSchema>;
+
+export const logSchema = z.object({
+  garage: z.string().min(2, "Garage name is required"),
+  mileage: z.coerce.number().min(1, "Mileage must be at least 1"),
+  description: z.string().min(5, "Please enter a description"),
+});
+export type LogFormData = z.infer<typeof logSchema>;
