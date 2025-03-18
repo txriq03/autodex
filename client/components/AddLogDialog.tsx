@@ -1,47 +1,123 @@
-import React from 'react'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog'
-import { Button } from './ui/button'
-import { Pen } from 'lucide-react'
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
-    Form,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormControl,
-    FormMessage,
-  } from "@/components/ui/form";
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { logSchema, LogFormData } from '@/lib/validation'
-import { Input } from './ui/input'
+import { logSchema, LogFormData } from "@/lib/validation";
+import { Input } from "./ui/input";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ContractContext } from "./providers/ContractProvider";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 const AddLogDialog = () => {
-    const form = useForm<LogFormData>({
-        resolver: zodResolver(logSchema),
-        defaultValues: {
-          garage: "",
-          mileage: 0,
-          description: "",
-        },
-      });
+  const form = useForm<LogFormData>({
+    resolver: zodResolver(logSchema),
+    defaultValues: {
+      garage: "",
+      mileage: 0,
+      description: "",
+    },
+  });
 
-      const onSubmit = (data: LogFormData) => {
-        console.log("Submitted log:", data);
-      };
+  const queryClient = useQueryClient();
+  const { contract, account } = useContext(ContractContext);
+  const { vin } = useParams();
+  const [tokenId, setTokenId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchTokenId = async () => {
+      if (contract && vin) {
+        try {
+          const id = await contract.getTokenIdByVIN(vin);
+          setTokenId(id);
+        } catch (error) {
+          toast.error("Could not find token ID from VIN", {
+            description: (error as any).message
+          })
+        }
+      }
+    }
+    fetchTokenId();
+  }, [contract, vin]);
+
+  const mutation = useMutation({
+    
+    mutationFn: async (data: LogFormData) => {
+      if (!contract || !account || tokenId === null) {
+        toast.error("Critical values not available", {
+          description: "Missing contract, account, or tokenId"
+        });
+        throw new Error("Missing contract, account or tokenId");
+      }
+      const isAuthorised = await contract.getIsServiceProvider(account);
+      if (!isAuthorised) {
+        throw new Error("Not authorised to add service record.");
+      }
+
+      const tx = await contract.addServiceRecord(
+        tokenId,
+        data.description,
+        data.garage,
+        data.mileage
+      );
+
+      await tx.wait()
+    },
+    onSuccess: () => {
+      toast.success("Service log added.");
+      if (tokenId !== null) {
+        queryClient.invalidateQueries({ queryKey: ["serviceLogs", tokenId] });
+      }
+      form.reset();
+    },
+    onError: (error: any) => {
+      toast.error("Failed to add log", {
+        description: error.message || "Check wallet access or contract state."
+      });
+    }
+  });
+
+
+
+  const onSubmit = (data: LogFormData) => {
+    mutation.mutate(data);
+  };
 
   return (
     <Dialog>
-        <DialogTrigger asChild>
-            <Button type='button' className='mt-3'> <Pen />Add log</Button>
-        </DialogTrigger>
+      <DialogTrigger asChild>
+        <Button type="button" className="mt-3">
+          <Pen />
+          Add log
+        </Button>
+      </DialogTrigger>
 
-        <DialogContent className='sm:max-w-md'>
-            <DialogHeader>
-                <DialogTitle>Add Service Log</DialogTitle>
-                <DialogDescription>Enter service details below.</DialogDescription>
-            </DialogHeader>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Add Service Log</DialogTitle>
+          <DialogDescription>Enter service details below.</DialogDescription>
+        </DialogHeader>
 
-            <Form {...form}>
+        <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
@@ -78,14 +154,17 @@ const AddLogDialog = () => {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. Oil change & filter replacement" {...field} />
+                    <Input
+                      placeholder="e.g. Oil change & filter replacement"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <DialogFooter className='max-sm:gap-2'>
+            <DialogFooter className="max-sm:gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
                   Cancel
@@ -95,10 +174,9 @@ const AddLogDialog = () => {
             </DialogFooter>
           </form>
         </Form>
-
-        </DialogContent>
+      </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default AddLogDialog
+export default AddLogDialog;

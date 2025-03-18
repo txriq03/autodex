@@ -2,7 +2,7 @@ import { ethers, BrowserProvider, Contract, parseUnits } from "ethers"
 import abi from './CarMarketplace.json'
 import { toast } from "sonner";
 
-const CONTRACT_ADDRESS = '0xAa81890fADfa02139820c1a6B3eC749792BF7b36'
+const CONTRACT_ADDRESS = '0xf7Aa04588bC7308CE4E08E8278199e3288ddf659'
 const CONTRACT_ABI = abi.abi
 
 // Initialise provider, signer and contract
