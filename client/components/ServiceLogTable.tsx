@@ -53,7 +53,7 @@ const ServiceLogTable = () => {
       });
       
       if (isPending) return (
-        <div className='bg-slate-100 p-12 text-center text-slate-600 rounded-lg text-[1rem] sm:text-[1.2rem] flex gap-2 justify-center'>
+        <div className='bg-slate-100 p-12 text-center text-slate-600 rounded-lg text-[1rem] sm:text-[1.2rem] flex gap-2 justify-center items-center'>
            <LoaderCircle className="animate-spin"/> Loading...
         </div>
       )

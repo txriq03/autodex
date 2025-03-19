@@ -42,13 +42,14 @@ const AddLogDialog = () => {
   const { contract, account } = useContext(ContractContext);
   const { vin } = useParams();
   const [tokenId, setTokenId] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchTokenId = async () => {
       if (contract && vin) {
         try {
           const id = await contract.getTokenIdByVIN(vin);
-          setTokenId(id);
+          setTokenId(Number(id));
         } catch (error) {
           toast.error("Could not find token ID from VIN", {
             description: (error as any).message
@@ -88,6 +89,7 @@ const AddLogDialog = () => {
         queryClient.invalidateQueries({ queryKey: ["serviceLogs", tokenId] });
       }
       form.reset();
+      setOpen(false);
     },
     onError: (error: any) => {
       toast.error("Failed to add log", {
@@ -103,7 +105,7 @@ const AddLogDialog = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button type="button">
           <Pen />

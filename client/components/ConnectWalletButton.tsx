@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { ContractContext } from "./providers/ContractProvider";
+import { LoaderCircle } from "lucide-react";
 
 const ConnectWalletButton = ({className}: {className?: string}) => {
     const {
@@ -80,9 +81,15 @@ const ConnectWalletButton = ({className}: {className?: string}) => {
   
     return (
       <div>
-        <Button className={`bg-slate-100 text-slate-800 hover:bg-slate-200  font-normal ${className}`} onClick={() => mutate()} disabled={isPending}>
-          {isPending ? "Connecting..." : account ? `Connected: ${account}` : "Connect Wallet"}
-        </Button>
+        {isPending ? (
+          <Button disabled className={`bg-slate-100 text-slate-800 hover:bg-slate-200  font-normal ${className}`}>
+            <LoaderCircle className="animate-spin"/> Connecting...
+          </Button>
+        ) : (
+          <Button className={`bg-slate-100 text-slate-800 hover:bg-slate-200  font-normal ${className}`} onClick={() => mutate()}>
+            Connect Wallet
+          </Button>
+        )}
       </div>
     );
   }
