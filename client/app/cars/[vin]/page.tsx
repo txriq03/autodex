@@ -1,9 +1,12 @@
-import React from 'react'
+import VehicleInfo from "@/components/VehicleInfo";
+import React from "react";
 
 const Info = () => {
   return (
-    <div>Info</div>
-  )
-}
+    <div>
+      <VehicleInfo />
+    </div>
+  );
+};
 
-export default Info
+export default Info;
