@@ -66,12 +66,17 @@ const VehicleInfo = () => {
   const { tokenId, metadata } = data;
 
   return (
-    <div className="max-w-xl mx-auto px-4 my-16 sm:px-6 ">
+    <div className="max-w-xl mx-auto px-4 my-16  ">
       <Card className="border-slate-200">
         <CardHeader>
-          <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">
+          <CardTitle className="text-2xl font-bold text-slate-800">
             <div className="flex justify-between">
-              {metadata.name}{" "}
+              <div>
+                <p className="text-slate-500 inline">
+                  {metadata.attributes[0].value}
+                </p>{" "}
+                {metadata.attributes[1].value}
+              </div>
               <div className="text-slate-400 font-bold text-[2rem] flex">
                 # <p className="text-slate-500">{tokenId}</p>
               </div>
@@ -82,10 +87,10 @@ const VehicleInfo = () => {
           <img
             src={metadata.image}
             alt={metadata.name}
-            className="w-full h-[220px] sm:h-[300px] object-cover rounded-md"
+            className="w-full  object-cover rounded-md"
           />
 
-          <div className="grid grid-cols-2 gap-2 mt-2">
+          <div className="grid grid-cols-1 min-[575px]:grid-cols-2 gap-2 mt-2">
             <div className="bg-slate-100 rounded-xl p-2">
               <div className="flex gap-2 text-[1.2rem] items-center">
                 <ClipboardList />
@@ -119,13 +124,15 @@ const VehicleInfo = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between items-end">
-          <div className="flex gap-2">
-            <Button size={"lg"}>Purchase</Button>
+        <CardFooter className="flex flex-col-reverse items-start min-[550px]:flex-row min-[550px]:justify-between min-[550px]:items-end">
+          <div className="flex gap-2 max-[550px]:w-full">
+            <Button size={"lg"} className="max-[551px]:w-full">
+              Purchase
+            </Button>
             <Button
               variant="outline"
               size="lg"
-              className="border-slate-800 px-5"
+              className="border-slate-800 px-5 max-[551px]:w-full"
             >
               Print QR Code
             </Button>
