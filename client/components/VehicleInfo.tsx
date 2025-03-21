@@ -85,7 +85,7 @@ const VehicleInfo = () => {
           />
 
           <div className="grid grid-cols-1 min-[575px]:grid-cols-2 gap-2 mt-2">
-            <div className="bg-slate-100 rounded-xl p-2">
+            <div className="bg-slate-100 rounded-md p-2">
               <div className="flex gap-2 text-[1.2rem] items-center">
                 <ClipboardList />
                 Attributes
@@ -101,7 +101,7 @@ const VehicleInfo = () => {
                   )
               )}
             </div>
-            <div className="bg-slate-100 rounded-xl p-2">
+            <div className="bg-slate-100 rounded-md p-2">
               <div className="flex gap-2 text-[1.2rem] items-center">
                 <IdCard />
                 Identifier
