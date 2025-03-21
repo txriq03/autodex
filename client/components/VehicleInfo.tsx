@@ -5,24 +5,18 @@ import { ContractContext } from "@/components/providers/ContractProvider";
 import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import {
-  ClipboardList,
-  IdCard,
-  LoaderCircle,
-  SlidersHorizontal,
-} from "lucide-react";
+import { ClipboardList, IdCard, LoaderCircle } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
 import { Skeleton } from "./ui/skeleton";
-import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import CarQRCode from "./CarQRCode";
+import { formatEther } from "ethers";
 
 const VehicleInfo = () => {
   const { contract } = useContext(ContractContext);
@@ -63,7 +57,7 @@ const VehicleInfo = () => {
     );
   }
 
-  const { tokenId, metadata } = data;
+  const { tokenId, metadata, price } = data;
 
   return (
     <div className="max-w-xl mx-auto px-4 my-16  ">
@@ -126,9 +120,22 @@ const VehicleInfo = () => {
         </CardContent>
         <CardFooter className="flex flex-col-reverse items-start min-[551px]:flex-row min-[551px]:justify-between min-[551px]:items-end">
           <div className="flex gap-2 max-[550px]:w-full">
-            <Button size={"lg"} className="max-[551px]:w-full">
-              Purchase
-            </Button>
+            {price !== 0 ? (
+              <Button
+                size={"lg"}
+                className="max-[551px]:w-full bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-white"
+              >
+                Purchase
+              </Button>
+            ) : (
+              <Button
+                disabled
+                size="lg"
+                className="max-[551px]:w-full bg-slate-400"
+              >
+                Unavailable
+              </Button>
+            )}
             <Button
               variant="outline"
               size="lg"
@@ -137,9 +144,13 @@ const VehicleInfo = () => {
               Print QR Code
             </Button>
           </div>
-          <p className="text-[1.8rem] font-semibold text-slate-400">
-            0.001 ETH
-          </p>
+          {price !== 0 ? (
+            <p className="text-[1.8rem] font-semibold text-slate-400">
+              {formatEther(price)} ETH
+            </p>
+          ) : (
+            <p className="text-[1.8rem] font-semibold text-slate-400">N/A</p>
+          )}
         </CardFooter>
       </Card>
     </div>

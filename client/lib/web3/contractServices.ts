@@ -105,6 +105,7 @@ export const getCarMetadataByVIN = async (
     const tokenId = await contract.getTokenIdByVIN(vin);
     const carDetails = await contract.getCarDetails(tokenId);
     const tokenURI = carDetails.tokenURI;
+    const price = carDetails.price;
 
     const response = await fetch(tokenURI);
     const metadata = await response.json();
@@ -112,6 +113,7 @@ export const getCarMetadataByVIN = async (
     return {
       tokenId: Number(tokenId),
       metadata,
+      price
     };
   } catch (error) {
     console.error("Error fetching car metadata by VIN:", error);
