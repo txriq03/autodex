@@ -124,7 +124,7 @@ const VehicleInfo = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col-reverse items-start min-[550px]:flex-row min-[550px]:justify-between min-[550px]:items-end">
+        <CardFooter className="flex flex-col-reverse items-start min-[551px]:flex-row min-[551px]:justify-between min-[551px]:items-end">
           <div className="flex gap-2 max-[550px]:w-full">
             <Button size={"lg"} className="max-[551px]:w-full">
               Purchase
