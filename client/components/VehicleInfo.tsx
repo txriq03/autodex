@@ -22,6 +22,7 @@ import {
 import { Skeleton } from "./ui/skeleton";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import CarQRCode from "./CarQRCode";
 
 const VehicleInfo = () => {
   const { contract } = useContext(ContractContext);
@@ -114,11 +115,21 @@ const VehicleInfo = () => {
                 Number Plate:{" "}
                 <p className="text-slate-800">{metadata.attributes[4].value}</p>
               </div>
+              <CarQRCode vin={vin} />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between items-end">
-          <Button>Purchase</Button>
+          <div className="flex gap-2">
+            <Button size={"lg"}>Purchase</Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="border-slate-800 px-5"
+            >
+              Print QR Code
+            </Button>
+          </div>
           <p className="text-[1.8rem] font-semibold text-slate-400">
             0.001 ETH
           </p>
