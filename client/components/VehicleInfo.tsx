@@ -65,7 +65,7 @@ const VehicleInfo = () => {
   const { tokenId, metadata } = data;
 
   return (
-    <div className="max-w-2xl mx-auto mt-6 px-4 sm:px-6 ">
+    <div className="max-w-xl mx-auto px-4 my-16 sm:px-6 ">
       <Card className="border-slate-200">
         <CardHeader>
           <CardTitle className="text-xl sm:text-2xl font-bold text-slate-800">
