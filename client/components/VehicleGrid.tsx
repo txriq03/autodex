@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { Calendar, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
 import { Contract, formatEther, formatUnits } from "ethers";
 import VehicleCardMenu from "./VehicleCardMenu";
-import { getAllNftsFromContract } from "@/lib/web3/alchemy";
+import { getNfts, getOwnedNfts } from "@/lib/web3/alchemy";
 
 type CarMetadata = {
   name: string;
@@ -50,7 +50,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
   const { data: nftList, isPending: isNftPending } = useQuery({
     queryKey: ["nftList"],
     queryFn: () =>
-      getAllNftsFromContract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS),
+      getNfts(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, account, filterOwned),
   });
   if (nftList) {
     console.log("nftList:", nftList);
