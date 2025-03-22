@@ -11,18 +11,18 @@ const Navbar = () => {
   const { account, setAccount, provider } = useContext(ContractContext);
 
   const { data: balance } = useQuery({
-    queryKey: ['ethBalance', account],
+    queryKey: ["ethBalance", account],
     queryFn: async () => {
       if (!account || !provider) return null;
       const raw = await provider.getBalance(account);
       return ethers.formatEther(raw);
     },
     enabled: !!account && !!provider,
-    refetchInterval: 10000
-  })
+    refetchInterval: 10000,
+  });
 
   return (
-    <div className=" bg-slate-800 py-3">
+    <div className=" bg-slate-50 bg-opacity-[5%] py-3">
       <div className="min-[1440px]:max-w-[1440px] mx-5 min-[1450px]:mx-auto flex justify-between">
         <Link href="/">
           <div className="text-2xl text-white font-semibold">AutoDex</div>

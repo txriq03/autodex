@@ -85,8 +85,8 @@ const VehicleGrid = ({ filterOwned = false }) => {
 
   if (isNftPending)
     return (
-      <div className="bg-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
-        <LoaderCircle className="animate-spin inline" />{" "}
+      <div className="bg-slate-100 bg-opacity-[5%] rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
+        <LoaderCircle className="animate-spin inline text-teal-500" />{" "}
         <p className="inline">Loading...</p>
       </div>
     );
@@ -130,13 +130,13 @@ const VehicleCard = ({
   metadata: any;
 }) => {
   return (
-    <div className=" p-4 border-2 rounded-xl bg-slate-50">
+    <div className=" p-4 rounded-xl bg-slate-50 bg-opacity-[5%] text-slate-50">
       {metadata ? (
         <>
           <img
             src={imageUrl}
             alt={name}
-            className="w-full h-48 object-cover rounded "
+            className="w-full h-48 object-cover rounded-lg "
           />
           <div className="mt-1">
             <div className="flex justify-between items-center">
@@ -176,20 +176,20 @@ const VehicleCard = ({
 
             <div className="flex justify-between items-end mt-4 ">
               {price === "0" ? (
-                <Button disabled className="bg-rose-100 text-rose-500">
-                  Sold
+                <Button disabled className="bg-slate-500">
+                  Unavailable
                 </Button>
               ) : (
                 <Button
-                  className="bg-teal-100 text-teal-500 hover:bg-teal-400 hover:text-slate-100"
+                  className="bg-teal-800 text-teal-400 hover:bg-teal-400 hover:text-slate-100"
                   onClick={() => purchaseCar(tokenId, price)}
                 >
                   Buy Car
                 </Button>
               )}
-              <div className="text-[1.4rem] font-bold text-slate-500 flex gap-2">
+              <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
                 {price}
-                <p className="inline text-slate-400">ETH</p>
+                <p className="inline text-slate-500">ETH</p>
               </div>
             </div>
           </div>

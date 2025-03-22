@@ -26,7 +26,7 @@ export const carSchema = z.object({
     .nonnegative({ message: "Mileage must be 0 or more" }),
   price: z.coerce
     .number({ invalid_type_error: "Price must be a number." })
-    .positive({ message: "Price must be greater than 0" }),
+    .nonnegative({ message: "Price must be positive." }),
   image: z
     .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
       message: "Please upload an image",
@@ -46,7 +46,6 @@ export const logSchema = z.object({
   description: z.string().min(5, "Please enter a description"),
 });
 export type LogFormData = z.infer<typeof logSchema>;
-
 
 export const addServiceProviderSchema = z.object({
   address: z.string().length(42, "Must be a valid Ethereum address"),

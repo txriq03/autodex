@@ -12,10 +12,10 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-
 export const metadata: Metadata = {
   title: "AutoDex",
-  description: "Decentralised platform for listing and discovering your next ride.",
+  description:
+    "Decentralised platform for listing and discovering your next ride.",
 };
 
 export default function RootLayout({
@@ -25,15 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased bg-slate-50 min-h-screen flex flex-col`}>
+      <body
+        className={`${inter.variable} font-sans antialiased bg-[#13171d] min-h-screen flex flex-col`}
+      >
         <TanstackProvider>
           <ContractProvider>
             <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
+            <main className="flex-1">{children}</main>
             <Footer />
-            <Toaster richColors/>
+            <Toaster richColors />
           </ContractProvider>
         </TanstackProvider>
       </body>

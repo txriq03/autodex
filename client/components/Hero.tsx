@@ -28,7 +28,7 @@ const Hero = () => {
   }, [signer]);
 
   return (
-    <div className="mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-800 mb-10 min-[1440px]:bg-gradient-to-r from-slate-900 to-slate-700 p-10 relative overflow-hidden">
+    <div className="mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-50 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
       <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-white font-bold mb-4">
         List Your Ride. Keep Your Privacy.
       </h1>
@@ -58,15 +58,15 @@ const Hero = () => {
       {account ? (
         <>
           <div className="flex gap-2 my-5">
-            <Button className="w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 ">
-              Buy
-            </Button>
+            {/* <Button className="w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 ">
+              Mint
+            </Button> */}
             <Link href="/sell">
               <Button
-                className="w-[100px] py-[25px] text-xl bg-transparent text-white"
+                className=" py-[25px] text-xl font-normal bg-transparent text-white"
                 variant="outline"
               >
-                Sell
+                Mint your vehicle
               </Button>
             </Link>
           </div>

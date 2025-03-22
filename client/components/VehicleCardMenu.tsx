@@ -14,7 +14,11 @@ const VehicleCardMenu = ({ vin }: { vin: string }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hover:bg-slate-50 hover:bg-opacity-[5%] hover:text-slate-50"
+        >
           <Ellipsis />
         </Button>
       </DropdownMenuTrigger>

@@ -29,11 +29,7 @@ import { Check, ChevronsUpDown, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { parseEther } from "ethers";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "./ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -42,7 +38,7 @@ import {
   CommandItem,
 } from "./ui/command";
 import { cn } from "@/lib/utils";
-import carList from '@/data/car-list.json';
+import carList from "@/data/car-list.json";
 import { ScrollArea } from "./ui/scroll-area";
 
 const VehicleForm = () => {
@@ -152,7 +148,7 @@ const VehicleForm = () => {
               options={makes}
             />
             <ComboBoxField
-              formControl ={form.control}
+              formControl={form.control}
               name="model"
               label="Model"
               type="model"
@@ -186,6 +182,7 @@ const VehicleForm = () => {
               name="price"
               label="Price (in ETH)"
               placeholder="0.00"
+              description="Leave blank if you do not wish to sell your vehicle."
               inputType="number"
               formControl={form.control}
             />
@@ -268,10 +265,17 @@ interface ComboBoxFieldProps {
   label: string;
   options: string[];
   type: "make" | "model";
-  disabled?:boolean;
+  disabled?: boolean;
 }
 
-const ComboBoxField = ({formControl, name, label, options, type, disabled = false}: ComboBoxFieldProps) => {
+const ComboBoxField = ({
+  formControl,
+  name,
+  label,
+  options,
+  type,
+  disabled = false,
+}: ComboBoxFieldProps) => {
   return (
     <FormField
       control={formControl}
@@ -301,26 +305,26 @@ const ComboBoxField = ({formControl, name, label, options, type, disabled = fals
                 <CommandInput placeholder={`Search ${type}...`} />
                 <CommandEmpty>No {type} found.</CommandEmpty>
 
-                <ScrollArea type='scroll' className="max-h-48 overflow-y-auto">
-                <CommandGroup className="">
-                  {options.map((option) => (
-                    <CommandItem
-                      key={option}
-                      value={option}
-                      onSelect={() => {
-                        field.onChange(option);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          option === field.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {option}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <ScrollArea type="scroll" className="max-h-48 overflow-y-auto">
+                  <CommandGroup className="">
+                    {options.map((option) => (
+                      <CommandItem
+                        key={option}
+                        value={option}
+                        onSelect={() => {
+                          field.onChange(option);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            option === field.value ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        {option}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
                 </ScrollArea>
               </Command>
             </PopoverContent>
