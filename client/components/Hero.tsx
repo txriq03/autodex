@@ -29,10 +29,10 @@ const Hero = () => {
 
   return (
     <div className="mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-50 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
-      <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-white font-bold mb-4">
+      <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-slate-50 font-bold mb-4">
         List Your Ride. Keep Your Privacy.
       </h1>
-      <p className="text-[1.2rem] md:text-[1.5rem] text-white opacity-70 max-w-[700px] font-light">
+      <p className="text-[1.2rem] md:text-[1.5rem] text-slate-400 max-w-[700px] font-light">
         AutoDex is a decentralised platform for listing and discovering your
         favourite rides. Powered by blockchain, secured by your wallet - no
         accounts, no hassle.
@@ -63,7 +63,7 @@ const Hero = () => {
             </Button> */}
             <Link href="/sell">
               <Button
-                className=" py-[25px] text-xl font-normal bg-transparent text-white"
+                className=" py-[25px] text-lg font-light bg-transparent text-white"
                 variant="outline"
               >
                 Mint your vehicle

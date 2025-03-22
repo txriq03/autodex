@@ -130,7 +130,7 @@ const VehicleForm = () => {
   };
 
   return (
-    <Card className="max-w-[700px] mx-auto">
+    <Card className="max-w-[700px] mx-auto bg-slate-50 bg-opacity-[3%] border-none text-slate-50">
       <CardHeader>
         <CardTitle>Vehicle information</CardTitle>
         <CardDescription>
@@ -196,12 +196,17 @@ const VehicleForm = () => {
           </CardContent>
           <CardFooter>
             {isLoading ? (
-              <Button disabled>
+              <Button disabled className="bg-slate-50 text-slate-800">
                 <LoaderCircle className="animate-spin" />
                 Loading...
               </Button>
             ) : (
-              <Button type="submit">Submit</Button>
+              <Button
+                type="submit"
+                className="bg-slate-100 text-slate-800 hover:bg-slate-200  "
+              >
+                Submit
+              </Button>
             )}
           </CardFooter>
         </form>
@@ -242,12 +247,14 @@ const VehicleFormField = ({
                 onChange={(e) => field.onChange(e.target.files)}
                 ref={field.ref}
                 name={field.name}
+                className="bg-slate-50 bg-opacity-[3%] border-none "
               />
             ) : (
               <Input
                 type={inputType || "text"}
                 placeholder={placeholder}
                 {...field}
+                className="border-transparent bg-slate-50 bg-opacity-[3%] focus:border focus:border-teal-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield]"
               />
             )}
           </FormControl>
@@ -291,7 +298,7 @@ const ComboBoxField = ({
                   role="combobox"
                   disabled={disabled}
                   className={cn(
-                    "w-full justify-between",
+                    "w-full justify-between bg-slate-50 bg-opacity-[3%] border-none hover:bg-opacity-[6%] hover:text-slate-200",
                     !field.value && "text-muted-foreground"
                   )}
                 >
