@@ -1,64 +1,66 @@
-import { ethers, BrowserProvider, Contract, parseUnits } from "ethers"
-import abi from './CarMarketplace.json'
+import { ethers, BrowserProvider, Contract, parseUnits } from "ethers";
+import abi from "./CarMarketplace.json";
 import { toast } from "sonner";
 
-const CONTRACT_ADDRESS = '0xf7Aa04588bC7308CE4E08E8278199e3288ddf659'
-const CONTRACT_ABI = abi.abi
+const CONTRACT_ADDRESS = "0xC4546278E755D4776454f9AA8fc21C7CB8884ED4";
+const CONTRACT_ABI = abi.abi;
 
 // Initialise provider, signer and contract
 export const initialise = async () => {
-    if (typeof window.ethereum !== "undefined") {
-        // provider = new BrowserProvider(window.ethereum);
-        const provider = new BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
-        const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-        const network  = await provider.getNetwork()
-        console.log('Network:', network)
-        return { provider, signer, contract }
-    } else {
-        alert("Please install MetaMask!");
-        console.error("Please install MetaMask.");
-        return null;
-    }
-}
+  if (typeof window.ethereum !== "undefined") {
+    // provider = new BrowserProvider(window.ethereum);
+    const provider = new BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+    const network = await provider.getNetwork();
+    console.log("Network:", network);
+    return { provider, signer, contract };
+  } else {
+    alert("Please install MetaMask!");
+    console.error("Please install MetaMask.");
+    return null;
+  }
+};
 // initialise();
 export const fetchCurrentAccount = async () => {
-    const accounts = await window.ethereum.request({ method: "eth_accounts" });
-    return accounts.length > 0 ? accounts[0] : null;
-  };
+  const accounts = await window.ethereum.request({ method: "eth_accounts" });
+  return accounts.length > 0 ? accounts[0] : null;
+};
 
 // Get a single account
 export const requestAccount = async () => {
-    try {
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        return accounts[0];            
-    } catch (error) {
-        if (error instanceof Error) {
-            console.error("Error requesting account:", error.message);
-        } else {
-            console.error("Unknown error requesting account:", error);
-        }
-        return null;
+  try {
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    return accounts[0];
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error requesting account:", error.message);
+    } else {
+      console.error("Unknown error requesting account:", error);
     }
-}
+    return null;
+  }
+};
 
 export const fetchAllCars = async (contract: Contract) => {
-    if (!contract) return []
-    const rawCars = await contract.getAllCars();
+  if (!contract) return [];
+  const rawCars = await contract.getAllCars();
 
-    // Convert each car to a plain JSON-serializable object
-    const cars = rawCars.map((car: any) => ({
-        tokenId: Number(car.tokenId),
-        tokenURI: car.tokenURI,
-        price: car.price.toString()
-    }));
-  
-    return cars;
-  };
+  // Convert each car to a plain JSON-serializable object
+  const cars = rawCars.map((car: any) => ({
+    tokenId: Number(car.tokenId),
+    tokenURI: car.tokenURI,
+    price: car.price.toString(),
+  }));
+
+  return cars;
+};
 
 export const purchaseCar = async (tokenId: number, price: string) => {
-  let contract: any = '';
-  let signer: any = ''
+  let contract: any = "";
+  let signer: any = "";
 
   const results = await initialise();
   if (results) {
@@ -68,13 +70,15 @@ export const purchaseCar = async (tokenId: number, price: string) => {
 
   console.log("Signer in purchase function:", signer);
   const buyerAddress = await signer.getAddress();
-    const priceInWei = parseUnits(price, 'wei');
+  const priceInWei = parseUnits(price, "wei");
   try {
     const tx = await contract.connect(signer).buyCar(tokenId, {
-      value: priceInWei // price in wei (BigNumber or string)
+      value: priceInWei, // price in wei (BigNumber or string)
     });
 
-    toast("Processing transaction...", { description: "Please confirm in wallet." });
+    toast("Processing transaction...", {
+      description: "Please confirm in wallet.",
+    });
 
     await tx.wait();
     toast.success("Success!", {
@@ -84,15 +88,15 @@ export const purchaseCar = async (tokenId: number, price: string) => {
     // Optionally refetch or update UI
   } catch (error) {
     console.error("Purchase failed:", error);
-    
+
     if (error instanceof Error) {
-        toast.error("Failed to purchase car", {
-          description: error.message || "Transaction was rejected or failed.",
-        });
+      toast.error("Failed to purchase car", {
+        description: error.message || "Transaction was rejected or failed.",
+      });
     } else {
-        toast.error("Failed to purchase car", {
-            description: "Transaction was rejected or failed.",
-        });
+      toast.error("Failed to purchase car", {
+        description: "Transaction was rejected or failed.",
+      });
     }
   }
 };
@@ -113,7 +117,7 @@ export const getCarMetadataByVIN = async (
     return {
       tokenId: Number(tokenId),
       metadata,
-      price
+      price,
     };
   } catch (error) {
     console.error("Error fetching car metadata by VIN:", error);

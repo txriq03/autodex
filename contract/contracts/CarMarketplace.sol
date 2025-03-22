@@ -11,7 +11,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     struct Car {
         uint256 tokenId;
         string tokenURI;
-        uint256 price; 
+        uint256 price;
     }
     struct ServiceRecord {
         uint256 date;
@@ -21,7 +21,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
-    mapping(string => uint256) private vinToId; 
+    mapping(string => uint256) private vinToId;
     mapping(uint256 => ServiceRecord[]) private serviceLogs;
     mapping(address => bool) public isServiceProvider;
 
@@ -29,7 +29,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     event CarListedForSale(uint256 tokenId, uint256 price);
     event CarSold(uint256 tokenId, address newOwner, uint256 price);
     event ServiceProviderAdded(address indexed provider);
-    event ServiceProviderRemoved(address indexed provider); 
+    event ServiceProviderRemoved(address indexed provider);
     event ServiceRecordAdded(uint256 indexed tokenId, string description);
 
     constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
@@ -97,7 +97,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         cars[tokenId].price = 0;
 
         emit CarSold(tokenId, msg.sender, msg.value);
-    }   
+    }
 
     // Function to get car details by tokenId
     function getCarDetails(uint256 tokenId) public view returns (Car memory) {
@@ -122,6 +122,10 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         return tokenId;
     }
 
+    function getPrice(uint256 tokenId) public view returns (uint256) {
+        return cars[tokenId].price;
+    }
+
     function addServiceProvider(address provider) public onlyOwner {
         require(!isServiceProvider[provider], "Already authorized");
         isServiceProvider[provider] = true;
@@ -136,7 +140,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
 
     function getIsServiceProvider(address provider) public view returns (bool) {
         return isServiceProvider[provider];
-    }   
+    }
     // Add a service record (MOT-style)
     function addServiceRecord(
         uint256 tokenId,
@@ -145,20 +149,27 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 mileage
     ) public {
         require(ownerOf(tokenId) != address(0), "Token does not exist");
-        require(isServiceProvider[msg.sender], "Not authorized to add service record");
+        require(
+            isServiceProvider[msg.sender],
+            "Not authorized to add service record"
+        );
 
-        serviceLogs[tokenId].push(ServiceRecord({
-            date: block.timestamp,
-            description: description,
-            garageName: garageName,
-            mileage: mileage
-        }));
+        serviceLogs[tokenId].push(
+            ServiceRecord({
+                date: block.timestamp,
+                description: description,
+                garageName: garageName,
+                mileage: mileage
+            })
+        );
 
         emit ServiceRecordAdded(tokenId, description);
     }
 
-     // Get service history
-    function getServiceHistory(uint256 tokenId) public view returns (ServiceRecord[] memory) {
+    // Get service history
+    function getServiceHistory(
+        uint256 tokenId
+    ) public view returns (ServiceRecord[] memory) {
         require(_ownerOf(tokenId) != address(0), "Car does not exist");
         return serviceLogs[tokenId];
     }
