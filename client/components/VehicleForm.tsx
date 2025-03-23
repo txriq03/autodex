@@ -40,6 +40,13 @@ import {
 import { cn } from "@/lib/utils";
 import carList from "@/data/car-list.json";
 import { ScrollArea } from "./ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -51,6 +58,9 @@ const VehicleForm = () => {
       make: "",
       model: "",
       vin: "",
+      registrationNumber: "",
+      transmission: undefined,
+      fuelType: undefined,
       image: undefined,
       year: new Date().getFullYear(),
       mileage: 0,
@@ -170,6 +180,25 @@ const VehicleForm = () => {
               description="Can be found on your chassis or V5C."
               inputType="text"
               formControl={form.control}
+            />
+            <VehicleFormField
+              name="registrationNumber"
+              label="Registration Number"
+              placeholder="ABC123"
+              inputType="text"
+              formControl={form.control}
+            />
+            <VehicleSelectField
+              name="transmission"
+              label="Transmission"
+              formControl={form.control}
+              placeholder="Select transmission"
+            />
+            <VehicleSelectField
+              name="fuelType"
+              label="Fuel type"
+              formControl={form.control}
+              placeholder="Select fuel type"
             />
             <VehicleFormField
               name="mileage"
@@ -336,6 +365,74 @@ const ComboBoxField = ({
               </Command>
             </PopoverContent>
           </Popover>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const VehicleSelectField = ({
+  formControl,
+  name,
+  label,
+  placeholder,
+  description,
+}: VehicleFormFieldProps) => {
+  return (
+    <FormField
+      control={formControl}
+      name={name}
+      render={({ field }: any) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <SelectTrigger className="bg-slate-50 bg-opacity-[3%] border-none focus:ring-0 focus:border-teal-500 hover:bg-slate-50 hover:bg-opacity-[5%] transition">
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent className="bg-neutral-900 border-none text-slate-50">
+                {name === "transmission" ? (
+                  <>
+                    <SelectItem
+                      value="Manual"
+                      className="data-[highlighted]:bg-slate-500 data-[highlighted]:bg-opacity-[10%] data-[highlighted]:text-slate-50"
+                    >
+                      Manual
+                    </SelectItem>
+                    <SelectItem
+                      value="Automatic"
+                      className="data-[highlighted]:bg-slate-500 data-[highlighted]:bg-opacity-[10%] data-[highlighted]:text-slate-50"
+                    >
+                      Automatic
+                    </SelectItem>
+                  </>
+                ) : (
+                  <>
+                    <SelectItem
+                      value="Petrol"
+                      className="data-[highlighted]:bg-slate-500 data-[highlighted]:bg-opacity-[10%] data-[highlighted]:text-slate-50"
+                    >
+                      Petrol
+                    </SelectItem>
+                    <SelectItem
+                      value="Diesel"
+                      className="data-[highlighted]:bg-slate-500 data-[highlighted]:bg-opacity-[10%] data-[highlighted]:text-slate-50"
+                    >
+                      Diesel
+                    </SelectItem>
+                    <SelectItem
+                      value="Electric"
+                      className="data-[highlighted]:bg-slate-500 data-[highlighted]:bg-opacity-[10%] data-[highlighted]:text-slate-50"
+                    >
+                      Electric
+                    </SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}

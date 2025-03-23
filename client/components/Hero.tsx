@@ -63,7 +63,7 @@ const Hero = () => {
             </Button> */}
             <Link href="/sell">
               <Button
-                className=" py-[25px] text-lg font-light bg-transparent text-white"
+                className=" py-[25px] text-lg font-light bg-transparent text-white rounded-lg"
                 variant="outline"
               >
                 Mint your vehicle

@@ -17,7 +17,7 @@ type CarMetadata = {
   name: string;
   description: string;
   image: string;
-  attributes: { trait: string; value: string | number }[];
+  attributes: { trait_type: string; value: string | number }[];
 };
 
 type Car = {
@@ -33,11 +33,13 @@ type CarWithMetadata = {
 };
 
 const getAttributeValue = (
-  attributes: { trait: string; value: string | number }[],
+  attributes: { trait_type: string; value: string | number }[],
   traitName: string
 ): string | number | undefined => {
   return attributes.find(
-    (attr) => attr.trait.toLowerCase() === traitName.toLowerCase()
+    (attr) =>
+      typeof attr.trait_type === "string" &&
+      attr.trait_type.toLowerCase() === traitName.toLowerCase()
   )?.value;
 };
 
@@ -93,7 +95,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
 
   if (nftList == undefined || nftList.length < 1)
     return (
-      <div className="bg-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
+      <div className="bg-slate-100 bg-opacity-[5%] text-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
         <p>No cars have been minted.</p>
       </div>
     );
@@ -175,7 +177,7 @@ const VehicleCard = ({
             </div>
 
             <div className="flex justify-between items-end mt-4 ">
-              {price === "0" ? (
+              {price === "0.0" ? (
                 <Button disabled className="bg-slate-500">
                   Unavailable
                 </Button>

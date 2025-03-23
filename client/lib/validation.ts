@@ -24,6 +24,17 @@ export const carSchema = z.object({
   mileage: z.coerce
     .number({ invalid_type_error: "Mileage must be a number." })
     .nonnegative({ message: "Mileage must be 0 or more" }),
+  registrationNumber: z
+    .string()
+    .nonempty({ message: "Registration number is required." }),
+  transmission: z.enum(["Manual", "Automatic"], {
+    required_error: "Transmission type is required.",
+    invalid_type_error: "Transmission must be 'Manual' or 'Automatic'",
+  }),
+  fuelType: z.enum(["Petrol", "Diesel", "Electric"], {
+    required_error: "Fuel type is required.",
+    invalid_type_error: "Fuel type must be Petrol, Diesel or Electric.",
+  }),
   price: z.coerce
     .number({ invalid_type_error: "Price must be a number." })
     .nonnegative({ message: "Price must be positive." }),
