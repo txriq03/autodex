@@ -1,4 +1,10 @@
-import { ethers, BrowserProvider, Contract, parseUnits } from "ethers";
+import {
+  ethers,
+  BrowserProvider,
+  Contract,
+  parseUnits,
+  parseEther,
+} from "ethers";
 import abi from "./CarMarketplace.json";
 import { toast } from "sonner";
 
@@ -70,7 +76,7 @@ export const purchaseCar = async (tokenId: number, price: string) => {
 
   console.log("Signer in purchase function:", signer);
   const buyerAddress = await signer.getAddress();
-  const priceInWei = parseUnits(price, "wei");
+  const priceInWei = parseEther(price);
   try {
     const tx = await contract.connect(signer).buyCar(tokenId, {
       value: priceInWei, // price in wei (BigNumber or string)

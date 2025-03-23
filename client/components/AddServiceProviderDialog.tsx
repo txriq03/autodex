@@ -57,7 +57,13 @@ const AddServiceProviderDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="bg-transparent border-slate-500"> <UserRoundPlus /> Add Service Provider</Button>
+        <Button
+          variant="outline"
+          className="bg-transparent border-slate-300 text-slate-300 hover:bg-slate-100"
+        >
+          {" "}
+          <UserRoundPlus /> Add Service Provider
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -88,7 +94,10 @@ const AddServiceProviderDialog = () => {
                 </Button>
               </DialogClose>
               {isSubmitting ? (
-                <Button type="submit" disabled> <LoaderCircle className="animate-spin"/> Authorising...</Button>
+                <Button type="submit" disabled>
+                  {" "}
+                  <LoaderCircle className="animate-spin" /> Authorising...
+                </Button>
               ) : (
                 <Button type="submit">Authorise</Button>
               )}

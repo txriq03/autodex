@@ -22,10 +22,13 @@ const Navbar = () => {
   });
 
   return (
-    <div className=" bg-slate-50 bg-opacity-[5%] py-3">
+    <div className=" bg-slate-100 bg-opacity-[5%] py-3">
       <div className="min-[1440px]:max-w-[1440px] mx-5 min-[1450px]:mx-auto flex justify-between">
         <Link href="/">
-          <div className="text-2xl text-white font-semibold">AutoDex</div>
+          <div className="text-2xl text-white font-semibold flex flex-nowrap">
+            <p>Auto</p>
+            <p className="text-teal-400">Dex</p>
+          </div>
         </Link>
 
         {account ? (

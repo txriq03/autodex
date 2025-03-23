@@ -52,20 +52,19 @@ const AddLogDialog = () => {
           setTokenId(Number(id));
         } catch (error) {
           toast.error("Could not find token ID from VIN", {
-            description: (error as any).message
-          })
+            description: (error as any).message,
+          });
         }
       }
-    }
+    };
     fetchTokenId();
   }, [contract, vin]);
 
   const mutation = useMutation({
-    
     mutationFn: async (data: LogFormData) => {
       if (!contract || !account || tokenId === null) {
         toast.error("Critical values not available", {
-          description: "Missing contract, account, or tokenId"
+          description: "Missing contract, account, or tokenId",
         });
         throw new Error("Missing contract, account or tokenId");
       }
@@ -81,7 +80,7 @@ const AddLogDialog = () => {
         data.mileage
       );
 
-      await tx.wait()
+      await tx.wait();
     },
     onSuccess: () => {
       toast.success("Service log added.");
@@ -93,12 +92,10 @@ const AddLogDialog = () => {
     },
     onError: (error: any) => {
       toast.error("Failed to add log", {
-        description: error.message || "Check wallet access or contract state."
+        description: error.message || "Check wallet access or contract state.",
       });
-    }
+    },
   });
-
-
 
   const onSubmit = (data: LogFormData) => {
     mutation.mutate(data);
@@ -107,7 +104,10 @@ const AddLogDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button type="button">
+        <Button
+          type="button"
+          className="bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+        >
           <Pen />
           Add log
         </Button>
@@ -173,7 +173,11 @@ const AddLogDialog = () => {
                 </Button>
               </DialogClose>
               {mutation.isPending ? (
-                <Button type="submit" disabled> <LoaderCircle className="animate-spin"/>Submitting</Button>
+                <Button type="submit" disabled>
+                  {" "}
+                  <LoaderCircle className="animate-spin" />
+                  Submitting
+                </Button>
               ) : (
                 <Button type="submit">Submit</Button>
               )}
