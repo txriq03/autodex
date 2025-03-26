@@ -30,8 +30,9 @@ export const getNfts = async (
   } catch (error) {
     if (error instanceof Error) {
       console.error("Failed to fetch NFTs:", error);
-      toast.error("Failed to fetch NFTS", {
-        description: error.message,
+      toast.error("Failed to fetch NFTs", {
+        description:
+          error.message || "Make sure you're logged into your wallet.",
       });
     }
     return [];
