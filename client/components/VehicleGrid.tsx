@@ -3,8 +3,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { ContractContext } from "./providers/ContractProvider";
 import { fetchAllCars, purchaseCar } from "@/lib/web3/contractServices";
 import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import { Button } from "./ui/button";
+import { Button } from "@heroui/button";
+import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,8 @@ import { Calendar, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
 import { Contract, formatEther, formatUnits } from "ethers";
 import VehicleCardMenu from "./VehicleCardMenu";
 import { getNfts, getOwnedNfts } from "@/lib/web3/alchemy";
+import { Image } from "@heroui/image";
+import NextImage from "next/image";
 
 type CarMetadata = {
   name: string;
@@ -132,15 +134,22 @@ const VehicleCard = ({
   metadata: any;
 }) => {
   return (
-    <div className=" p-4 rounded-xl bg-slate-50 bg-opacity-[5%] text-slate-50">
+    <div className="">
       {metadata ? (
-        <>
-          <img
-            src={imageUrl}
-            alt={name}
-            className="w-full h-48 object-cover rounded-lg "
-          />
-          <div className="mt-1">
+        <Card>
+          <CardHeader>
+            <Image
+              src={imageUrl}
+              alt={name}
+              className="object-cover"
+              height={200}
+              width="100%"
+              classNames={{
+                wrapper: "min-w-full h-full",
+              }}
+            />
+          </CardHeader>
+          <CardBody>
             <div className="flex justify-between items-center">
               <div className=" text-lg">
                 <h2 className="inline text-slate-500">
@@ -175,16 +184,16 @@ const VehicleCard = ({
                 <p>{getAttributeValue(metadata.attributes, "transmission")}</p>
               </div>
             </div>
-
-            <div className="flex justify-between items-end mt-4 ">
+          </CardBody>
+          <CardFooter>
+            <div className="flex justify-between items-end mt-4 w-full ">
               {price === "0.0" ? (
-                <Button disabled className="bg-slate-500">
-                  Unavailable
-                </Button>
+                <Button disabled>Unavailable</Button>
               ) : (
                 <Button
-                  className="bg-teal-800 text-teal-400 hover:bg-teal-400 hover:text-slate-100"
-                  onClick={() => purchaseCar(tokenId, price)}
+                  variant="flat"
+                  color="success"
+                  onPress={() => purchaseCar(tokenId, price)}
                 >
                   Buy Car
                 </Button>
@@ -194,9 +203,71 @@ const VehicleCard = ({
                 <p className="inline text-slate-500">ETH</p>
               </div>
             </div>
-          </div>
-        </>
+          </CardFooter>
+        </Card>
       ) : (
+        // <>
+        //   <img
+        //     src={imageUrl}
+        //     alt={name}
+        //     className="w-full h-48 object-cover rounded-lg "
+        //   />
+        //   <div className="mt-1">
+        //     <div className="flex justify-between items-center">
+        //       <div className=" text-lg">
+        //         <h2 className="inline text-slate-500">
+        //           {getAttributeValue(metadata.attributes, "make")}{" "}
+        //         </h2>{" "}
+        //         <h2 className="inline">
+        //           {getAttributeValue(metadata.attributes, "model")}
+        //         </h2>
+        //       </div>
+
+        //       <VehicleCardMenu vin={metadata.attributes[3].value} />
+        //     </div>
+
+        //     <p className="text-sm text-gray-600">
+        //       {metadata.description || "No description"}
+        //     </p>
+
+        //     <div className="mt-2 flex flex-col gap-1">
+        //       <div className="flex gap-2 items-center">
+        //         {" "}
+        //         <Calendar size={22} className="text-slate-500" />{" "}
+        //         <p>{getAttributeValue(metadata.attributes, "year")}</p>
+        //       </div>
+        //       <div className="flex gap-2">
+        //         {" "}
+        //         <Fuel className="text-slate-500" />{" "}
+        //         <p>{getAttributeValue(metadata.attributes, "fuel type")}</p>
+        //       </div>
+        //       <div className="flex gap-2">
+        //         {" "}
+        //         <SlidersHorizontal className="text-slate-500" />{" "}
+        //         <p>{getAttributeValue(metadata.attributes, "transmission")}</p>
+        //       </div>
+        //     </div>
+
+        // <div className="flex justify-between items-end mt-4 ">
+        //   {price === "0.0" ? (
+        //     <Button disabled className="bg-slate-500">
+        //       Unavailable
+        //     </Button>
+        //   ) : (
+        //     <Button
+        //       className="bg-teal-800 text-teal-400 hover:bg-teal-400 hover:text-slate-100"
+        //       onClick={() => purchaseCar(tokenId, price)}
+        //     >
+        //       Buy Car
+        //     </Button>
+        //   )}
+        //   <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
+        //     {price}
+        //     <p className="inline text-slate-500">ETH</p>
+        //   </div>
+        // </div>
+        //   </div>
+        // </>
         <p>Failed to load metadata.</p>
       )}
     </div>

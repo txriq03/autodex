@@ -26,17 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} font-sans antialiased bg-[#13171d] min-h-screen flex flex-col`}
-      >
+      <body className={`${inter.variable} font-sans antialiased `}>
         <HeroUIProvider>
           <TanstackProvider>
             <ContractProvider>
-              <main className="dark text-white bg-black flex-1">
+              <div className="dark text-white bg-black min-h-screen flex flex-col">
                 <Navbar />
-                {children}
-              </main>
-              <Footer />
+                <main className=" flex-1">{children}</main>
+                <Footer />
+              </div>
               <Toaster richColors />
             </ContractProvider>
           </TanstackProvider>

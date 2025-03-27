@@ -53,7 +53,7 @@ const Navbar = () => {
 
   return (
     <NavbarUI
-      className="text-white bg-black bg-opacity-[75%]"
+      className="text-white bg-black bg-opacity-[75%] dark"
       shouldHideOnScroll
       classNames={{
         wrapper: "max-w-[1440px] p-5 min-[1470px]:p-0 ",
