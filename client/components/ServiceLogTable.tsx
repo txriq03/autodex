@@ -75,7 +75,7 @@ const ServiceLogTable = () => {
     );
 
   return (
-    <div className="rounded-md border bg-white">
+    <div className="rounded-md border ">
       <Table>
         <TableHeader>
           <TableRow>
