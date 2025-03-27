@@ -1,12 +1,17 @@
 import { initialise } from "@/lib/web3/contractServices";
-import { Button } from "./ui/button";
+import { Button } from "@heroui/button";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { ContractContext } from "./providers/ContractProvider";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, PlugZap } from "lucide-react";
+import { Spinner } from "@heroui/spinner";
 
-const ConnectWalletButton = ({ className }: { className?: string }) => {
+const ConnectWalletButton = ({
+  size = "md",
+}: {
+  size?: "md" | "sm" | "lg" | undefined;
+}) => {
   const { account, setAccount, setProvider, setSigner, setContract } =
     useContext(ContractContext);
 
@@ -81,7 +86,20 @@ const ConnectWalletButton = ({ className }: { className?: string }) => {
 
   return (
     <div>
-      {isPending ? (
+      <Button
+        color="primary"
+        variant="shadow"
+        radius="sm"
+        className={`${size === "lg" && "text-[1.1rem]"}`}
+        size={size}
+        isLoading={isPending}
+        onPress={() => mutate()}
+        startContent={!isPending && <PlugZap />}
+      >
+        {isPending ? "Connecting..." : "Connect Wallet"}
+      </Button>
+
+      {/* {isPending ? (
         <Button
           disabled
           className={`bg-slate-100 text-slate-800 hover:bg-slate-200 font-normal ${className}`}
@@ -91,11 +109,11 @@ const ConnectWalletButton = ({ className }: { className?: string }) => {
       ) : (
         <Button
           className={`bg-slate-100 text-slate-800 hover:bg-slate-200 font-normal ${className}`}
-          onClick={() => mutate()}
+          onPress={() => mutate()}
         >
           Connect Wallet
         </Button>
-      )}
+      )} */}
     </div>
   );
 };

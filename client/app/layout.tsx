@@ -6,6 +6,7 @@ import TanstackProvider from "@/components/providers/TanstackProvider";
 import ContractProvider from "@/components/providers/ContractProvider";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
+import { HeroUIProvider } from "@heroui/system";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,14 +29,18 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased bg-[#13171d] min-h-screen flex flex-col`}
       >
-        <TanstackProvider>
-          <ContractProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <Toaster richColors />
-          </ContractProvider>
-        </TanstackProvider>
+        <HeroUIProvider>
+          <TanstackProvider>
+            <ContractProvider>
+              <main className="dark text-white bg-black flex-1">
+                <Navbar />
+                {children}
+              </main>
+              <Footer />
+              <Toaster richColors />
+            </ContractProvider>
+          </TanstackProvider>
+        </HeroUIProvider>
       </body>
     </html>
   );
