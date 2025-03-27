@@ -61,6 +61,7 @@ const AddServiceProviderDialog = () => {
           variant="ghost"
           color="primary"
           radius="sm"
+          className="border-1 border-slate-500"
           startContent={<UserRoundPlus />}
         >
           Add Service Provider
