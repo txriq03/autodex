@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "@heroui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -25,7 +25,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ContractContext } from "./providers/ContractProvider";
 import { addServiceProviderSchema } from "@/lib/validation";
-import { LoaderCircle, UserRoundPlus } from "lucide-react";
+import { LoaderCircle, UserRound, UserRoundPlus } from "lucide-react";
 
 const AddServiceProviderDialog = () => {
   const { contract, account } = useContext(ContractContext);
@@ -58,11 +58,12 @@ const AddServiceProviderDialog = () => {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="bg-transparent border-slate-300 text-slate-300 hover:bg-slate-100"
+          variant="ghost"
+          color="primary"
+          radius="sm"
+          startContent={<UserRoundPlus />}
         >
-          {" "}
-          <UserRoundPlus /> Add Service Provider
+          Add Service Provider
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
@@ -89,18 +90,18 @@ const AddServiceProviderDialog = () => {
             />
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button color="danger" variant="flat">
                   Cancel
                 </Button>
               </DialogClose>
-              {isSubmitting ? (
-                <Button type="submit" disabled>
-                  {" "}
-                  <LoaderCircle className="animate-spin" /> Authorising...
-                </Button>
-              ) : (
-                <Button type="submit">Authorise</Button>
-              )}
+              <Button
+                type="submit"
+                color="primary"
+                variant="solid"
+                isLoading={isSubmitting}
+              >
+                {isSubmitting ? "Authorising..." : "Authorise"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

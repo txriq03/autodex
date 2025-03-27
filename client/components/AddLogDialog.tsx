@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { Button } from "@heroui/button";
 import { LoaderCircle, Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
@@ -105,10 +105,11 @@ const AddLogDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          type="button"
-          className="bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+          variant="solid"
+          color="primary"
+          radius="sm"
+          startContent={<Pen />}
         >
-          <Pen />
           Add log
         </Button>
       </DialogTrigger>
@@ -168,19 +169,19 @@ const AddLogDialog = () => {
 
             <DialogFooter className="max-sm:gap-2">
               <DialogClose asChild>
-                <Button type="button" variant="secondary">
+                <Button color="danger" variant="flat">
                   Cancel
                 </Button>
               </DialogClose>
-              {mutation.isPending ? (
-                <Button type="submit" disabled>
-                  {" "}
-                  <LoaderCircle className="animate-spin" />
-                  Submitting
-                </Button>
-              ) : (
-                <Button type="submit">Submit</Button>
-              )}
+
+              <Button
+                type="submit"
+                color="primary"
+                variant="solid"
+                isLoading={mutation.isPending}
+              >
+                {mutation.isPending ? "Submitting" : "Submit"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
