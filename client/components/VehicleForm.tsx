@@ -140,7 +140,7 @@ const VehicleForm = () => {
   };
 
   return (
-    <Card className="max-w-[700px] mx-auto bg-slate-50 bg-opacity-[3%] border-none text-slate-50">
+    <Card className="max-w-[700px] mx-auto bg-slate-50 bg-opacity-[3%]  text-slate-50">
       <CardHeader>
         <CardTitle>Vehicle information</CardTitle>
         <CardDescription>

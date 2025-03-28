@@ -188,12 +188,15 @@ const VehicleCard = ({
           <CardFooter>
             <div className="flex justify-between items-end mt-4 w-full ">
               {price === "0.0" ? (
-                <Button disabled>Unavailable</Button>
+                <Button disabled radius="sm">
+                  Unavailable
+                </Button>
               ) : (
                 <Button
                   variant="flat"
                   color="success"
                   onPress={() => purchaseCar(tokenId, price)}
+                  radius="sm"
                 >
                   Buy Car
                 </Button>

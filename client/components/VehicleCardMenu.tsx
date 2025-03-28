@@ -7,7 +7,7 @@ import React from "react";
 //   DropdownMenuTrigger,
 // } from "./ui/dropdown-menu";
 // import { Button } from "./ui/button";
-import { Book, Ellipsis, Hammer, ScrollText } from "lucide-react";
+import { Book, Ellipsis, Hammer, ScrollText, Trash2 } from "lucide-react";
 import Link from "next/link";
 import {
   Dropdown,
@@ -40,7 +40,7 @@ const VehicleCardMenu = ({ vin }: { vin: string }) => {
           key="delete"
           color="danger"
           className="text-danger"
-          startContent={<Hammer size={18} />}
+          startContent={<Trash2 size={18} />}
         >
           Delete
         </DropdownItem>
