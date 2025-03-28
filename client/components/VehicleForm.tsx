@@ -140,7 +140,7 @@ const VehicleForm = () => {
   };
 
   return (
-    <Card className="max-w-[700px] mx-auto bg-slate-50 bg-opacity-[3%]  text-slate-50">
+    <Card className=" max-w-[700px] mx-auto dark:text-slate-50 dark:bg-slate-50/5 bg-slate-50 bg-opacity-[3%]  text-slate-50">
       <CardHeader>
         <CardTitle>Vehicle information</CardTitle>
         <CardDescription>
@@ -283,7 +283,7 @@ const VehicleFormField = ({
                 type={inputType || "text"}
                 placeholder={placeholder}
                 {...field}
-                className="border-transparent bg-slate-50 bg-opacity-[3%] focus:border focus:border-teal-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield]"
+                className="border-transparent bg-slate-50/[3%] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield]"
               />
             )}
           </FormControl>
@@ -327,7 +327,7 @@ const ComboBoxField = ({
                   role="combobox"
                   disabled={disabled}
                   className={cn(
-                    "w-full justify-between bg-slate-50 bg-opacity-[3%] border-none hover:bg-opacity-[6%] hover:text-slate-200",
+                    "w-full justify-between bg-slate-50/[3%] dark:bg-slate-50/[3%] dark:border-none dark:hover:bg-slate-50/[6%] dark:hover:text-slate-200 border-none hover:bg-opacity-[6%] hover:text-slate-200",
                     !field.value && "text-muted-foreground"
                   )}
                 >
@@ -388,7 +388,7 @@ const VehicleSelectField = ({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <SelectTrigger className="bg-slate-50 bg-opacity-[3%] border-none focus:ring-0 focus:border-teal-500 hover:bg-slate-50 hover:bg-opacity-[5%] transition">
+              <SelectTrigger className="dark:bg-slate-50/[3%] bg-slate-50/[3%] dark:border-none border-none dark:focus:ring-0 focus:ring-0 dark:focus:border-teal-500 focus:border-teal-500 dark:hover:bg-slate-50/[5%] hover:bg-slate-50 hover:bg-opacity-[10%] transition">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent className="bg-neutral-900 border-none text-slate-50">
