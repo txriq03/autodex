@@ -35,7 +35,7 @@ const Hero = () => {
       </h1> */}
       <ShinyText
         text="List your ride. Keep your privacy."
-        className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px]  font-bold mb-4 leading-[75px]"
+        className="text-[2rem] sm:text-[3rem] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
         speed={5}
       />
       <p className="text-[1.2rem] md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-4 ">
@@ -68,8 +68,13 @@ const Hero = () => {
               Mint
             </Button> */}
             <Link href="/sell">
-              <Button variant="shadow" color="primary" size="lg" radius="sm">
-                Mint your vehicle
+              <Button
+                variant="ghost"
+                size="lg"
+                radius="sm"
+                className="text-lg bg-white/5"
+              >
+                <ShinyText text="Mint your vehicle" />
               </Button>
             </Link>
           </div>
