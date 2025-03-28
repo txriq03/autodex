@@ -137,7 +137,7 @@ const VehicleCard = ({
     <div className="">
       {metadata ? (
         <Card>
-          <CardHeader>
+          <CardBody>
             <Image
               src={imageUrl}
               alt={name}
@@ -148,10 +148,8 @@ const VehicleCard = ({
                 wrapper: "min-w-full h-full",
               }}
             />
-          </CardHeader>
-          <CardBody>
-            <div className="flex justify-between items-center">
-              <div className=" text-lg">
+            <div className="flex justify-between items-center mt-2">
+              <div className=" text-[1.2rem]">
                 <h2 className="inline text-slate-500">
                   {getAttributeValue(metadata.attributes, "make")}{" "}
                 </h2>{" "}

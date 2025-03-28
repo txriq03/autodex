@@ -29,7 +29,7 @@ const Hero = () => {
 
   return (
     <div className="border border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
-      <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-slate-50 font-bold mb-4">
+      <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-slate-50 font-bold mb-4 leading-[75px] ">
         List Your Ride. Keep Your Privacy.
       </h1>
       <p className="text-[1.2rem] md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-4 ">
