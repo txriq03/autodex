@@ -14,6 +14,7 @@ import VehicleCardMenu from "./VehicleCardMenu";
 import { getNfts, getOwnedNfts } from "@/lib/web3/alchemy";
 import { Image } from "@heroui/image";
 import NextImage from "next/image";
+import { Skeleton } from "@heroui/skeleton";
 
 type CarMetadata = {
   name: string;
@@ -87,13 +88,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
     }
   }, [success]);
 
-  if (isNftPending)
-    return (
-      <div className="bg-slate-100 bg-opacity-[5%] rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
-        <LoaderCircle className="animate-spin inline text-teal-500" />{" "}
-        <p className="inline">Loading...</p>
-      </div>
-    );
+  if (isNftPending) return <SkeletonCards />;
 
   if (nftList == undefined || nftList.length < 1)
     return (
@@ -259,4 +254,81 @@ export const useCarsWithMetadata = (
   });
 };
 
+const SkeletonCards = () => {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-4">
+      <Card className="p-3" radius="lg">
+        <Skeleton className="rounded-xl">
+          <div className="h-[200px] rounded-lg bg-default-300" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-5 w-3/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-4/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-2/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-lg mt-5 w-[90px]">
+          <div className="h-10" />
+        </Skeleton>
+      </Card>
+
+      <Card className="p-3 hidden md:block" radius="lg">
+        <Skeleton className="rounded-xl">
+          <div className="h-[200px] rounded-lg bg-default-300" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-5 w-3/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-4/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-2/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-lg mt-5 w-[90px]">
+          <div className="h-10" />
+        </Skeleton>
+      </Card>
+
+      <Card className="p-3 hidden lg:block" radius="lg">
+        <Skeleton className="rounded-xl">
+          <div className="h-[200px] rounded-lg bg-default-300" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-5 w-3/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-4/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-2/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-lg mt-5 w-[90px]">
+          <div className="h-10" />
+        </Skeleton>
+      </Card>
+
+      <Card className="p-3 hidden xl:block" radius="lg">
+        <Skeleton className="rounded-xl">
+          <div className="h-[200px] rounded-lg bg-default-300" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-5 w-3/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-4/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-full mt-2 w-2/5">
+          <div className="h-5 rounded-full bg-default-200" />
+        </Skeleton>
+        <Skeleton className="rounded-lg mt-5 w-[90px]">
+          <div className="h-10" />
+        </Skeleton>
+      </Card>
+    </div>
+  );
+};
 export default VehicleGrid;
