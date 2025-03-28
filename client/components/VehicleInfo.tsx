@@ -1,6 +1,7 @@
 "use client";
 
 import { getCarMetadataByVIN } from "@/lib/web3/contractServices";
+import { purchaseCar } from "@/lib/web3/contractServices";
 import { ContractContext } from "@/components/providers/ContractProvider";
 import { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -143,6 +144,7 @@ const VehicleInfo = () => {
               variant="flat"
               radius="sm"
               startContent={<ShoppingCart />}
+              onPress={() => purchaseCar(tokenId, formatEther(price))}
             >
               Purchase
             </Button>

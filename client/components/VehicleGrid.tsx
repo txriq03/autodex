@@ -207,68 +207,6 @@ const VehicleCard = ({
           </CardFooter>
         </Card>
       ) : (
-        // <>
-        //   <img
-        //     src={imageUrl}
-        //     alt={name}
-        //     className="w-full h-48 object-cover rounded-lg "
-        //   />
-        //   <div className="mt-1">
-        //     <div className="flex justify-between items-center">
-        //       <div className=" text-lg">
-        //         <h2 className="inline text-slate-500">
-        //           {getAttributeValue(metadata.attributes, "make")}{" "}
-        //         </h2>{" "}
-        //         <h2 className="inline">
-        //           {getAttributeValue(metadata.attributes, "model")}
-        //         </h2>
-        //       </div>
-
-        //       <VehicleCardMenu vin={metadata.attributes[3].value} />
-        //     </div>
-
-        //     <p className="text-sm text-gray-600">
-        //       {metadata.description || "No description"}
-        //     </p>
-
-        //     <div className="mt-2 flex flex-col gap-1">
-        //       <div className="flex gap-2 items-center">
-        //         {" "}
-        //         <Calendar size={22} className="text-slate-500" />{" "}
-        //         <p>{getAttributeValue(metadata.attributes, "year")}</p>
-        //       </div>
-        //       <div className="flex gap-2">
-        //         {" "}
-        //         <Fuel className="text-slate-500" />{" "}
-        //         <p>{getAttributeValue(metadata.attributes, "fuel type")}</p>
-        //       </div>
-        //       <div className="flex gap-2">
-        //         {" "}
-        //         <SlidersHorizontal className="text-slate-500" />{" "}
-        //         <p>{getAttributeValue(metadata.attributes, "transmission")}</p>
-        //       </div>
-        //     </div>
-
-        // <div className="flex justify-between items-end mt-4 ">
-        //   {price === "0.0" ? (
-        //     <Button disabled className="bg-slate-500">
-        //       Unavailable
-        //     </Button>
-        //   ) : (
-        //     <Button
-        //       className="bg-teal-800 text-teal-400 hover:bg-teal-400 hover:text-slate-100"
-        //       onClick={() => purchaseCar(tokenId, price)}
-        //     >
-        //       Buy Car
-        //     </Button>
-        //   )}
-        //   <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
-        //     {price}
-        //     <p className="inline text-slate-500">ETH</p>
-        //   </div>
-        // </div>
-        //   </div>
-        // </>
         <p>Failed to load metadata.</p>
       )}
     </div>

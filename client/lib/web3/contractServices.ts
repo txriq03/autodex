@@ -67,6 +67,7 @@ export const fetchAllCars = async (contract: Contract) => {
 export const purchaseCar = async (tokenId: number, price: string) => {
   let contract: any = "";
   let signer: any = "";
+  console.log(price);
 
   const results = await initialise();
   if (results) {
