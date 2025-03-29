@@ -7,7 +7,14 @@ import React from "react";
 //   DropdownMenuTrigger,
 // } from "./ui/dropdown-menu";
 // import { Button } from "./ui/button";
-import { Book, Ellipsis, Hammer, ScrollText, Trash2 } from "lucide-react";
+import {
+  BadgeDollarSign,
+  Book,
+  Ellipsis,
+  Hammer,
+  ScrollText,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Dropdown,
@@ -27,23 +34,33 @@ const VehicleCardMenu = ({ vin }: { vin: string }) => {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Actions" variant="flat">
-        <DropdownItem key="information" startContent={<Book size={18} />}>
-          <Link href={`/cars/${vin}`}>Information</Link>
-        </DropdownItem>
-        <DropdownItem
-          key="service-logs"
-          startContent={<ScrollText size={18} />}
-        >
-          <Link href={`/logs/${vin}`}>Service Logs</Link>
-        </DropdownItem>
-        <DropdownItem
-          key="delete"
-          color="danger"
-          className="text-danger"
-          startContent={<Trash2 size={18} />}
-        >
-          Delete
-        </DropdownItem>
+        <DropdownSection showDivider title="View">
+          <DropdownItem key="information" startContent={<Book size={18} />}>
+            <Link href={`/cars/${vin}`}>Information</Link>
+          </DropdownItem>
+          <DropdownItem
+            key="service-logs"
+            startContent={<ScrollText size={18} />}
+          >
+            <Link href={`/logs/${vin}`}>Service Logs</Link>
+          </DropdownItem>
+        </DropdownSection>
+        <DropdownSection title="Actions">
+          <DropdownItem
+            key="list-for-sale"
+            startContent={<BadgeDollarSign size={18} />}
+          >
+            List For Sale
+          </DropdownItem>
+          <DropdownItem
+            key="delete"
+            color="danger"
+            className="text-danger"
+            startContent={<Trash2 size={18} />}
+          >
+            Delete
+          </DropdownItem>
+        </DropdownSection>
       </DropdownMenu>
     </Dropdown>
     // <DropdownMenu>
