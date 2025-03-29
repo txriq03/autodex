@@ -1,20 +1,21 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { ContractContext } from "./providers/ContractProvider";
 import { fetchAllCars, purchaseCar } from "@/lib/web3/contractServices";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@heroui/button";
-import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
+import { Card, CardBody, CardFooter } from "@heroui/card";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Calendar, Fuel, LoaderCircle, SlidersHorizontal } from "lucide-react";
-import { Contract, formatEther, formatUnits } from "ethers";
+import { Calendar, Fuel, SlidersHorizontal } from "lucide-react";
+import { formatUnits } from "ethers";
 import VehicleCardMenu from "./VehicleCardMenu";
-import { getNfts, getOwnedNfts } from "@/lib/web3/alchemy";
+import { getNfts } from "@/lib/web3/alchemy";
 import { Image } from "@heroui/image";
-import NextImage from "next/image";
 import { Skeleton } from "@heroui/skeleton";
+import { useDisclosure } from "@heroui/modal";
+import ListForSaleModal from "./ListForSaleModal";
 
 type CarMetadata = {
   name: string;
@@ -128,6 +129,7 @@ const VehicleCard = ({
   imageUrl: string | undefined;
   metadata: any;
 }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <div className="">
       {metadata ? (
@@ -153,7 +155,12 @@ const VehicleCard = ({
                 </h2>
               </div>
 
-              <VehicleCardMenu vin={metadata.attributes[3].value} />
+              {/* Drop down menu and price modal */}
+              <VehicleCardMenu
+                vin={metadata.attributes[3].value}
+                onOpen={onOpen}
+              />
+              <ListForSaleModal isOpen={isOpen} onOpenChange={onOpenChange} />
             </div>
 
             <p className="text-sm text-gray-600">

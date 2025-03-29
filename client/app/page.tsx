@@ -1,6 +1,5 @@
 import { Hero, Search } from "@/components/";
 import VehicleContent from "@/components/VehicleContent";
-import VehicleGrid from "@/components/VehicleGrid";
 
 export default function Home() {
   return (
