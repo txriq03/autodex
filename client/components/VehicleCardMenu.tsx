@@ -29,14 +29,21 @@ const VehicleCardMenu = ({ vin, onOpen }: { vin: string; onOpen: any }) => {
         </DropdownTrigger>
         <DropdownMenu aria-label="Actions" variant="flat">
           <DropdownSection showDivider title="View">
-            <DropdownItem key="information" startContent={<Book size={18} />}>
-              <Link href={`/cars/${vin}`}>Information</Link>
+            <DropdownItem
+              key="information"
+              as={Link}
+              href={`/cars/${vin}`}
+              startContent={<Book size={18} />}
+            >
+              Information
             </DropdownItem>
             <DropdownItem
               key="service-logs"
               startContent={<ScrollText size={18} />}
+              as={Link}
+              href={`/logs/${vin}`}
             >
-              <Link href={`/logs/${vin}`}>Service Logs</Link>
+              Service Logs
             </DropdownItem>
           </DropdownSection>
           <DropdownSection title="Actions">
