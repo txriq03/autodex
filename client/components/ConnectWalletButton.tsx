@@ -88,7 +88,7 @@ const ConnectWalletButton = ({
     <div>
       <Button
         color="primary"
-        variant="shadow"
+        variant={`${size === "md" ? "shadow" : "solid"}`}
         radius="sm"
         className={`${size === "lg" && "text-[1.1rem]"}`}
         size={size}

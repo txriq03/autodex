@@ -24,10 +24,15 @@ const ListForSaleModal = ({ isOpen, onOpenChange }: any) => {
             </ModalHeader>
             <ModalBody></ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="flat" onPress={onClose}>
+              <Button
+                color="danger"
+                variant="flat"
+                radius="sm"
+                onPress={onClose}
+              >
                 Close
               </Button>
-              <Button color="primary" onPress={onClose}>
+              <Button color="primary" radius="sm" onPress={onClose}>
                 Action
               </Button>
             </ModalFooter>

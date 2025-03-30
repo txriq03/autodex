@@ -54,7 +54,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
   const { account, contract } = useContext(ContractContext);
 
   const { data: nftList, isPending: isNftPending } = useQuery({
-    queryKey: ["nftList"],
+    queryKey: ["nftList", account],
     queryFn: () =>
       getNfts(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, account, filterOwned),
   });
@@ -187,11 +187,7 @@ const VehicleCard = ({
           </CardBody>
           <CardFooter>
             <div className="flex justify-between items-end mt-4 w-full ">
-              {price === "0.0" ? (
-                <Button disabled radius="sm">
-                  Unavailable
-                </Button>
-              ) : (
+              {Number(price) > 0 ? (
                 <Button
                   variant="flat"
                   color="success"
@@ -199,6 +195,10 @@ const VehicleCard = ({
                   radius="sm"
                 >
                   Buy Car
+                </Button>
+              ) : (
+                <Button disabled radius="sm">
+                  Unavailable
                 </Button>
               )}
               <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
