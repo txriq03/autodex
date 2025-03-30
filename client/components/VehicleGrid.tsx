@@ -188,23 +188,30 @@ const VehicleCard = ({
           <CardFooter>
             <div className="flex justify-between items-end mt-4 w-full ">
               {Number(price) > 0 ? (
-                <Button
-                  variant="flat"
-                  color="success"
-                  onPress={() => purchaseCar(tokenId, price)}
-                  radius="sm"
-                >
-                  Buy Car
-                </Button>
+                <>
+                  <Button
+                    variant="flat"
+                    color="success"
+                    onPress={() => purchaseCar(tokenId, price)}
+                    radius="sm"
+                  >
+                    Buy Car
+                  </Button>
+                  <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
+                    {price}
+                    <p className="inline text-slate-500">ETH</p>
+                  </div>
+                </>
               ) : (
-                <Button disabled radius="sm">
-                  Unavailable
-                </Button>
+                <>
+                  <Button disabled radius="sm">
+                    Unavailable
+                  </Button>
+                  <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
+                    <p className="inline text-slate-500">N/A</p>
+                  </div>
+                </>
               )}
-              <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
-                {price}
-                <p className="inline text-slate-500">ETH</p>
-              </div>
             </div>
           </CardFooter>
         </Card>
