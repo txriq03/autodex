@@ -10,7 +10,13 @@ const Provider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   return (
     <HeroUIProvider navigate={router.push}>
-      <ToastProvider />
+      <ToastProvider
+        toastProps={{
+          classNames: {
+            description: "overflow-hidden text-ellipsis",
+          },
+        }}
+      />
       <TanstackProvider>
         <ContractProvider>{children}</ContractProvider>
       </TanstackProvider>

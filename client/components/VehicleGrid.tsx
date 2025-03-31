@@ -131,7 +131,7 @@ const VehicleCard = ({
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
-    <div className="">
+    <div>
       {metadata ? (
         <Card>
           <CardBody>
@@ -160,7 +160,11 @@ const VehicleCard = ({
                 vin={metadata.attributes[3].value}
                 onOpen={onOpen}
               />
-              <ListForSaleModal isOpen={isOpen} onOpenChange={onOpenChange} />
+              <ListForSaleModal
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                tokenId={tokenId}
+              />
             </div>
 
             <p className="text-sm text-gray-600">
