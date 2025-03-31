@@ -48,12 +48,26 @@ const ListForSaleModal = ({ isOpen, onOpenChange, tokenId }: any) => {
     } catch (error) {
       if (error instanceof Error) {
         console.error("Error changing price:", error.message);
-        addToast({
-          title: "Error listing vehicle for sale.",
-          description: error.message,
-          color: "danger",
-          variant: "flat",
-        });
+        if (
+          error.message.includes(
+            "Only the owner of the vehicle can list it for sale."
+          )
+        ) {
+          addToast({
+            title: "Error listing vehicle for sale.",
+            description:
+              "You need to be the owner of the vehicle to list it for sale.",
+            color: "danger",
+            variant: "flat",
+          });
+        } else {
+          addToast({
+            title: "Error listing vehicle for sale.",
+            description: error.message,
+            color: "danger",
+            variant: "flat",
+          });
+        }
       } else {
         console.error("Unknown error changing price.");
         addToast({
