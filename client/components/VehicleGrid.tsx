@@ -130,6 +130,11 @@ const VehicleCard = ({
   metadata: any;
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  // const { data, isPending } = useQuery({
+  //   queryKey: ["purchaseCar", tokenId],
+  //   queryFn: () => purchaseCar(tokenId, price),
+
+  // })
   return (
     <div>
       {metadata ? (

@@ -2,6 +2,7 @@ import { BrowserProvider, Contract, parseEther } from "ethers";
 import abi from "./CarMarketplace.json";
 import { toast } from "sonner";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
+import { addToast } from "@heroui/toast";
 
 // Initialise provider, signer and contract
 export const initialise = async () => {
@@ -75,13 +76,16 @@ export const purchaseCar = async (tokenId: number, price: string) => {
       value: priceInWei, // price in wei (BigNumber or string)
     });
 
-    toast("Processing transaction...", {
-      description: "Please confirm in wallet.",
-    });
+    // toast("Processing transaction...", {
+    //   description: "Please confirm in wallet.",
+    // });
 
     await tx.wait();
-    toast.success("Success!", {
+    addToast({
+      title: "Success!",
       description: "You've successfully purchased the vehicle.",
+      color: "success",
+      variant: "flat",
     });
 
     // Optionally refetch or update UI
@@ -89,12 +93,27 @@ export const purchaseCar = async (tokenId: number, price: string) => {
     console.error("Purchase failed:", error);
 
     if (error instanceof Error) {
-      toast.error("Failed to purchase car", {
-        description: error.message || "Transaction was rejected or failed.",
-      });
+      if (error.message.includes("You cannot buy your own car.")) {
+        addToast({
+          title: "Failed to purchase vehicle",
+          description: "You cannot buy your own vehicle.",
+          color: "danger",
+          variant: "flat",
+        });
+      } else {
+        addToast({
+          title: "Failed to purchase vehicle",
+          description: error.message || "Transaction was rejected or failed.",
+          color: "danger",
+          variant: "flat",
+        });
+      }
     } else {
-      toast.error("Failed to purchase car", {
+      addToast({
+        title: "Failed to purchase vehicle",
         description: "Transaction was rejected or failed.",
+        color: "danger",
+        variant: "flat",
       });
     }
   }
