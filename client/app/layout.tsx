@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import TanstackProvider from "@/components/providers/TanstackProvider";
-import ContractProvider from "@/components/providers/ContractProvider";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
-import { HeroUIProvider } from "@heroui/system";
 import Provider from "@/components/providers/Provider";
+
+export const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-plex",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased `}>
+      <body className={`${inter.variable} font-plex antialiased `}>
         <Provider>
           <div className="dark text-white bg-black min-h-screen flex flex-col">
             <Navbar />

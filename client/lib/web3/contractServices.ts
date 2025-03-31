@@ -1,15 +1,7 @@
-import {
-  ethers,
-  BrowserProvider,
-  Contract,
-  parseUnits,
-  parseEther,
-} from "ethers";
+import { BrowserProvider, Contract, parseEther } from "ethers";
 import abi from "./CarMarketplace.json";
 import { toast } from "sonner";
-
-const CONTRACT_ADDRESS = "0xC4546278E755D4776454f9AA8fc21C7CB8884ED4";
-const CONTRACT_ABI = abi.abi;
+import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
 
 // Initialise provider, signer and contract
 export const initialise = async () => {
