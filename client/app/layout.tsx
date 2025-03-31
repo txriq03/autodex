@@ -31,9 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-plex antialiased `}>
+      <body className={`${inter.variable} font-plex antialiased dark`}>
         <Provider>
-          <div className="dark text-white bg-black min-h-screen flex flex-col">
+          <div className=" text-white bg-black min-h-screen flex flex-col">
             <Navbar />
             <main className=" flex-1">{children}</main>
             <Footer />

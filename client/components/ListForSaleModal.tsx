@@ -7,6 +7,18 @@ import {
   ModalFooter,
 } from "@heroui/modal";
 import { Button } from "@heroui/button";
+import { z } from "zod";
+import { useFormContext, Controller, useForm } from "react-hook-form";
+import { Input } from "@heroui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addToast } from "@heroui/toast";
+import { Form } from "@heroui/form";
+const priceSchema = z.object({
+  price: z.coerce
+    .number({ invalid_type_error: "Price must be a number." })
+    .positive({ message: "Price must be greater than 0." }),
+});
+type TPriceSchema = z.infer<typeof priceSchema>;
 
 const ListForSaleModal = ({ isOpen, onOpenChange }: any) => {
   return (
@@ -20,9 +32,11 @@ const ListForSaleModal = ({ isOpen, onOpenChange }: any) => {
         {(onClose) => (
           <>
             <ModalHeader className="text-[1.5rem] font-light">
-              Modal Title
+              List For Sale
             </ModalHeader>
-            <ModalBody></ModalBody>
+            <ModalBody>
+              <ListForSaleForm />
+            </ModalBody>
             <ModalFooter>
               <Button
                 color="danger"
@@ -32,7 +46,12 @@ const ListForSaleModal = ({ isOpen, onOpenChange }: any) => {
               >
                 Close
               </Button>
-              <Button color="primary" radius="sm" onPress={onClose}>
+              <Button
+                color="primary"
+                radius="sm"
+                type="submit"
+                form="listForSaleForm"
+              >
                 Action
               </Button>
             </ModalFooter>
@@ -43,4 +62,34 @@ const ListForSaleModal = ({ isOpen, onOpenChange }: any) => {
   );
 };
 
+const ListForSaleForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<TPriceSchema>({
+    resolver: zodResolver(priceSchema),
+  });
+
+  const onSubmit = async (data: TPriceSchema) => {
+    addToast({
+      title: "Submit button clicked.",
+      color: "success",
+      variant: "flat",
+    });
+    reset();
+  };
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)} id="listForSaleForm">
+      <Input
+        {...register("price")}
+        type="number"
+        placeholder="0.0"
+        label="Price (ETH)"
+        labelPlacement="outside"
+      />
+    </Form>
+  );
+};
 export default ListForSaleModal;
