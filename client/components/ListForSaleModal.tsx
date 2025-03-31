@@ -73,21 +73,34 @@ const ListForSaleForm = () => {
   });
 
   const onSubmit = async (data: TPriceSchema) => {
+    // "use server";
+
     addToast({
-      title: "Submit button clicked.",
+      title: "Price updated to: " + data.price,
       color: "success",
       variant: "flat",
     });
+
+    // Validate form data
+    // const result = priceSchema.safeParse(data);
+    // if (!result.success) {
+    //   // Get flattened errors to display in the form
+    //   const errors = result.error.flatten();
+    //   return { validationErrors: errors.fieldErrors };
+    // }
     reset();
   };
+
   return (
     <Form onSubmit={handleSubmit(onSubmit)} id="listForSaleForm">
       <Input
         {...register("price")}
-        type="number"
+        type="string"
         placeholder="0.0"
         label="Price (ETH)"
         labelPlacement="outside"
+        isInvalid={!!errors.price}
+        errorMessage={errors.price?.message}
       />
     </Form>
   );
