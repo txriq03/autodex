@@ -100,7 +100,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         console.log("price expected:", cars[tokenId].price);
 
         // Transfer ownership
-        safeTransferFrom(seller, msg.sender, tokenId);
+        transferFrom(seller, msg.sender, tokenId);
 
         // Transfer funds to seller
         payable(seller).transfer(msg.value);
@@ -117,18 +117,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 tokenId
     ) public override(ERC721, IERC721) {
         super.transferFrom(from, to, tokenId);
-        ownershipHistory[tokenId].push(
-            OwnershipRecord({owner: to, timestamp: block.timestamp})
-        );
-        emit OwnershipTransferred(tokenId, from, to);
-    }
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override(ERC721, IERC721) {
-        super.safeTransferFrom(from, to, tokenId);
         ownershipHistory[tokenId].push(
             OwnershipRecord({owner: to, timestamp: block.timestamp})
         );
