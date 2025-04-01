@@ -6,7 +6,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Calendar, Fuel, SlidersHorizontal } from "lucide-react";
 import { formatUnits } from "ethers";
@@ -16,6 +15,7 @@ import { Image } from "@heroui/image";
 import { Skeleton } from "@heroui/skeleton";
 import { useDisclosure } from "@heroui/modal";
 import ListForSaleModal from "./ListForSaleModal";
+import { addToast } from "@heroui/toast";
 
 type CarMetadata = {
   name: string;
@@ -82,8 +82,11 @@ const VehicleGrid = ({ filterOwned = false }) => {
   // Load toast if submission is successful
   useEffect(() => {
     if (success) {
-      toast.success("Success!", {
+      addToast({
+        title: "Success!",
         description: "You have successfully minted your vehicle.",
+        color: "success",
+        variant: "flat",
       });
       router.replace(window.location.pathname); // Cleans up the URL to remove ?success=true
     }
@@ -134,6 +137,7 @@ const VehicleCard = ({
   const { mutate, isPending } = useMutation({
     mutationFn: () => purchaseCar(tokenId, price),
   });
+
   return (
     <div>
       {metadata ? (

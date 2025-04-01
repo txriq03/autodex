@@ -1,3 +1,4 @@
+import { addToast } from "@heroui/toast";
 import { Alchemy, Network } from "alchemy-sdk";
 import { toast } from "sonner";
 
@@ -30,9 +31,12 @@ export const getNfts = async (
   } catch (error) {
     if (error instanceof Error) {
       console.error("Failed to fetch NFTs:", error);
-      toast.error("Failed to fetch NFTs", {
+      addToast({
+        title: "Failed to fetch NFTs",
         description:
-          error.message || "Make sure you're logged into your wallet.",
+          error.message || "Make sure you're logged into your wallet",
+        color: "danger",
+        variant: "flat",
       });
     }
     return [];
@@ -52,8 +56,11 @@ export const getOwnedNfts = async (
     } catch (error) {
       if (error instanceof Error) {
         console.error("Failed to fetch owned NFTs:", error);
-        toast.error("Failed to fetch owned NFTs", {
+        addToast({
+          title: "Failed to fetch owned NFTs",
           description: error.message,
+          color: "danger",
+          variant: "flat",
         });
       }
       return [];

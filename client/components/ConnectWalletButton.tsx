@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { ContractContext } from "./providers/ContractProvider";
-import { LoaderCircle, PlugZap } from "lucide-react";
-import { Spinner } from "@heroui/spinner";
+import { PlugZap } from "lucide-react";
+import { addToast } from "@heroui/toast";
 
 const ConnectWalletButton = ({
   size = "md",
@@ -68,17 +68,27 @@ const ConnectWalletButton = ({
       setProvider(provider);
       setSigner(signer);
       setContract(contract);
-      toast.success("Wallet connected successfully.");
+      addToast({
+        title: "Wallet connected successfully",
+        color: "success",
+        variant: "flat",
+      });
     },
     onError: (error: any) => {
       if (error.code === -32002) {
-        toast.error("Failed to connect wallet", {
+        addToast({
+          title: "Failed to connect wallet",
           description:
-            "A connect request has already been sent. Check your wallet.",
+            "A connection request has already been sent. Check your wallet!",
+          color: "warning",
+          variant: "flat",
         });
       } else {
-        toast.error("Failed to connect wallet", {
+        addToast({
+          title: "Failed to connect to wallet",
           description: error.message,
+          color: "danger",
+          variant: "flat",
         });
       }
     },

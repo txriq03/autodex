@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "@heroui/button";
-import { LoaderCircle, Pen } from "lucide-react";
+import { Pen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -27,6 +27,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ContractContext } from "./providers/ContractProvider";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import { addToast } from "@heroui/toast";
 
 const AddLogDialog = () => {
   const form = useForm<LogFormData>({
@@ -51,8 +52,11 @@ const AddLogDialog = () => {
           const id = await contract.getTokenIdByVIN(vin);
           setTokenId(Number(id));
         } catch (error) {
-          toast.error("Could not find token ID from VIN", {
-            description: (error as any).message,
+          addToast({
+            title: "Could not find token ID from VIN",
+            description: error instanceof Error ? error.message : String(error),
+            color: "danger",
+            variant: "flat",
           });
         }
       }
@@ -63,8 +67,11 @@ const AddLogDialog = () => {
   const mutation = useMutation({
     mutationFn: async (data: LogFormData) => {
       if (!contract || !account || tokenId === null) {
-        toast.error("Critical values not available", {
+        addToast({
+          title: "Critical values not available",
           description: "Missing contract, account, or tokenId",
+          color: "danger",
+          variant: "flat",
         });
         throw new Error("Missing contract, account or tokenId");
       }
@@ -83,7 +90,11 @@ const AddLogDialog = () => {
       await tx.wait();
     },
     onSuccess: () => {
-      toast.success("Service log added.");
+      addToast({
+        title: "Service log added",
+        color: "success",
+        variant: "flat",
+      });
       if (tokenId !== null) {
         queryClient.invalidateQueries({ queryKey: ["serviceLogs", tokenId] });
       }
@@ -91,8 +102,11 @@ const AddLogDialog = () => {
       setOpen(false);
     },
     onError: (error: any) => {
-      toast.error("Failed to add log", {
+      addToast({
+        title: "Failed to add log",
         description: error.message || "Check wallet access or contract state.",
+        color: "danger",
+        variant: "flat",
       });
     },
   });

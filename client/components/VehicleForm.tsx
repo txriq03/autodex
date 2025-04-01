@@ -27,7 +27,6 @@ import { uploadToIPFS, uploadImageToIPFS } from "@/lib/web3/ipfs";
 import { CarFormData, carSchema } from "@/lib/validation";
 import { Check, ChevronsUpDown, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { parseEther } from "ethers";
 import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import {
@@ -47,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { addToast } from "@heroui/toast";
 
 const VehicleForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -86,7 +86,11 @@ const VehicleForm = () => {
 
     if (!contract || !provider) {
       console.error("Error: User not logged into wallet.");
-      toast.warning("Please  unlock your wallet");
+      addToast({
+        title: "Please unlock your wallet",
+        color: "warning",
+        variant: "flat",
+      });
       return null;
     }
     const signer = await provider.getSigner();
@@ -124,12 +128,11 @@ const VehicleForm = () => {
         console.error("Error minting vehicle:", mintError);
 
         // Toast
-        toast.error("Minting failed.", {
-          classNames: {
-            toast: "bg-rose-500",
-            description: "text-slate-500",
-          },
+        addToast({
+          title: "Minting failed",
           description: "Please check your wallet and try again",
+          color: "danger",
+          variant: "flat",
         });
       }
     } catch (error) {

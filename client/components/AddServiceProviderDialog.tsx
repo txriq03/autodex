@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ContractContext } from "./providers/ContractProvider";
 import { addServiceProviderSchema } from "@/lib/validation";
 import { LoaderCircle, UserRound, UserRoundPlus } from "lucide-react";
+import { addToast } from "@heroui/toast";
 
 const AddServiceProviderDialog = () => {
   const { contract, account } = useContext(ContractContext);
@@ -45,10 +46,19 @@ const AddServiceProviderDialog = () => {
       setIsSubmitting(true);
       const tx = await contract.addServiceProvider(address);
       await tx.wait();
-      toast.success("Service provider added");
+      addToast({
+        title: "Service provider added",
+        color: "success",
+        variant: "flat",
+      });
       form.reset();
-    } catch (error: any) {
-      toast.error("Error", { description: error.message });
+    } catch (error) {
+      addToast({
+        title: "Error",
+        description: error instanceof Error ? error.message : String(error),
+        color: "danger",
+        variant: "flat",
+      });
     } finally {
       setIsSubmitting(false);
     }

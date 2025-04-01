@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { ContractContext } from "./providers/ContractProvider";
 import { useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -13,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { LoaderCircle } from "lucide-react";
+import { addToast } from "@heroui/toast";
 
 const ServiceLogTable = () => {
   const { contract } = useContext(ContractContext);
@@ -27,8 +27,11 @@ const ServiceLogTable = () => {
           const id = await contract.getTokenIdByVIN(vin);
           setTokenId(Number(id));
         } catch (error) {
-          toast.error("Failed to fetch tokenId", {
-            description: (error as any).message,
+          addToast({
+            title: "Failed to fetch token ID",
+            description: error instanceof Error ? error.message : String(error),
+            color: "danger",
+            variant: "flat",
           });
         }
       }

@@ -4,6 +4,7 @@ import { initialise } from "@/lib/web3/contractServices";
 import { ethers } from "ethers";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { addToast } from "@heroui/toast";
 
 export const ContractContext = createContext<any>(null);
 
@@ -34,8 +35,12 @@ const ContractProvider = ({ children }: { children: ReactNode }) => {
         }
       } catch (error) {
         console.error("Wallet auto-connect failed:", error);
-        toast.error("Wallet auto-connect failed", {
+
+        addToast({
+          title: "Wallet auto-connect failed",
           description: error instanceof Error ? error.message : String(error),
+          color: "danger",
+          variant: "flat",
         });
       }
     };
@@ -57,7 +62,11 @@ const ContractProvider = ({ children }: { children: ReactNode }) => {
         setContract(null);
 
         queryClient.invalidateQueries({ queryKey: ["nftList"] });
-        toast.info("Wallet disconnected or locked.");
+        addToast({
+          title: "Wallet disconnected or locked.",
+          color: "primary",
+          variant: "flat",
+        });
       }
     };
 
