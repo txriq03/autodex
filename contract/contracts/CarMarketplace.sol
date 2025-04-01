@@ -2,6 +2,8 @@
 pragma solidity ^0.8.28;
 
 import {ERC721URIStorage, ERC721} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
@@ -19,11 +21,16 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string garageName;
         uint256 mileage;
     }
+    struct OwnershipRecord {
+        address owner;
+        uint256 timestamp;
+    }
 
     mapping(uint256 => Car) private cars; // tokenID mapped to Car struct
     mapping(string => uint256) private vinToId;
     mapping(uint256 => ServiceRecord[]) private serviceLogs;
     mapping(address => bool) public isServiceProvider;
+    mapping(uint256 => OwnershipRecord[]) private ownershipHistory; // tokenID to list of ownership records
 
     event CarMinted(uint256 tokenId, address owner, string vin);
     event CarListedForSale(uint256 tokenId, uint256 price);
@@ -31,6 +38,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     event ServiceProviderAdded(address indexed provider);
     event ServiceProviderRemoved(address indexed provider);
     event ServiceRecordAdded(uint256 indexed tokenId, string description);
+    event OwnershipTransferred(uint256 tokenId, address from, address to);
 
     constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
 
@@ -59,6 +67,10 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         });
 
         vinToId[vin] = tokenId;
+        ownershipHistory[tokenId].push(
+            OwnershipRecord({owner: to, timestamp: block.timestamp})
+        );
+
         nextTokenId++;
         emit CarMinted(tokenId, to, vin);
     }
@@ -88,7 +100,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         console.log("price expected:", cars[tokenId].price);
 
         // Transfer ownership
-        _transfer(seller, msg.sender, tokenId);
+        safeTransferFrom(seller, msg.sender, tokenId);
 
         // Transfer funds to seller
         payable(seller).transfer(msg.value);
@@ -97,6 +109,30 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         cars[tokenId].price = 0;
 
         emit CarSold(tokenId, msg.sender, msg.value);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721, IERC721) {
+        super.transferFrom(from, to, tokenId);
+        ownershipHistory[tokenId].push(
+            OwnershipRecord({owner: to, timestamp: block.timestamp})
+        );
+        emit OwnershipTransferred(tokenId, from, to);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721, IERC721) {
+        super.safeTransferFrom(from, to, tokenId);
+        ownershipHistory[tokenId].push(
+            OwnershipRecord({owner: to, timestamp: block.timestamp})
+        );
+        emit OwnershipTransferred(tokenId, from, to);
     }
 
     // Function to get car details by tokenId
@@ -120,6 +156,12 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         uint256 tokenId = vinToId[vin];
         require(_ownerOf(tokenId) != address(0), "VIN not found");
         return tokenId;
+    }
+
+    function getOwnershipHistory(
+        uint256 tokenId
+    ) public view returns (OwnershipRecord[] memory) {
+        return ownershipHistory[tokenId];
     }
 
     function getPrice(uint256 tokenId) public view returns (uint256) {
