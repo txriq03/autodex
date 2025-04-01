@@ -17,6 +17,7 @@ import { useDisclosure } from "@heroui/modal";
 import ListForSaleModal from "./ListForSaleModal";
 import { addToast } from "@heroui/toast";
 import OwnershipHistoryModal from "./OwnershipHistoryModal";
+import { CONTRACT_ADDRESS } from "@/lib/constants";
 
 type CarMetadata = {
   name: string;
@@ -56,8 +57,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
 
   const { data: nftList, isPending: isNftPending } = useQuery({
     queryKey: ["nftList", account],
-    queryFn: () =>
-      getNfts(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, account, filterOwned),
+    queryFn: () => getNfts(CONTRACT_ADDRESS, account, filterOwned),
   });
   if (nftList) {
     console.log("nftList:", nftList);

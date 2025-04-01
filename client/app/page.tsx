@@ -1,4 +1,4 @@
-import { Hero, Search } from "@/components/";
+import Hero from "@/components/Hero";
 import VehicleContent from "@/components/VehicleContent";
 
 export default function Home() {

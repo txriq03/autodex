@@ -1,6 +1,4 @@
 import { BrowserProvider, Contract, parseEther } from "ethers";
-import abi from "./CarMarketplace.json";
-import { toast } from "sonner";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
 import { addToast } from "@heroui/toast";
 
