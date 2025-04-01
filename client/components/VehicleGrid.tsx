@@ -16,6 +16,7 @@ import { Skeleton } from "@heroui/skeleton";
 import { useDisclosure } from "@heroui/modal";
 import ListForSaleModal from "./ListForSaleModal";
 import { addToast } from "@heroui/toast";
+import OwnershipHistoryModal from "./OwnershipHistoryModal";
 
 type CarMetadata = {
   name: string;
@@ -133,6 +134,16 @@ const VehicleCard = ({
   metadata: any;
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isListForSaleOpen,
+    onOpen: onListForSaleOpen,
+    onOpenChange: onListForSaleOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isHistoryOpen,
+    onOpen: onHistoryOpen,
+    onOpenChange: onHistoryOpenChange,
+  } = useDisclosure();
 
   const { mutate, isPending } = useMutation({
     mutationFn: () => purchaseCar(tokenId, price),
@@ -166,11 +177,17 @@ const VehicleCard = ({
               {/* Drop down menu and price modal */}
               <VehicleCardMenu
                 vin={metadata.attributes[3].value}
-                onOpen={onOpen}
+                onListForSaleOpen={onListForSaleOpen}
+                onHistoryOpen={onHistoryOpen}
               />
               <ListForSaleModal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
+                isOpen={isListForSaleOpen}
+                onOpenChange={onListForSaleOpenChange}
+                tokenId={tokenId}
+              />
+              <OwnershipHistoryModal
+                isOpen={isHistoryOpen}
+                onOpenChange={onHistoryOpenChange}
                 tokenId={tokenId}
               />
             </div>

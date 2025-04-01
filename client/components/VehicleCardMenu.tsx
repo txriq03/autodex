@@ -4,6 +4,7 @@ import {
   BadgeDollarSign,
   Book,
   Ellipsis,
+  FileClock,
   ScrollText,
   Trash2,
 } from "lucide-react";
@@ -17,8 +18,15 @@ import {
 } from "@heroui/dropdown";
 import { Button } from "@heroui/button";
 
-const VehicleCardMenu = ({ vin, onOpen }: { vin: string; onOpen: any }) => {
-  // const { isOpen, onOpen, onOpenChange } = useDisclosure();
+const VehicleCardMenu = ({
+  vin,
+  onListForSaleOpen,
+  onHistoryOpen,
+}: {
+  vin: string;
+  onListForSaleOpen: any;
+  onHistoryOpen: any;
+}) => {
   return (
     <>
       <Dropdown className="dark text-foreground" placement="right">
@@ -45,12 +53,20 @@ const VehicleCardMenu = ({ vin, onOpen }: { vin: string; onOpen: any }) => {
             >
               Service Logs
             </DropdownItem>
+            <DropdownItem
+              key="ownership-history"
+              startContent={<FileClock size={18} />}
+              onPress={onHistoryOpen}
+            >
+              Ownership History
+            </DropdownItem>
           </DropdownSection>
+
           <DropdownSection title="Actions">
             <DropdownItem
               key="list-for-sale"
               startContent={<BadgeDollarSign size={18} />}
-              onPress={onOpen}
+              onPress={onListForSaleOpen}
             >
               List For Sale
             </DropdownItem>

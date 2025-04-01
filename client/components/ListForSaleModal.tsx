@@ -25,7 +25,7 @@ const priceSchema = z.object({
 type TPriceSchema = z.infer<typeof priceSchema>;
 
 const ListForSaleModal = ({ isOpen, onOpenChange, tokenId }: any) => {
-  const { contract, account, signer } = useContext(ContractContext);
+  const { contract } = useContext(ContractContext);
   const {
     register,
     handleSubmit,
