@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from "react";
 import { ContractContext } from "./providers/ContractProvider";
 import { fetchAllCars, purchaseCar } from "@/lib/web3/contractServices";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { useSearchParams } from "next/navigation";
@@ -130,11 +130,10 @@ const VehicleCard = ({
   metadata: any;
 }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  // const { data, isPending } = useQuery({
-  //   queryKey: ["purchaseCar", tokenId],
-  //   queryFn: () => purchaseCar(tokenId, price),
 
-  // })
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => purchaseCar(tokenId, price),
+  });
   return (
     <div>
       {metadata ? (
@@ -201,10 +200,11 @@ const VehicleCard = ({
                   <Button
                     variant="flat"
                     color="success"
-                    onPress={() => purchaseCar(tokenId, price)}
+                    onPress={() => mutate()}
                     radius="sm"
+                    isLoading={isPending}
                   >
-                    Buy Car
+                    {isPending ? "Purchasing..." : "Buy Car"}
                   </Button>
                   <div className="text-[1.4rem] font-bold text-slate-400 flex gap-2">
                     {price}

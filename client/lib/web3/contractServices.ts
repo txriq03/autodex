@@ -76,10 +76,6 @@ export const purchaseCar = async (tokenId: number, price: string) => {
       value: priceInWei, // price in wei (BigNumber or string)
     });
 
-    // toast("Processing transaction...", {
-    //   description: "Please confirm in wallet.",
-    // });
-
     await tx.wait();
     addToast({
       title: "Success!",
