@@ -102,6 +102,7 @@ const AddLogDialog = () => {
       setOpen(false);
     },
     onError: (error: any) => {
+      console.error(error.message);
       addToast({
         title: "Failed to add log",
         description: error.message || "Check wallet access or contract state.",

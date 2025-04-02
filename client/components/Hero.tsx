@@ -14,6 +14,7 @@ const Hero = () => {
 
   const { data: signer, isPending, refetch, error } = useWalletSigner();
   const isMobile = useMediaQuery("(min-width: 480px)");
+  const isNotMobile = useMediaQuery("(min-width: 640px)");
 
   if (!isPending) {
     console.log("Signer:", signer);
@@ -69,13 +70,14 @@ const Hero = () => {
       {/* Show connect button if no account found, otherwise show buy and sell buttons */}
       {account ? (
         <>
-          <div className="flex gap-2 my-5">
+          <div className=" gap-2 my-5">
             <Link href="/sell">
               <Button
                 variant="ghost"
                 size="lg"
                 radius="sm"
                 className="text-lg bg-white/5"
+                fullWidth={!isNotMobile}
               >
                 <ShinyText text="Mint your vehicle" />
               </Button>
