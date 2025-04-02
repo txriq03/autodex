@@ -138,6 +138,15 @@ export const getCarMetadataByVIN = async (
 };
 
 export const getOwnershipHistory = async (contract: any, tokenId: number) => {
+  if (!contract) {
+    addToast({
+      title: "Failed to fetch ownership history",
+      description: "You need to connect your wallet to view ownership history",
+      color: "warning",
+    });
+    console.warn("Failed to fetch ownership history. Contract is null.");
+    return [];
+  }
   try {
     const history = await contract.getOwnershipHistory(tokenId);
 
