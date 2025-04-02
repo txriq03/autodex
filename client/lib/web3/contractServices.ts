@@ -136,3 +136,23 @@ export const getCarMetadataByVIN = async (
     return null;
   }
 };
+
+export const getOwnershipHistory = async (contract: any, tokenId: number) => {
+  try {
+    const history = await contract.getOwnershipHistory(tokenId);
+
+    // Format ownership history
+    return history.map((record: any) => ({
+      owner: record.owner,
+      timestamp: new Date(Number(record.timestamp) * 1000).toLocaleString(),
+    }));
+  } catch (error) {
+    console.error("Failed to fetch ownership history:", error);
+    addToast({
+      title: "Failed to fetch ownership history",
+      description: error instanceof Error ? error.message : String(error),
+      color: "danger",
+    });
+    return [];
+  }
+};

@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@heroui/button";
 import {
   Modal,
@@ -6,7 +7,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/modal";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Table,
   TableHeader,
@@ -15,6 +16,10 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/table";
+import { useQuery } from "@tanstack/react-query";
+import { getOwnershipHistory } from "@/lib/web3/contractServices";
+import { ContractContext } from "./providers/ContractProvider";
+
 const OwnershipHistoryModal = ({
   isOpen,
   onOpenChange,
@@ -24,10 +29,20 @@ const OwnershipHistoryModal = ({
   onOpenChange: any;
   tokenId: number;
 }) => {
+  const { contract } = useContext(ContractContext);
+  const {
+    data: history,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["history", tokenId],
+    queryFn: () => getOwnershipHistory(contract, tokenId),
+  });
+
   return (
     <Modal
       backdrop="opaque"
-      size={"xl"}
+      size={"2xl"}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
     >
@@ -44,12 +59,12 @@ const OwnershipHistoryModal = ({
                   <TableColumn>TIMESTAMP</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  <TableRow key="1">
-                    <TableCell>
-                      0xfee64cf73de9db23d259735cb3441d943073e245
-                    </TableCell>
-                    <TableCell>24/10/25</TableCell>
-                  </TableRow>
+                  {history.map((record: any, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>{record.owner}</TableCell>
+                      <TableCell>{record.timestamp}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </ModalBody>
