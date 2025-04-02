@@ -7,7 +7,14 @@ import {
   ModalHeader,
 } from "@heroui/modal";
 import React from "react";
-
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@heroui/table";
 const OwnershipHistoryModal = ({
   isOpen,
   onOpenChange,

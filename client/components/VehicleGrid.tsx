@@ -219,7 +219,7 @@ const VehicleCard = ({
               {Number(price) > 0 ? (
                 <>
                   <Button
-                    variant="flat"
+                    variant="solid"
                     color="success"
                     onPress={() => mutate()}
                     radius="sm"
