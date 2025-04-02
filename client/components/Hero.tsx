@@ -7,11 +7,13 @@ import { ContractContext } from "./providers/ContractProvider";
 import Link from "next/link";
 import ConnectWalletButton from "./ConnectWalletButton";
 import ShinyText from "./ui/ShinyText/ShinyText";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 const Hero = () => {
   const { account } = useContext(ContractContext);
 
   const { data: signer, isPending, refetch, error } = useWalletSigner();
+  const isMobile = useMediaQuery("(min-width: 480px)");
 
   if (!isPending) {
     console.log("Signer:", signer);
@@ -29,20 +31,24 @@ const Hero = () => {
   }, [signer]);
 
   return (
-    <div className="border border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
-      {/* <h1 className="text-[2rem] sm:text-[3rem] md:text-[4rem] max-w-[700px] text-slate-50 font-bold mb-4 leading-[75px] ">
-        List Your Ride. Keep Your Privacy.
-      </h1> */}
+    <div className=" min-[1445px]:border-1 border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
       <ShinyText
         text="List your ride. Keep your privacy."
-        className="text-[2rem] sm:text-[3rem] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
+        className="text-[2.2rem]/[45px] text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
         speed={5}
       />
-      <p className="text-[1.2rem] md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-4 ">
-        AutoDex is a decentralised platform for listing and discovering your
-        favourite rides. Powered by blockchain, secured by your wallet - no
-        accounts, no hassle.
-      </p>
+      {isMobile ? (
+        <p className="text-[1rem] text-center sm:text-left md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-5 ">
+          AutoDex is a decentralised platform for listing and discovering your
+          favourite rides. Powered by blockchain, secured by your wallet - no
+          accounts, no hassle.
+        </p>
+      ) : (
+        <p className="text-[1rem] text-center text-slate-400 font-light mb-5">
+          AutoDex is a decentralised platform for listing and discovering your
+          next ride.
+        </p>
+      )}
       <Image
         priority
         src="/hero.png"
@@ -64,9 +70,6 @@ const Hero = () => {
       {account ? (
         <>
           <div className="flex gap-2 my-5">
-            {/* <Button className="w-[100px] py-[25px] text-xl bg-white text-black hover:bg-slate-200 ">
-              Mint
-            </Button> */}
             <Link href="/sell">
               <Button
                 variant="ghost"

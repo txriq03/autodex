@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { ContractContext } from "./providers/ContractProvider";
 import { PlugZap } from "lucide-react";
 import { addToast } from "@heroui/toast";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 const ConnectWalletButton = ({
   size = "md",
@@ -14,6 +15,7 @@ const ConnectWalletButton = ({
 }) => {
   const { account, setAccount, setProvider, setSigner, setContract } =
     useContext(ContractContext);
+  const isNotMobile = useMediaQuery("(min-width: 640px)");
 
   const connectWallet = async () => {
     if (typeof window.ethereum === "undefined") {
@@ -104,6 +106,7 @@ const ConnectWalletButton = ({
         size={size}
         isLoading={isPending}
         onPress={() => mutate()}
+        fullWidth={!isNotMobile}
         startContent={!isPending && <PlugZap />}
       >
         {isPending ? "Connecting..." : "Connect Wallet"}
