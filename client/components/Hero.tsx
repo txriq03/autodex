@@ -31,7 +31,7 @@ const Hero = () => {
   }, [signer]);
 
   return (
-    <div className=" min-[1445px]:border-1 border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-10 relative overflow-hidden">
+    <div className=" min-[1445px]:border-1 border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-5 sm:p-10 relative overflow-hidden">
       <ShinyText
         text="List your ride. Keep your privacy."
         className="text-[2.2rem]/[45px] text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
