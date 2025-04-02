@@ -25,7 +25,12 @@ const OwnershipHistoryModal = ({
   tokenId: number;
 }) => {
   return (
-    <Modal backdrop="opaque" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      backdrop="opaque"
+      size={"xl"}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -33,7 +38,20 @@ const OwnershipHistoryModal = ({
               Ownership History
             </ModalHeader>
             <ModalBody>
-              <div>Hello</div>
+              <Table>
+                <TableHeader>
+                  <TableColumn>ADDRESS</TableColumn>
+                  <TableColumn>TIMESTAMP</TableColumn>
+                </TableHeader>
+                <TableBody>
+                  <TableRow key="1">
+                    <TableCell>
+                      0xfee64cf73de9db23d259735cb3441d943073e245
+                    </TableCell>
+                    <TableCell>24/10/25</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </ModalBody>
             <ModalFooter>
               <Button
