@@ -41,6 +41,7 @@ const VehicleContent = () => {
       size="lg"
       radius="sm"
       color="primary"
+      variant="light"
       classNames={{
         tabList: "w-full sm:w-[200px]",
         tab: "w-full sm:w-[100px] ",
