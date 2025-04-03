@@ -1,3 +1,4 @@
+"use client";
 import { TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 import React from "react";
 // import { Tabs, TabsContent } from "./ui/tabs";
@@ -35,18 +36,21 @@ const VehicleContent = () => {
     // </Tabs>
 
     <Tabs
-      aria-label="All Or Owned"
+      aria-label="Mint Filter"
       className="w-full py-2"
       size="lg"
       radius="sm"
+      color="primary"
+      classNames={{
+        tabList: "w-full sm:w-[200px]",
+        tab: "w-full sm:w-[100px] ",
+      }}
     >
       <Tab key="all" aria-label="All" title="All">
-        <div>
-          <VehicleGrid />
-        </div>
+        <VehicleGrid />
       </Tab>
       <Tab key="owned" aria-label="Owned" title="Owned">
-        <VehicleGrid filterOwned={true} />
+        <VehicleGrid filterOwned />
       </Tab>
     </Tabs>
   );
