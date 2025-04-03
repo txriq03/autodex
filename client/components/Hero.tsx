@@ -35,7 +35,7 @@ const Hero = () => {
   return (
     <div className=" min-[1445px]:border-1 border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-5 xs:p-10 relative overflow-hidden">
       <h1 className="text-[2.2rem]/[45px] text-slate-200 text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px] font-bold mb-4 ">
-        List your ride. Keep your{" "}
+        Trade with trust. Own with{" "}
         <AuroraText
           colors={[
             "oklch(69.6% 0.17 162.48)",
@@ -43,7 +43,7 @@ const Hero = () => {
             "oklch(71.5% 0.143 215.221)",
           ]}
         >
-          privacy.
+          Confidence.
         </AuroraText>
       </h1>
       {/* <ShinyText
