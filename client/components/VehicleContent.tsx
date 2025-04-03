@@ -16,7 +16,7 @@ const VehicleContent = () => {
       color="primary"
       variant="light"
       classNames={{
-        tabList: "w-full sm:w-[200px]",
+        tabList: "w-full xs:w-[200px]",
         tab: "w-full sm:w-[100px] ",
       }}
     >
