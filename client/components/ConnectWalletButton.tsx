@@ -103,6 +103,7 @@ const ConnectWalletButton = ({
       isLoading={isPending}
       color="primary"
       variant="shadow"
+      radius="lg"
       onPress={() => mutate()}
     >
       <Wallet />
