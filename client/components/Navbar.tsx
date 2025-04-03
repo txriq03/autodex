@@ -75,7 +75,7 @@ const Navbar = () => {
               <p className="inline">ETH</p>
             </div>
           ) : (
-            <ConnectWalletButton />
+            <ConnectWalletButton iconOnly={true} />
           )}
         </NavbarItem>
       </NavbarContent>

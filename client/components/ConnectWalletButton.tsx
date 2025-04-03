@@ -1,17 +1,18 @@
 import { initialise } from "@/lib/web3/contractServices";
 import { Button } from "@heroui/button";
-import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { useContext } from "react";
 import { ContractContext } from "./providers/ContractProvider";
-import { PlugZap } from "lucide-react";
+import { PlugZap, Wallet } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import useMediaQuery from "@/hooks/useMediaQuery";
 
 const ConnectWalletButton = ({
   size = "md",
+  iconOnly = false,
 }: {
   size?: "md" | "sm" | "lg" | undefined;
+  iconOnly?: boolean;
 }) => {
   const { account, setAccount, setProvider, setSigner, setContract } =
     useContext(ContractContext);
@@ -96,38 +97,30 @@ const ConnectWalletButton = ({
     },
   });
 
-  return (
-    <div>
-      <Button
-        color="primary"
-        variant={`${size === "md" ? "shadow" : "solid"}`}
-        radius="sm"
-        className={`${size === "lg" && "text-[1.1rem]"}`}
-        size={size}
-        isLoading={isPending}
-        onPress={() => mutate()}
-        fullWidth={!isNotMobile}
-        startContent={!isPending && <PlugZap />}
-      >
-        {isPending ? "Connecting..." : "Connect Wallet"}
-      </Button>
-
-      {/* {isPending ? (
-        <Button
-          disabled
-          className={`bg-slate-100 text-slate-800 hover:bg-slate-200 font-normal ${className}`}
-        >
-          <LoaderCircle className="animate-spin" /> Connecting...
-        </Button>
-      ) : (
-        <Button
-          className={`bg-slate-100 text-slate-800 hover:bg-slate-200 font-normal ${className}`}
-          onPress={() => mutate()}
-        >
-          Connect Wallet
-        </Button>
-      )} */}
-    </div>
+  return iconOnly ? (
+    <Button
+      isIconOnly={iconOnly}
+      isLoading={isPending}
+      color="primary"
+      variant="shadow"
+      onPress={() => mutate()}
+    >
+      <Wallet />
+    </Button>
+  ) : (
+    <Button
+      color="primary"
+      variant={`${size === "md" ? "shadow" : "solid"}`}
+      radius="sm"
+      className={`${size === "lg" && "text-[1.1rem]"}`}
+      size={size}
+      isLoading={isPending}
+      onPress={() => mutate()}
+      fullWidth={!isNotMobile}
+      startContent={!isPending && <PlugZap />}
+    >
+      {isPending ? "Connecting..." : "Connect Wallet"}
+    </Button>
   );
 };
 
