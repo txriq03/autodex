@@ -37,20 +37,19 @@ const Hero = () => {
       <h1 className="text-[2.2rem]/[45px] text-slate-200 text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px] font-bold mb-4 ">
         Trade with trust. Own with{" "}
         <AuroraText
+          speed={2}
           colors={[
+            "oklch(69.6% 0.17 162.48)",
             "oklch(69.6% 0.17 162.48)",
             "oklch(70.4% 0.14 182.503)",
             "oklch(71.5% 0.143 215.221)",
+            "oklch(68.5% 0.169 237.323)",
+            "oklch(62.3% 0.214 259.815)",
           ]}
         >
           Confidence.
         </AuroraText>
       </h1>
-      {/* <ShinyText
-        text="List your ride. Keep your privacy."
-        className="text-[2.2rem]/[45px] text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
-        speed={5}
-      /> */}
       {isMobile ? (
         <p className="text-[1rem] text-center sm:text-left md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-5 ">
           AutoDex is a decentralised platform for listing and discovering your
