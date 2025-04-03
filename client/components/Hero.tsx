@@ -33,11 +33,9 @@ const Hero = () => {
 
   return (
     <div className=" min-[1445px]:border-1 border-neutral-800 mt-0 mx-0 min-[1440px]:max-w-[1440px] min-[1440px]:rounded-xl min-[1450px]:mx-auto min-[1440px]:mt-[10px] bg-slate-100 bg-opacity-[5%] mb-10 p-5 xs:p-10 relative overflow-hidden">
-      <ShinyText
-        text="List your ride. Keep your privacy."
-        className="text-[2.2rem]/[45px] text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px]  font-bold mb-4"
-        speed={5}
-      />
+      <h1 className="text-[2.2rem]/[45px] text-slate-200 text-center sm:text-left sm:text-[3.5rem]/[65px] md:text-[4rem]/[75px] max-w-[700px] font-bold mb-4 ">
+        List your ride. Keep your privacy.
+      </h1>
       {isMobile ? (
         <p className="text-[1rem] text-center sm:text-left md:text-[1.3rem] text-slate-400 max-w-[700px] font-light mb-5 ">
           AutoDex is a decentralised platform for listing and discovering your
@@ -76,7 +74,7 @@ const Hero = () => {
                 variant="ghost"
                 size="lg"
                 radius="sm"
-                className="text-lg bg-white/5"
+                className="text-lg bg-white/5 border-1"
                 fullWidth={!isNotMobile}
               >
                 <ShinyText text="Mint your vehicle" />

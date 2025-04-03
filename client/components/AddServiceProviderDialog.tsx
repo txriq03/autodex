@@ -67,7 +67,12 @@ const AddServiceProviderDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" radius="sm" startContent={<UserRoundPlus />}>
+        <Button
+          variant="ghost"
+          radius="sm"
+          startContent={<UserRoundPlus />}
+          className="border-1"
+        >
           Add Service Provider
         </Button>
       </DialogTrigger>
