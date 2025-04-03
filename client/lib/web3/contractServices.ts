@@ -1,20 +1,38 @@
-import { BrowserProvider, Contract, parseEther } from "ethers";
+import { BrowserProvider, Contract, JsonRpcProvider, parseEther } from "ethers";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
 import { addToast } from "@heroui/toast";
 
 // Initialise provider, signer and contract
+const getProvider = () => {
+  if (typeof window !== "undefined" && window.ethereum) {
+    return new BrowserProvider(window.ethereum);
+  } else {
+    return new JsonRpcProvider(
+      `https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API}`
+    );
+  }
+};
+
+// Initialise provider, signer and contract
 export const initialise = async () => {
-  if (typeof window.ethereum !== "undefined") {
-    // provider = new BrowserProvider(window.ethereum);
-    const provider = new BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+  try {
+    const provider = getProvider();
+    let signer;
+    let contract;
+
+    if (provider instanceof BrowserProvider) {
+      signer = await provider.getSigner();
+      contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+    } else {
+      contract = new Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+    }
+
     const network = await provider.getNetwork();
     console.log("Network:", network);
+
     return { provider, signer, contract };
-  } else {
-    alert("Please install MetaMask!");
-    console.error("Please install MetaMask.");
+  } catch (error) {
+    console.error("Error initialising:", error);
     return null;
   }
 };
