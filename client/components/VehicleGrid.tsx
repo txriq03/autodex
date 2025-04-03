@@ -18,6 +18,7 @@ import ListForSaleModal from "./ListForSaleModal";
 import { addToast } from "@heroui/toast";
 import OwnershipHistoryModal from "./OwnershipHistoryModal";
 import { CONTRACT_ADDRESS } from "@/lib/constants";
+import { Alert } from "@heroui/alert";
 
 type CarMetadata = {
   name: string;
@@ -56,7 +57,7 @@ const VehicleGrid = ({ filterOwned = false }) => {
   const { account, contract } = useContext(ContractContext);
 
   const { data: nftList, isPending: isNftPending } = useQuery({
-    queryKey: ["nftList", account],
+    queryKey: ["nftList", account, filterOwned],
     queryFn: () => getNfts(CONTRACT_ADDRESS, account, filterOwned),
   });
   if (nftList) {
@@ -97,14 +98,29 @@ const VehicleGrid = ({ filterOwned = false }) => {
 
   if (nftList == undefined || nftList.length < 1)
     return (
-      <div className="bg-slate-100 bg-opacity-[5%] text-slate-100 rounded-xl py-10 text-xl my-5 w-full flex justify-center items-center gap-2">
-        <p>No cars have been minted.</p>
-      </div>
+      // <div className="bg-slate-100 bg-opacity-[5%] text-slate-100 rounded-xl py-10 text-xl w-full flex justify-center items-center gap-2">
+      //   <p>No cars have been minted.</p>
+      // </div>
+      filterOwned ? (
+        <Alert
+          title="You have not minted any vehicles."
+          description="Vehicles that you have minted will show up in this tab."
+          variant="faded"
+          color="default"
+        />
+      ) : (
+        <Alert
+          title="No cars have been minted"
+          description="No Vehicles are on the marketplace."
+          variant="faded"
+          color="default"
+        />
+      )
     );
 
   return (
-    <div className="my-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 my-4">
+    <div className="">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {nftList.map(({ tokenId, name, raw, image }, idx) => (
           <VehicleCard
             key={idx}

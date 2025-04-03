@@ -58,7 +58,7 @@ export const fetchAllCars = async (contract: Contract) => {
 export const purchaseCar = async (tokenId: number, price: string) => {
   let contract: any = "";
   let signer: any = "";
-  console.log(price);
+  console.log("Price:", price);
 
   const results = await initialise();
   if (results) {
@@ -91,13 +91,6 @@ export const purchaseCar = async (tokenId: number, price: string) => {
         addToast({
           title: "Failed to purchase vehicle",
           description: "You cannot buy your own vehicle.",
-          color: "danger",
-          variant: "flat",
-        });
-      } else {
-        addToast({
-          title: "Failed to purchase vehicle",
-          description: error.message || "Transaction was rejected or failed.",
           color: "danger",
           variant: "flat",
         });

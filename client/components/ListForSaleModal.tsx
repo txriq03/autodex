@@ -88,6 +88,7 @@ const ListForSaleModal = ({ isOpen, onOpenChange, tokenId }: any) => {
       className="dark text-slate-50 "
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      aria-label="List For Sale"
     >
       <ModalContent>
         {(onClose) => (

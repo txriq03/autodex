@@ -45,6 +45,7 @@ const OwnershipHistoryModal = ({
       size={"2xl"}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
+      aria-label="Ownership History"
     >
       <ModalContent>
         {(onClose) => (
@@ -53,7 +54,7 @@ const OwnershipHistoryModal = ({
               Ownership History
             </ModalHeader>
             <ModalBody>
-              <Table>
+              <Table aria-label="Ownership History">
                 <TableHeader>
                   <TableColumn>ADDRESS</TableColumn>
                   <TableColumn>TIMESTAMP</TableColumn>
