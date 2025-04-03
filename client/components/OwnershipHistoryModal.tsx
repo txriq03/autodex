@@ -19,6 +19,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getOwnershipHistory } from "@/lib/web3/contractServices";
 import { ContractContext } from "./providers/ContractProvider";
+import { Alert } from "@heroui/alert";
 
 const OwnershipHistoryModal = ({
   isOpen,
@@ -37,6 +38,7 @@ const OwnershipHistoryModal = ({
   } = useQuery({
     queryKey: ["history", tokenId],
     queryFn: () => getOwnershipHistory(contract, tokenId),
+    enabled: isOpen,
   });
 
   return (
@@ -54,20 +56,29 @@ const OwnershipHistoryModal = ({
               Ownership History
             </ModalHeader>
             <ModalBody>
-              <Table aria-label="Ownership History">
-                <TableHeader>
-                  <TableColumn>ADDRESS</TableColumn>
-                  <TableColumn>TIMESTAMP</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {history.map((record: any, index: number) => (
-                    <TableRow key={index}>
-                      <TableCell>{record.owner}</TableCell>
-                      <TableCell>{record.timestamp}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              {history && history.length > 0 ? (
+                <Table aria-label="Ownership History">
+                  <TableHeader>
+                    <TableColumn>ADDRESS</TableColumn>
+                    <TableColumn>TIMESTAMP</TableColumn>
+                  </TableHeader>
+                  <TableBody>
+                    {history.map((record: any, index: number) => (
+                      <TableRow key={index}>
+                        <TableCell>{record.owner}</TableCell>
+                        <TableCell>{record.timestamp}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <Alert
+                  title="No information"
+                  description="You may have to connect your wallet to view ownership history."
+                  variant="faded"
+                  color="warning"
+                />
+              )}
             </ModalBody>
             <ModalFooter>
               <Button
