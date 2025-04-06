@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract CarMarketplace is ERC721URIStorage, Ownable {
-    uint256 private nextTokenId;
+    uint256 private nextTokenId = 1;
 
     struct Car {
         uint256 tokenId;
@@ -48,7 +48,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string memory vin,
         uint256 price,
         string memory tokenURI
-    ) public onlyOwner {
+    ) public {
         require(bytes(vin).length > 0, "VIN must be provided");
 
         // Check if the VIN already exists, while getting the correct nextTokenId
