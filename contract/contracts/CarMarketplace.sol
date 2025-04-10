@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
-
 import {ERC721URIStorage, ERC721} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract CarMarketplace is ERC721URIStorage, Ownable {
-    uint256 private nextTokenId = 1;
+    uint256 private nextTokenId;
 
     struct Car {
         uint256 tokenId;
@@ -40,7 +38,9 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     event ServiceRecordAdded(uint256 indexed tokenId, string description);
     event OwnershipTransferred(uint256 tokenId, address from, address to);
 
-    constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {}
+    constructor() ERC721("AutoDex", "ADX") Ownable(msg.sender) {
+        nextTokenId = 1;
+    }
 
     // Function to mint a new car token
     function mintCar(
@@ -50,6 +50,10 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         string memory tokenURI
     ) public {
         require(bytes(vin).length > 0, "VIN must be provided");
+        require(
+            bytes(vin).length == 17,
+            "Incorrect number of characters provided for VIN"
+        );
 
         // Check if the VIN already exists, while getting the correct nextTokenId
         require(vinToId[vin] == 0, "VIN already used");
@@ -126,8 +130,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     // Function to get car details by tokenId
     function getCarDetails(uint256 tokenId) public view returns (Car memory) {
         _requireOwned(tokenId);
-        // require(_exists(tokenId), "Car token does not exist");
-        // require(_ownerOf(tokenId), "Car token does not exist.");
         return cars[tokenId];
     }
 
