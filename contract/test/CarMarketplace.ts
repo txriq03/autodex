@@ -1,180 +1,169 @@
-import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
+import { ethers } from "hardhat";
 import { expect } from "chai";
-import hre from "hardhat";
+import { SignerWithAddress } from "@nomicfoundation/hardhat-ethers/signers";
+import { CarMarketplace } from "../typechain-types";
 
-describe("Token", function () {
-    let carMarketplace;
-    let owner;
-    let buyer;
-    let seller;
-    let tokenId;
-  
-    // Test car details
-    const testCar = {
-        make: "Toyota",
-        model: "Prius",
-        year: 2020,
-        vin: "1HGCM82633A123456",
-        tokenURI: "ipfs://QmTest"
-    };
+describe("CarMarketplace", function () {
+  let carMarketplace: CarMarketplace;
+  let owner: SignerWithAddress;
+  let user1: SignerWithAddress;
+  let user2: SignerWithAddress;
+  let provider: SignerWithAddress;
 
-    const testCar2 = {
-        make: "Ford",
-        model: "Fiesta",
-        year: 2020,
-        vin: "AW12KFS",
-        tokenURI: "ipfs://KfTest"
-    }
+  const vin = "1HGCM82633A004352"; // 17 characters
+  const tokenURI = "ipfs://example";
+  const price = ethers.parseEther("1");
 
-    async function deployTokenFixture() {
-        [owner, buyer, seller] = await hre.ethers.getSigners();
-        const CarFactory = await hre.ethers.getContractFactory("CarMarketplace");
-        carMarketplace = await CarFactory.deploy();
+  beforeEach(async () => {
+    [owner, user1, user2, provider] = await ethers.getSigners();
 
-        // Minted car token for testing
-        const mintedCar = await carMarketplace.mintCar(
-            owner.address,
-            testCar.make,
-            testCar.model,
-            testCar.year,
-            testCar.vin,
-            testCar.tokenURI
-        )
+    const CarMarketplaceFactory = await ethers.getContractFactory(
+      "CarMarketplace"
+    );
+    carMarketplace = await CarMarketplaceFactory.deploy();
+  });
 
-        const mintedCar2 = await carMarketplace.mintCar(
-            seller.address,
-            testCar2.make,
-            testCar2.model,
-            testCar2.year,
-            testCar2.vin,
-            testCar2.tokenURI
-        )
+  describe("Minting", () => {
+    it("should mint a car with a unique VIN", async () => {
+      await carMarketplace
+        .connect(user1)
+        .mintCar(user1.address, vin, price, tokenURI);
+      const tokenId = await carMarketplace.getTokenIdByVIN(vin);
+      expect(await carMarketplace.ownerOf(tokenId)).to.equal(user1.address);
+    });
 
-         // Get the tokenId from the CarMinted event
-        // const receipt = await mintedCar.wait();
-        // const event: any = receipt?.events.find(event: any => event.event === 'CarMinted');
-        // tokenId = event.args.tokenId;
+    it("should fail to mint with duplicate VIN", async () => {
+      await carMarketplace
+        .connect(user1)
+        .mintCar(user1.address, vin, price, tokenURI);
+      await expect(
+        carMarketplace
+          .connect(user2)
+          .mintCar(user2.address, vin, price, tokenURI)
+      ).to.be.revertedWith("VIN already used");
+    });
 
-        return { carMarketplace, owner, buyer, seller, mintedCar }
-    }
+    it("should require 17-character VIN", async () => {
+      const invalidVin = "12345";
+      await expect(
+        carMarketplace
+          .connect(user1)
+          .mintCar(user1.address, invalidVin, price, tokenURI)
+      ).to.be.revertedWith("Incorrect number of characters provided for VIN");
+    });
+  });
 
-    describe("Contract", function() {
-        it("Should set the right owner", async function() {
-            const { carMarketplace, owner, buyer }: any = await loadFixture(deployTokenFixture);
-            expect(await carMarketplace.owner()).to.equal(owner.address);
+  describe("Listing and Buying", () => {
+    let tokenId: bigint;
+
+    beforeEach(async () => {
+      await carMarketplace
+        .connect(user1)
+        .mintCar(user1.address, vin, 0, tokenURI);
+      tokenId = await carMarketplace.getTokenIdByVIN(vin);
+    });
+
+    it("should allow owner to list a car for sale", async () => {
+      await carMarketplace.connect(user1).listCarForSale(tokenId, price);
+      const car = await carMarketplace.getCarDetails(tokenId);
+      expect(car.price).to.equal(price);
+    });
+
+    it("should not allow non-owner to list the car", async () => {
+      await expect(
+        carMarketplace.connect(user2).listCarForSale(tokenId, price)
+      ).to.be.revertedWith(
+        "Only the owner of the vehicle can list it for sale."
+      );
+    });
+
+    it("should allow user to buy a listed car", async () => {
+      await carMarketplace.connect(user1).listCarForSale(tokenId, price);
+
+      // Allow marketplace contract to transfer the NFT
+      await carMarketplace.connect(user1).approve(user2, tokenId);
+
+      await expect(() =>
+        carMarketplace.connect(user2).buyCar(tokenId, { value: price })
+      ).to.changeEtherBalance(user1, price);
+
+      const newOwner = await carMarketplace.ownerOf(tokenId);
+      expect(newOwner).to.equal(user2.address);
+
+      const car = await carMarketplace.getCarDetails(tokenId);
+      expect(car.price).to.equal(0);
+    });
+
+    it("should fail if car is not listed", async () => {
+      await expect(
+        carMarketplace.connect(user2).buyCar(tokenId, { value: price })
+      ).to.be.revertedWith("Car is not for sale");
+    });
+
+    it("should fail with insufficient ETH", async () => {
+      await carMarketplace.connect(user1).listCarForSale(tokenId, price);
+      await expect(
+        carMarketplace.connect(user2).buyCar(tokenId, {
+          value: ethers.parseEther("0.5"),
         })
+      ).to.be.revertedWith("Insufficient ETH sent.");
+    });
 
-    })
+    it("should not allow seller to buy their own car", async () => {
+      await carMarketplace.connect(user1).listCarForSale(tokenId, price);
+      await expect(
+        carMarketplace.connect(user1).buyCar(tokenId, { value: price })
+      ).to.be.revertedWith("You cannot buy your own car.");
+    });
+  });
 
-    describe("Listing car for sale", function() {
-        it("Should allow owner to list their car for sale", async function() {
-            const { carMarketplace, owner, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const price = hre.ethers.parseEther('1'); // 1 ETH
+  describe("Service Providers", () => {
+    let tokenId: bigint;
 
-            // List the car for sale
-            await expect(carMarketplace.connect(seller).listCarForSale(tokenId, price)) // buyer will be treated as the msg.sender
-            .to.emit(carMarketplace, 'CarListedForSale')
-            .withArgs(tokenId, price)
+    beforeEach(async () => {
+      await carMarketplace
+        .connect(user1)
+        .mintCar(user1.address, vin, price, tokenURI);
+      tokenId = await carMarketplace.getTokenIdByVIN(vin);
+    });
 
-            // Verify the car details were updated correctly
-            const carDetails = await carMarketplace.getCarDetails(tokenId);
-            expect(carDetails.forSale).to.equal(true);
-            expect(carDetails.price).to.equal(price);
-        })
+    it("should allow owner to add a service provider", async () => {
+      await carMarketplace.connect(owner).addServiceProvider(provider.address);
+      const isAuthorized = await carMarketplace.getIsServiceProvider(
+        provider.address
+      );
+      expect(isAuthorized).to.be.true;
+    });
 
-        it("Should revert if non-owner tries to list the car", async function() {
-            const { carMarketplace, buyer }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const listingPrice = hre.ethers.parseEther('1');
+    it("should allow authorized provider to add a service record", async () => {
+      await carMarketplace.connect(owner).addServiceProvider(provider.address);
 
-            await expect(carMarketplace?.connect(buyer).listCarForSale(tokenId, listingPrice))
-            .to.be.revertedWith('Only the owner of the vehicle can list it for sale.');
-        })
+      await carMarketplace
+        .connect(provider)
+        .addServiceRecord(tokenId, "Brake check", "Garage A", 15000);
 
-        it("Should revert if price is zero", async function() {
-            const { carMarketplace, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const listingPrice = hre.ethers.parseEther('0');
+      const records = await carMarketplace.getServiceHistory(tokenId);
+      expect(records.length).to.equal(1);
+      expect(records[0].description).to.equal("Brake check");
+    });
 
-            await expect(carMarketplace.connect(seller).listCarForSale(tokenId, listingPrice))
-            .to.be.revertedWith("Price must be greater than zero.")
-        })
+    it("should not allow unauthorized provider to add a service record", async () => {
+      await expect(
+        carMarketplace
+          .connect(user2)
+          .addServiceRecord(tokenId, "Brake check", "Garage A", 15000)
+      ).to.be.revertedWith("Not authorized to add service record");
+    });
 
-        it("Update the price of an already listed car", async function() {
-            const { carMarketplace, owner, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const initialPrice = hre.ethers.parseEther('2');
-            const newPrice = hre.ethers.parseEther('1');
- 
-            // First listing the car
-            await carMarketplace.connect(seller).listCarForSale(tokenId, initialPrice);
-            
-            // Update price
-            await expect(carMarketplace.connect(seller).listCarForSale(tokenId, newPrice))
-                .to.emit(carMarketplace, "CarListedForSale")
-                .withArgs(tokenId, newPrice);
-            
-            // Verify the new price is set
-            const carDetails = await carMarketplace.getCarDetails(tokenId);
-            expect(carDetails.price).to.equal(newPrice);
-        })
-    })
-
-    describe("Purchasing a listed car", function() {
-        it("Should allow a buyer to purchase a listed car", async function() {
-            const { carMarketplace, owner, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const listingPrice = hre.ethers.parseEther('1');
-
-            // Get seller's inital balance
-            const initialSellerBalance = await hre.ethers.provider.getBalance(seller.address);
-
-            // List car for sale
-            await carMarketplace.connect(seller).listCarForSale(tokenId, listingPrice);
-            
-            // Buy the car
-            await expect(
-                carMarketplace.connect(buyer).buyCar(tokenId, { value: listingPrice })
-            ).to.emit(carMarketplace, 'CarSold')
-            .withArgs(tokenId, buyer.address, listingPrice);
-
-            // Grab car details
-            const carDetails = await carMarketplace.getCarDetails(tokenId);
-
-            // Verify the the state has changed correctly
-            expect(await carMarketplace.ownerOf(tokenId)).to.equal(buyer.address);
-            expect(carDetails.forSale).to.be.equal(false);
-            expect(carDetails.price).to.be.equal(0);
-        })
-
-        it("Should revert if insufficient ETH is sent", async function() {
-            const { carMarketplace, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const listingPrice = hre.ethers.parseEther('1');
-            const offeredPrice = hre.ethers.parseEther('0.7');
-
-            // List car for sale
-            await carMarketplace.connect(seller).listCarForSale(tokenId, listingPrice);
-
-            // Attempt to buy car with insufficient funds
-            await expect(carMarketplace.connect(buyer).buyCar(tokenId, { value: offeredPrice }))
-                .to.be.revertedWith("Insufficient ETH sent.");
-        })
-
-        it("Should revert if seller tries to buy their own car", async function() {
-            const { carMarketplace, buyer, seller }: any = await loadFixture(deployTokenFixture);
-            tokenId = 1;
-            const listingPrice = hre.ethers.parseEther('1');
-
-            // List car for sale
-            await carMarketplace.connect(seller).listCarForSale(tokenId, listingPrice);
-
-            // Attempt to buy own car
-            await expect(carMarketplace.connect(seller).buyCar(tokenId, { value: listingPrice}))
-                .to.be.revertedWith("You cannot buy your own car.");
-        })
-
-    })
-
-})
+    it("should allow owner to remove a service provider", async () => {
+      await carMarketplace.connect(owner).addServiceProvider(provider.address);
+      await carMarketplace
+        .connect(owner)
+        .removeServiceProvider(provider.address);
+      const isAuthorized = await carMarketplace.getIsServiceProvider(
+        provider.address
+      );
+      expect(isAuthorized).to.be.false;
+    });
+  });
+});

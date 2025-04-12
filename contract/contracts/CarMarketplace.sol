@@ -54,7 +54,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
             bytes(vin).length == 17,
             "Incorrect number of characters provided for VIN"
         );
-
         // Check if the VIN already exists, while getting the correct nextTokenId
         require(vinToId[vin] == 0, "VIN already used");
 
@@ -133,7 +132,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         return cars[tokenId];
     }
 
-    // Function to fetch all cars
+    // List of getter functions
     function getAllCars() public view returns (Car[] memory) {
         Car[] memory all = new Car[](nextTokenId);
         for (uint256 i = 0; i < nextTokenId; i++) {
@@ -141,21 +140,27 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         }
         return all;
     }
-
     function getTokenIdByVIN(string memory vin) public view returns (uint256) {
         uint256 tokenId = vinToId[vin];
         require(_ownerOf(tokenId) != address(0), "VIN not found");
         return tokenId;
     }
-
     function getOwnershipHistory(
         uint256 tokenId
     ) public view returns (OwnershipRecord[] memory) {
         return ownershipHistory[tokenId];
     }
-
     function getPrice(uint256 tokenId) public view returns (uint256) {
         return cars[tokenId].price;
+    }
+    function getIsServiceProvider(address provider) public view returns (bool) {
+        return isServiceProvider[provider];
+    }
+    function getServiceHistory(
+        uint256 tokenId
+    ) public view returns (ServiceRecord[] memory) {
+        require(_ownerOf(tokenId) != address(0), "Car does not exist");
+        return serviceLogs[tokenId];
     }
 
     function addServiceProvider(address provider) public onlyOwner {
@@ -163,16 +168,12 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         isServiceProvider[provider] = true;
         emit ServiceProviderAdded(provider);
     }
-
     function removeServiceProvider(address provider) public onlyOwner {
         require(isServiceProvider[provider], "Not authorized");
         isServiceProvider[provider] = false;
         emit ServiceProviderRemoved(provider);
     }
 
-    function getIsServiceProvider(address provider) public view returns (bool) {
-        return isServiceProvider[provider];
-    }
     // Add a service record (MOT-style)
     function addServiceRecord(
         uint256 tokenId,
@@ -196,13 +197,5 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         );
 
         emit ServiceRecordAdded(tokenId, description);
-    }
-
-    // Get service history
-    function getServiceHistory(
-        uint256 tokenId
-    ) public view returns (ServiceRecord[] memory) {
-        require(_ownerOf(tokenId) != address(0), "Car does not exist");
-        return serviceLogs[tokenId];
     }
 }
