@@ -97,11 +97,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         require(msg.value >= cars[tokenId].price, "Insufficient ETH sent.");
         require(seller != msg.sender, "You cannot buy your own car.");
 
-        console.log("msg.sender:", msg.sender);
-        console.log("ownerOf(tokenId):", ownerOf(tokenId));
-        console.log("price sent:", msg.value);
-        console.log("price expected:", cars[tokenId].price);
-
         // Transfer ownership
         transferFrom(seller, msg.sender, tokenId);
 
