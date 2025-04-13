@@ -149,7 +149,6 @@ const VehicleCard = ({
   imageUrl: string | undefined;
   metadata: any;
 }) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     isOpen: isListForSaleOpen,
     onOpen: onListForSaleOpen,

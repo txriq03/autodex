@@ -1,4 +1,10 @@
-import { BrowserProvider, Contract, JsonRpcProvider, parseEther } from "ethers";
+import {
+  BrowserProvider,
+  Contract,
+  JsonRpcProvider,
+  parseEther,
+  toBigInt,
+} from "ethers";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
 import { addToast } from "@heroui/toast";
 
@@ -77,6 +83,7 @@ export const purchaseCar = async (tokenId: number, price: string) => {
   let contract: any = "";
   let signer: any = "";
   console.log("Price:", price);
+  console.log("TokenId:", toBigInt(tokenId));
 
   const results = await initialise();
   if (results) {
@@ -86,10 +93,10 @@ export const purchaseCar = async (tokenId: number, price: string) => {
 
   console.log("Signer in purchase function:", signer);
   const buyerAddress = await signer.getAddress();
-  const priceInWei = parseEther(price);
+  const priceInWei = parseEther(price); // price in wei (BigNumber or string)
   try {
-    const tx = await contract.connect(signer).buyCar(tokenId, {
-      value: priceInWei, // price in wei (BigNumber or string)
+    const tx = await contract.connect(signer).buyCar(toBigInt(tokenId), {
+      value: priceInWei,
     });
 
     await tx.wait();
@@ -102,6 +109,15 @@ export const purchaseCar = async (tokenId: number, price: string) => {
 
     // Optionally refetch or update UI
   } catch (error) {
+    const errorData = (error as any).data;
+    if (errorData) {
+      try {
+        const decoded = contract.interface.parseError(errorData);
+        console.error("Custom error:", decoded.name, decoded.args);
+      } catch {
+        console.error("Could not decode error");
+      }
+    }
     console.error("Purchase failed:", error);
 
     if (error instanceof Error) {

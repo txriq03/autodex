@@ -44,7 +44,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
 
     // Function to mint a new car token
     function mintCar(
-        address to,
         string memory vin,
         uint256 price,
         string memory tokenURI
@@ -59,7 +58,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
 
         uint256 tokenId = nextTokenId;
 
-        _mint(to, tokenId);
+        _mint(msg.sender, tokenId);
         _setTokenURI(tokenId, tokenURI);
 
         // Creating the car struct
@@ -71,11 +70,11 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
 
         vinToId[vin] = tokenId;
         ownershipHistory[tokenId].push(
-            OwnershipRecord({owner: to, timestamp: block.timestamp})
+            OwnershipRecord({owner: msg.sender, timestamp: block.timestamp})
         );
 
         nextTokenId++;
-        emit CarMinted(tokenId, to, vin);
+        emit CarMinted(tokenId, msg.sender, vin);
     }
 
     // Function puts the car up for sale
@@ -103,7 +102,10 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         );
 
         // Transfer ownership
-        transferFrom(seller, msg.sender, tokenId);
+        _transfer(seller, msg.sender, tokenId);
+        ownershipHistory[tokenId].push(
+            OwnershipRecord({owner: msg.sender, timestamp: block.timestamp})
+        );
 
         // Transfer funds to seller
         payable(seller).transfer(msg.value);
@@ -112,18 +114,6 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         cars[tokenId].price = 0;
 
         emit CarSold(tokenId, msg.sender, msg.value);
-    }
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override(ERC721, IERC721) {
-        super.transferFrom(from, to, tokenId);
-        ownershipHistory[tokenId].push(
-            OwnershipRecord({owner: to, timestamp: block.timestamp})
-        );
-        emit OwnershipTransferred(tokenId, from, to);
     }
 
     // Function to get car details by tokenId

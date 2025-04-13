@@ -1,10 +1,9 @@
 import { addToast } from "@heroui/toast";
 import { Alchemy, Network } from "alchemy-sdk";
-import { toast } from "sonner";
 
 const settings = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY, // or ALCH_API_KEY
-  network: Network.ETH_SEPOLIA, // Or Network.ETH_MAINNET, etc.
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  network: Network.ETH_SEPOLIA,
 };
 
 export const alchemy = new Alchemy(settings);

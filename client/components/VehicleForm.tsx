@@ -95,6 +95,7 @@ const VehicleForm = () => {
     }
     const signer = await provider.getSigner();
     const userAddress = await signer.getAddress();
+    console.log("Get signer address on submit:", userAddress);
 
     setIsLoading(true);
     try {
@@ -113,14 +114,31 @@ const VehicleForm = () => {
       }
 
       try {
-        const tx = await contract.mintCar(
-          userAddress,
-          data.vin,
-          parseEther(data.price.toString()),
-          tokenURI
-        );
+        // Minting token
+        const mintTx = await contract
+          .connect(signer)
+          .mintCar(data.vin, parseEther(data.price.toString()), tokenURI);
+        const mintReceipt = await mintTx.wait();
 
-        await tx.wait();
+        // Retrieve tokenId from minted token
+        const carMintedEvent = mintReceipt.logs
+          .map((log: any) => contract.interface.parseLog(log))
+          .find((parsed: any) => parsed?.name === "CarMinted");
+
+        // Approve the smart contract to transfer token to buyer later
+        if (carMintedEvent) {
+          const tokenId = carMintedEvent.args.tokenId;
+          console.log("TokenId: ", tokenId);
+          console.log("Contract address:", contract.target);
+
+          const approveTx = await contract
+            .connect(signer)
+            .setApprovalForAll(contract.target, true);
+          await approveTx.wait();
+        } else {
+          console.error("Transfer event not found");
+        }
+
         console.log("Car minted successfully!");
         form.reset();
         router.push("/?success=true");
@@ -130,7 +148,7 @@ const VehicleForm = () => {
         // Toast
         addToast({
           title: "Minting failed",
-          description: "Please check your wallet and try again",
+          description: "Something went wrong during minting or approval.",
           color: "danger",
           variant: "flat",
         });
