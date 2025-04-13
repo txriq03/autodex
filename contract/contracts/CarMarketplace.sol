@@ -96,6 +96,11 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         require(cars[tokenId].price > 0, "Car is not for sale");
         require(msg.value >= cars[tokenId].price, "Insufficient ETH sent.");
         require(seller != msg.sender, "You cannot buy your own car.");
+        require(
+            getApproved(tokenId) == address(this) ||
+                isApprovedForAll(seller, address(this)),
+            "Contract not approved to transfer this token"
+        );
 
         // Transfer ownership
         transferFrom(seller, msg.sender, tokenId);
