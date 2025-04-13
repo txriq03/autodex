@@ -8,7 +8,7 @@ import {
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
 import { addToast } from "@heroui/toast";
 
-// Initialise provider, signer and contract
+// Get provider based on whether wallet is present
 const getProvider = () => {
   if (typeof window !== "undefined" && window.ethereum) {
     return new BrowserProvider(window.ethereum);
@@ -19,7 +19,7 @@ const getProvider = () => {
   }
 };
 
-// Initialise provider, signer and contract
+// Initialise signer and contract
 export const initialise = async () => {
   try {
     const provider = getProvider();
@@ -42,48 +42,10 @@ export const initialise = async () => {
     return null;
   }
 };
-// initialise();
-export const fetchCurrentAccount = async () => {
-  const accounts = await window.ethereum.request({ method: "eth_accounts" });
-  return accounts.length > 0 ? accounts[0] : null;
-};
-
-// Get a single account
-export const requestAccount = async () => {
-  try {
-    const accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    return accounts[0];
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error requesting account:", error.message);
-    } else {
-      console.error("Unknown error requesting account:", error);
-    }
-    return null;
-  }
-};
-
-export const fetchAllCars = async (contract: Contract) => {
-  if (!contract) return [];
-  const rawCars = await contract.getAllCars();
-
-  // Convert each car to a plain JSON-serializable object
-  const cars = rawCars.map((car: any) => ({
-    tokenId: Number(car.tokenId),
-    tokenURI: car.tokenURI,
-    price: car.price.toString(),
-  }));
-
-  return cars;
-};
 
 export const purchaseCar = async (tokenId: number, price: string) => {
   let contract: any = "";
   let signer: any = "";
-  console.log("Price:", price);
-  console.log("TokenId:", toBigInt(tokenId));
 
   const results = await initialise();
   if (results) {
@@ -91,8 +53,6 @@ export const purchaseCar = async (tokenId: number, price: string) => {
     signer = results.signer;
   }
 
-  console.log("Signer in purchase function:", signer);
-  const buyerAddress = await signer.getAddress();
   const priceInWei = parseEther(price); // price in wei (BigNumber or string)
   try {
     const tx = await contract.connect(signer).buyCar(toBigInt(tokenId), {

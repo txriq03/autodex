@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect } from "react";
 import { ContractContext } from "./providers/ContractProvider";
-import { fetchAllCars, purchaseCar } from "@/lib/web3/contractServices";
+import { purchaseCar } from "@/lib/web3/contractServices";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
@@ -32,11 +32,6 @@ type Car = {
   owner: string;
   price: number;
   tokenURI: string;
-};
-
-type CarWithMetadata = {
-  car: Car;
-  metadata: CarMetadata | null;
 };
 
 const getAttributeValue = (
@@ -97,25 +92,20 @@ const VehicleGrid = ({ filterOwned = false }) => {
   if (isNftPending) return <SkeletonCards />;
 
   if (nftList == undefined || nftList.length < 1)
-    return (
-      // <div className="bg-slate-100 bg-opacity-[5%] text-slate-100 rounded-xl py-10 text-xl w-full flex justify-center items-center gap-2">
-      //   <p>No cars have been minted.</p>
-      // </div>
-      filterOwned ? (
-        <Alert
-          title="You have not minted any vehicles."
-          description="Vehicles that you have minted will show up in this tab."
-          variant="faded"
-          color="default"
-        />
-      ) : (
-        <Alert
-          title="No cars have been minted"
-          description="No Vehicles are on the marketplace."
-          variant="faded"
-          color="default"
-        />
-      )
+    return filterOwned ? (
+      <Alert
+        title="You have not minted any vehicles."
+        description="Vehicles that you have minted will show up in this tab."
+        variant="faded"
+        color="default"
+      />
+    ) : (
+      <Alert
+        title="No cars have been minted"
+        description="No Vehicles are on the marketplace."
+        variant="faded"
+        color="default"
+      />
     );
 
   return (
@@ -265,52 +255,6 @@ const VehicleCard = ({
       )}
     </div>
   );
-};
-
-export const useAllCars = () => {
-  const { contract } = useContext(ContractContext); // or pass contract in manually
-
-  return useQuery({
-    queryKey: ["allCars"],
-    queryFn: () => fetchAllCars(contract),
-    enabled: !!contract, // only fetch once contract is ready
-  });
-};
-
-export const useCarsWithMetadata = (
-  filterOwned = false,
-  account: any = null
-) => {
-  const { contract } = useContext(ContractContext);
-  const { data: cars, ...rest } = useAllCars();
-
-  return useQuery<CarWithMetadata[]>({
-    queryKey: ["carsWithMetadata", cars, filterOwned, account],
-    enabled: !!cars && !!contract,
-    queryFn: async () => {
-      if (!cars) return [];
-
-      const results = await Promise.all(
-        cars.map(async (car: Car) => {
-          if (filterOwned && account) {
-            const owner = await contract.ownerOf(car.tokenId);
-            if (owner.toLowerCase() !== account?.toLowerCase()) return null;
-          }
-
-          try {
-            const res = await fetch(car.tokenURI);
-            const metadata = await res.json();
-            return { car, metadata };
-          } catch (err) {
-            console.error("Failed to fetch tokenURI:", car.tokenURI, err);
-            return { car, metadata: null };
-          }
-        })
-      );
-
-      return results.filter(Boolean); // Remove null entries if filtering
-    },
-  });
 };
 
 const SkeletonCards = () => {
