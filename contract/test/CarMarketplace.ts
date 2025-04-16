@@ -8,9 +8,9 @@ describe("CarMarketplace", function () {
   let owner: SignerWithAddress;
   let user1: SignerWithAddress;
   let user2: SignerWithAddress;
-  let provider: SignerWithAddress;
+  let provider: SignerWithAddress; // address of service log provider
 
-  const vin = "1HGCM82633A004352"; // 17 characters
+  const vin = "1HGCM82633A004352";
   const tokenURI = "ipfs://example";
   const price = ethers.parseEther("1");
 
@@ -25,30 +25,22 @@ describe("CarMarketplace", function () {
 
   describe("Minting", () => {
     it("should mint a car with a unique VIN", async () => {
-      await carMarketplace
-        .connect(user1)
-        .mintCar(user1.address, vin, price, tokenURI);
+      await carMarketplace.connect(user1).mintCar(vin, price, tokenURI);
       const tokenId = await carMarketplace.getTokenIdByVIN(vin);
       expect(await carMarketplace.ownerOf(tokenId)).to.equal(user1.address);
     });
 
     it("should fail to mint with duplicate VIN", async () => {
-      await carMarketplace
-        .connect(user1)
-        .mintCar(user1.address, vin, price, tokenURI);
+      await carMarketplace.connect(user1).mintCar(vin, price, tokenURI);
       await expect(
-        carMarketplace
-          .connect(user2)
-          .mintCar(user2.address, vin, price, tokenURI)
+        carMarketplace.connect(user2).mintCar(vin, price, tokenURI)
       ).to.be.revertedWith("VIN already used");
     });
 
     it("should require 17-character VIN", async () => {
       const invalidVin = "12345";
       await expect(
-        carMarketplace
-          .connect(user1)
-          .mintCar(user1.address, invalidVin, price, tokenURI)
+        carMarketplace.connect(user1).mintCar(invalidVin, price, tokenURI)
       ).to.be.revertedWith("Incorrect number of characters provided for VIN");
     });
   });
@@ -57,9 +49,7 @@ describe("CarMarketplace", function () {
     let tokenId: bigint;
 
     beforeEach(async () => {
-      await carMarketplace
-        .connect(user1)
-        .mintCar(user1.address, vin, 0, tokenURI);
+      await carMarketplace.connect(user1).mintCar(vin, 0, tokenURI);
       tokenId = await carMarketplace.getTokenIdByVIN(vin);
     });
 
@@ -81,7 +71,9 @@ describe("CarMarketplace", function () {
       await carMarketplace.connect(user1).listCarForSale(tokenId, price);
 
       // Allow marketplace contract to transfer the NFT
-      await carMarketplace.connect(user1).approve(user2, tokenId);
+      await carMarketplace
+        .connect(user1)
+        .approve(carMarketplace.target, tokenId);
 
       await expect(() =>
         carMarketplace.connect(user2).buyCar(tokenId, { value: price })
@@ -121,9 +113,7 @@ describe("CarMarketplace", function () {
     let tokenId: bigint;
 
     beforeEach(async () => {
-      await carMarketplace
-        .connect(user1)
-        .mintCar(user1.address, vin, price, tokenURI);
+      await carMarketplace.connect(user1).mintCar(vin, price, tokenURI);
       tokenId = await carMarketplace.getTokenIdByVIN(vin);
     });
 
@@ -135,7 +125,7 @@ describe("CarMarketplace", function () {
       expect(isAuthorized).to.be.true;
     });
 
-    it("should allow authorized provider to add a service record", async () => {
+    it("should allow authorised provider to add a service record", async () => {
       await carMarketplace.connect(owner).addServiceProvider(provider.address);
 
       await carMarketplace
@@ -152,7 +142,7 @@ describe("CarMarketplace", function () {
         carMarketplace
           .connect(user2)
           .addServiceRecord(tokenId, "Brake check", "Garage A", 15000)
-      ).to.be.revertedWith("Not authorized to add service record");
+      ).to.be.revertedWith("Not authorised to add service record");
     });
 
     it("should allow owner to remove a service provider", async () => {
@@ -164,6 +154,33 @@ describe("CarMarketplace", function () {
         provider.address
       );
       expect(isAuthorized).to.be.false;
+    });
+  });
+
+  describe("Getters", () => {
+    let tokenId: bigint;
+
+    beforeEach(async () => {
+      await carMarketplace.connect(user1).mintCar(vin, price, tokenURI);
+      tokenId = await carMarketplace.getTokenIdByVIN(vin);
+    });
+
+    it("should return all cars", async () => {
+      const allCars = await carMarketplace.getAllCars();
+      expect(allCars.length).to.be.greaterThan(0);
+      expect(allCars[Number(tokenId)].tokenURI).to.equal(tokenURI);
+    });
+
+    it("should return ownership history", async () => {
+      const history = await carMarketplace.getOwnershipHistory(tokenId);
+      expect(history.length).to.equal(1);
+      expect(history[0].owner).to.equal(user1.address);
+    });
+
+    it("should return the price of a listed car", async () => {
+      await carMarketplace.connect(user1).listCarForSale(tokenId, price);
+      const fetchedPrice = await carMarketplace.getPrice(tokenId);
+      expect(fetchedPrice).to.equal(price);
     });
   });
 });

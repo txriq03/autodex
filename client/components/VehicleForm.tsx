@@ -120,6 +120,9 @@ const VehicleForm = () => {
           .mintCar(data.vin, parseEther(data.price.toString()), tokenURI);
         const mintReceipt = await mintTx.wait();
 
+        // Calculate the gas used
+        console.log("Gas used for minting:", mintReceipt.gasUsed.toString());
+
         // Retrieve tokenId from minted token
         const carMintedEvent = mintReceipt.logs
           .map((log: any) => contract.interface.parseLog(log))

@@ -154,12 +154,12 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
     }
 
     function addServiceProvider(address provider) public onlyOwner {
-        require(!isServiceProvider[provider], "Already authorized");
+        require(!isServiceProvider[provider], "Already authorised");
         isServiceProvider[provider] = true;
         emit ServiceProviderAdded(provider);
     }
     function removeServiceProvider(address provider) public onlyOwner {
-        require(isServiceProvider[provider], "Not authorized");
+        require(isServiceProvider[provider], "Not authorised");
         isServiceProvider[provider] = false;
         emit ServiceProviderRemoved(provider);
     }
@@ -174,7 +174,7 @@ contract CarMarketplace is ERC721URIStorage, Ownable {
         require(ownerOf(tokenId) != address(0), "Token does not exist");
         require(
             isServiceProvider[msg.sender],
-            "Not authorized to add service record"
+            "Not authorised to add service record"
         );
 
         serviceLogs[tokenId].push(
