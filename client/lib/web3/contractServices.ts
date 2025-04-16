@@ -59,7 +59,9 @@ export const purchaseCar = async (tokenId: number, price: string) => {
       value: priceInWei,
     });
 
-    await tx.wait();
+    const receipt = await tx.wait();
+    console.log("Gas used from buyCar():", receipt.gasUsed.toString());
+
     addToast({
       title: "Success!",
       description: "You've successfully purchased the vehicle.",
