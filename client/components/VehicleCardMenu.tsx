@@ -43,7 +43,7 @@ const VehicleCardMenu = ({
               href={`/cars/${vin}`}
               startContent={<Book size={18} />}
             >
-              Information
+              View Details
             </DropdownItem>
             <DropdownItem
               key="service-logs"

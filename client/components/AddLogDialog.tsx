@@ -87,7 +87,11 @@ const AddLogDialog = () => {
         data.mileage
       );
 
-      await tx.wait();
+      const receipt = await tx.wait();
+      console.log(
+        "Gas used from addServiceRecord():",
+        receipt.gasUsed.toString()
+      );
     },
     onSuccess: () => {
       addToast({
